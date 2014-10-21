@@ -1,0 +1,17 @@
+$ cat .gitignore
+
+*~
+memo
+*.Rdata
+*.Rhistory
+*.log
+*.out
+*.aux
+*.bbl
+*.blg
+*.tar.gz
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.toc

@@ -1,0 +1,26 @@
+﻿- I should add analyses that show that I can predict voting behavior by using the open-ended responses!!!
+
+- I should think about a middle ground between the merging of all responses for one individual and looking at every single response. For example, it could make sense to aggregate responses for candidate/party that is consistent/inconsistent or for example for like vs. dislike task. I could reduce the number of missings by aggregating the 8 items in 2 groups like that and still have some info about the item task
+
+- use pre-election survey, since open-ended questions were asked in pre wave
+
+modeling strategy:
+1) logit model: mentioning any moral foundation?
+2) multiple logits: mentioning each of the moral foundations
+3) conditional logit: response pattern determined by most prevalent moral foundation
+4) non-exclusive multinomial choice model / poisson-multinomial
+
+- check response from stanley for review paper for arguments about causality: in how far is it possible to deduce moral reasoning in politics from open survey responses
+
+IDEAS FOR FUTURE STUDIES:
+- effects of campaign exposure
+- closer look at differences b/w survey questions: pro/con, party/cand
+- talk about possibility of structured topic models etc.
+- effects of political discussions, political networks, network coherence etc.
+- question: do partisans differ with regard to the degree to which they rely on moral foundations depending on in-party/out-party candidates?
+- difference b/w positive and negative evaluations?
+- other sources of heterogeneity: strength of partisanship/ideology?
+- the anes 2012 also contains a big 5 battery, it would be nice to combine personality and moral foundations in a subsequent study.
+
+NOTES:
+- check whether standard deviation in plots is correct: se instead of sd! -> sqrt(sd^2/N)
