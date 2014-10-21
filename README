@@ -10,10 +10,10 @@ According to Moral Foundations Theory, moral thinking is fundamentally structure
 Moral Foundations, Ideology, Political Reasoning
 
 ## modeling strategy (needs changes):
-1) logit model: mentioning any moral foundation?
-2) multiple logits: mentioning each of the moral foundations
-3) conditional logit: response pattern determined by most prevalent moral foundation
-4) non-exclusive multinomial choice model / poisson-multinomial
+1. logit model: mentioning any moral foundation?
+2. multiple logits: mentioning each of the moral foundations
+3. conditional logit: response pattern determined by most prevalent moral foundation
+4. non-exclusive multinomial choice model / poisson-multinomial
 
 ## current TO DOs
 
@@ -82,5 +82,5 @@ Great paper--hope these comments help.  Look forward to seeing how this turns ou
 *Question*: You suggested to look at a two-dimensional conceptualization of ideology. Do you think the framing of the paper should then focus on this aspect or should I still concentrate on the question of whether the moral foundation relationship is moderated by sophistication? Or would that be too much for a single paper?
 
 
-I think you need to do both. The first goal should be to show the relationship between the use of the moral foundation words and ideology. So, for this, you need to be careful about how you measure ideology. There are more than enough published works in political science that show why liberal-conservative identification is inadequate to use it for this purpose. Then you want to demonstrate that this is not just a function of sophistication -- that attentive people learn to pick up the "correct" language. For that you need a good measure of sophistication.
+*Response*: I think you need to do both. The first goal should be to show the relationship between the use of the moral foundation words and ideology. So, for this, you need to be careful about how you measure ideology. There are more than enough published works in political science that show why liberal-conservative identification is inadequate to use it for this purpose. Then you want to demonstrate that this is not just a function of sophistication -- that attentive people learn to pick up the "correct" language. For that you need a good measure of sophistication.
 
