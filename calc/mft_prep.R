@@ -1,4 +1,4 @@
-setwd("/data/Dropbox/Uni/618-Ideology/paper/analyses")
+setwd("/data/Uni/projects/2014/mft/calc")
 rm(list=ls())
 library(plyr)
 library(stringr)
@@ -57,11 +57,11 @@ for(i in 2:ncol(spell)){
 }
 
 # load dictionaries
-dict <- list(auth = read.csv("authority.csv",allowEscapes=T)[,1]
-             , fair = read.csv("fairness.csv",allowEscapes=T)[,1]
-             , harm = read.csv("harm.csv",allowEscapes=T)[,1]
-             , ingr = read.csv("ingroup.csv",allowEscapes=T)[,1]
-             , puri = read.csv("purity.csv",allowEscapes=T)[,1])
+dict <- list(auth = read.csv("./in/authority.csv",allowEscapes=T)[,1]
+             , fair = read.csv("./in/fairness.csv",allowEscapes=T)[,1]
+             , harm = read.csv("./in/harm.csv",allowEscapes=T)[,1]
+             , ingr = read.csv("./in/ingroup.csv",allowEscapes=T)[,1]
+             , puri = read.csv("./in/purity.csv",allowEscapes=T)[,1])
 
 # check responses for dictionary entries
 resp <- data.frame(spell[,1])
@@ -71,6 +71,26 @@ for(v in 2:ncol(spell)){
   }
 }
 colnames(resp) <- c("id",as.vector(laply(names(dict),function(x) paste(x,colnames(spell)[-1],sep="."))))
+
+# function to count number of words
+nwords <- function(string, pseudo=F){
+  ifelse( pseudo, 
+          pattern <- "\\S+", 
+          pattern <- "[[:alpha:]]+" 
+        )
+  str_count(string, pattern)
+}
+# count number of words in each item
+num <- data.frame(apply(spell[,-1],2,nwords))
+colnames(num) <- paste("num", colnames(num), sep = ".")
+# adjust for NAs
+for(i in 1:ncol(num)){
+    num[is.na(spell[,i+1]),i] <- 0
+}
+# calculate total numer of words
+num$num.total <- apply(num, 1, sum)
+# add to resp matrix
+resp <- cbind(resp,num)
 
 # save objects for analyses
 save(resp, spell, file="/data/Dropbox/1-src/data/anes/anes2012mft.RData")
