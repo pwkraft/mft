@@ -1,0 +1,17 @@
+harm.virtue
+\\<safe[[:lower:]]*
+\\<peace[[:lower:]]*
+\\<compassion[[:lower:]]*
+\\<empath[[:lower:]]*
+\\<sympath[[:lower:]]*
+\\<care\\>
+\\<caring\\>
+\\<protect[[:lower:]]*
+\\<shield\\>
+\\<shelter\\>
+\\<amity\\>
+\\<secur[[:lower:]]*
+\\<benefit[[:lower:]]*        
+\\<defen[[:lower:]]*
+\\<guard[[:lower:]]*
+\\<preserve\\>

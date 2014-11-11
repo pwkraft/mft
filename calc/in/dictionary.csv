@@ -1,0 +1,380 @@
+harm.virtue,
+\\<safe[[:lower:]]*,1
+\\<peace[[:lower:]]*,1
+\\<compassion[[:lower:]]*,1
+\\<empath[[:lower:]]*,1
+\\<sympath[[:lower:]]*,1
+\\<care\\>,1
+\\<caring\\>,1
+\\<protect[[:lower:]]*,1
+\\<shield\\>,1
+\\<shelter\\>,1
+\\<amity\\>,1
+\\<secur[[:lower:]]*,1
+\\<benefit[[:lower:]]*        ,1
+\\<defen[[:lower:]]*,1
+\\<guard[[:lower:]]*,1
+\\<preserve\\>,01 07 09x         
+,
+harm.vice,
+\\<harm[[:lower:]]*,2
+\\<suffer[[:lower:]]*,2
+\\<war\\>,2
+\\<wars\\>,2
+\\<warl[[:lower:]]*,2
+\\<warring\\>,2
+\\<fight[[:lower:]]*,2
+\\<violen[[:lower:]]*,2
+\\<hurt[[:lower:]]*,2
+\\<kill\\>,2
+\\<kills\\>,2
+\\<killer[[:lower:]]*,2
+\\<killed\\>,2
+\\<killing\\>,2
+\\<endanger[[:lower:]]*,2
+\\<cruel[[:lower:]]*,2
+\\<brutal[[:lower:]]*,2
+\\<abuse[[:lower:]]*,2
+\\<damag[[:lower:]]*,2
+\\<ruin[[:lower:]]*,02 10x
+\\<ravage\\>,2
+\\<detriment[[:lower:]]*,2
+\\<crush[[:lower:]]*,2
+\\<attack[[:lower:]]*,2
+\\<annihilate[[:lower:]]*,2
+\\<destroy\\>,2
+\\<stomp\\>,2
+\\<abandon[[:lower:]]*,02 06x
+\\<spurn\\>,2
+\\<impair\\>,2
+\\<exploit\\>,02 10x           
+\\<exploits\\>,02 10x
+\\<exploited\\>,02 10x
+\\<exploiting\\>,02 10x
+\\<wound[[:lower:]]*,2
+,
+fairness.virtue,
+\\<fair\\>,3
+\\<fairly\\>,3
+\\<fairness\\>,3
+\\<fair-[[:lower:]]*,3
+\\<fairmind[[:lower:]]*,3
+\\<fairplay\\>,3
+\\<equal[[:lower:]]*,3
+\\<justice\\>,3
+\\<justness\\>,3
+\\<justifi[[:lower:]]*,3
+\\<reciproc[[:lower:]]*,3
+\\<impartial[[:lower:]]*,3
+\\<egalitar[[:lower:]]*,3
+\\<rights\\>,3
+\\<equity\\>,3
+\\<evenness\\>,3
+\\<equivalent\\>,3
+\\<unbias[[:lower:]]*,3
+\\<tolerant\\>,3
+\\<equable\\>,3
+\\<balance[[:lower:]]*,3
+\\<homologous\\>,3
+\\<unprejudice[[:lower:]]*,3
+\\<reasonable\\>,3
+\\<constant\\>,3
+\\<honest[[:lower:]]*,03 11x
+,
+fairness.vice,
+\\<unfair[[:lower:]]*,4
+\\<unequal[[:lower:]]*,4
+\\<bias[[:lower:]]*,4
+\\<unjust[[:lower:]]*,4
+\\<injust[[:lower:]]*,4
+\\<bigot[[:lower:]]*,4
+\\<discriminat[[:lower:]]*,4
+\\<disproportion[[:lower:]]*,4
+\\<inequitable\\>,4
+\\<prejud[[:lower:]]*,4
+\\<dishonest\\>,4
+\\<unscrupulous\\>,4
+\\<dissociate\\>,4
+\\<preference\\>,4
+\\<favoritism\\>,4
+\\<segregat[[:lower:]]*,04 05x
+\\<exclusion\\>,4
+\\<exclud[[:lower:]]*,4
+,
+ingroup.virtue,
+\\<together\\>,5
+\\<nation[[:lower:]]*,5
+\\<homeland[[:lower:]]*,5
+\\<family\\>,5
+\\<families\\>,5
+\\<familial\\>,5
+\\<group\\>,5
+\\<loyal[[:lower:]]*,05 07x
+\\<patriot[[:lower:]]*,5
+\\<communal\\>,5
+\\<commune[[:lower:]]*,5
+\\<communit[[:lower:]]*,5
+\\<communis[[:lower:]]*,5
+\\<comrad[[:lower:]]*,5
+\\<cadre\\>,5
+\\<collectiv[[:lower:]]*,5
+\\<joint\\>,5
+\\<unison\\>,5
+\\<unite[[:lower:]]*,5
+\\<fellow[[:lower:]]*,5
+\\<guild\\>,5
+\\<solidarity\\>,5
+\\<devot[[:lower:]]*,5
+\\<member\\>,5
+\\<cliqu[[:lower:]]*,5
+\\<cohort\\>,5
+\\<ally\\>,5
+\\<insider\\>,5
+\\<segregat[[:lower:]]*,04 05x
+,
+ingroup.vice,
+\\<foreign[[:lower:]]*,6
+\\<enem[[:lower:]]*,6
+\\<betray[[:lower:]]*,06 08x
+\\<treason[[:lower:]]*,06 08x
+\\<traitor[[:lower:]]*,06 08x
+\\<treacher[[:lower:]]*,06 08x
+\\<disloyal[[:lower:]]*,06 08x
+\\<individual[[:lower:]]*,6
+\\<apostasy\\>,06 08 10x
+\\<apostate\\>,06 08 10x
+\\<deserted\\>,06 08x
+\\<deserter[[:lower:]]*,06 08x
+\\<deserting\\>,06 08x
+\\<deceiv[[:lower:]]*,6
+\\<jilt[[:lower:]]*,6
+\\<imposter\\>,6
+\\<miscreant\\>,6
+\\<spy\\>,6
+\\<sequester\\>,6
+\\<renegade\\>,6
+\\<terroris[[:lower:]]*,6
+\\<immigra[[:lower:]]*,6
+\\<abandon[[:lower:]]*,02 06x
+,
+authority.virtue,
+\\<obey[[:lower:]]*,7
+\\<obedien[[:lower:]]*,7
+\\<duty\\>,7
+\\<law\\>,7
+\\<lawful[[:lower:]]*,07 11x
+\\<legal[[:lower:]]*,07 11x
+\\<duti[[:lower:]]*,7
+\\<honor[[:lower:]]*,7
+\\<respect\\>,7
+\\<respectful[[:lower:]]*,7
+\\<respected\\>,7
+\\<respects\\>,7
+\\<order[[:lower:]]*,7
+\\<father[[:lower:]]*,7
+\\<mother\\>,7
+\\<motherl[[:lower:]]*,7
+\\<mothering\\>,7
+\\<mothers\\>,7
+\\<tradition[[:lower:]]*,7
+\\<hierarch[[:lower:]]*,7
+\\<authorit[[:lower:]]*,7
+\\<permit\\>,7
+\\<permission\\>,7
+\\<status[[:lower:]]*,7
+\\<rank[[:lower:]]*,7
+\\<leader[[:lower:]]*,7
+\\<class\\>,7
+\\<bourgeoisie\\>,7
+\\<caste[[:lower:]]*,7
+\\<position\\>,7
+\\<complian[[:lower:]]*,7
+\\<command\\>,7
+\\<supremacy\\>,7
+\\<control\\>,7
+\\<submi[[:lower:]]*,7
+\\<allegian[[:lower:]]*,7
+\\<serve\\>,7
+\\<abide\\>,7
+\\<defere[[:lower:]]*,7
+\\<defer\\>,7
+\\<revere[[:lower:]]*,7
+\\<venerat[[:lower:]]*,7
+\\<comply\\>,7
+\\<preserve\\>,01 07 09x         
+\\<loyal[[:lower:]]*,05 07x
+,
+authority.vice,
+\\<defian[[:lower:]]*,8
+\\<rebel[[:lower:]]*,8
+\\<dissent[[:lower:]]*,8
+\\<subver[[:lower:]]*,8
+\\<disrespect[[:lower:]]*,8
+\\<disobe[[:lower:]]*,8
+\\<sediti[[:lower:]]*,8
+\\<agitat[[:lower:]]*,8
+\\<insubordinat[[:lower:]]*,8
+\\<illegal[[:lower:]]*,8
+\\<lawless[[:lower:]]*,8
+\\<insurgent\\>,8
+\\<mutinous\\>,8
+\\<defy[[:lower:]]*,8
+\\<dissident\\>,8
+\\<unfaithful\\>,8
+\\<alienate\\>,8
+\\<defector\\>,8
+\\<heretic[[:lower:]]*,08 10x
+\\<nonconformist\\>,8
+\\<oppose\\>,8
+\\<protest\\>,8
+\\<refuse\\>,8
+\\<denounce\\>,8
+\\<remonstrate\\>,8
+\\<riot[[:lower:]]*,8
+\\<obstruct\\>,8
+\\<betray[[:lower:]]*,06 08x
+\\<treason[[:lower:]]*,06 08x
+\\<traitor[[:lower:]]*,06 08x
+\\<treacher[[:lower:]]*,06 08x
+\\<disloyal[[:lower:]]*,06 08x
+\\<apostasy\\>,06 08 10x
+\\<apostate\\>,06 08 10x
+\\<deserted\\>,06 08x
+\\<deserter[[:lower:]]*,06 08x
+\\<deserting\\>,06 08x
+,
+purity.virtue,
+\\<piety\\>,09 11x
+\\<pious\\>,09 11x
+\\<purity\\>,9
+\\<pure[[:lower:]]*,9
+\\<clean[[:lower:]]*,9
+\\<steril[[:lower:]]*,9
+\\<sacred[[:lower:]]*,9
+\\<chast[[:lower:]]*,9
+\\<holy\\>,9
+\\<holiness\\>,9
+\\<saint[[:lower:]]*,9
+\\<wholesome[[:lower:]]*,09 11x
+\\<celiba[[:lower:]]*,9
+\\<abstention\\>,9
+\\<virgin\\>,9
+\\<virgins\\>,9
+\\<virginity\\>,9
+\\<virginal\\>,9
+\\<austerity\\>,9
+\\<integrity\\>,09 11x
+\\<modesty\\>,9
+\\<abstinen[[:lower:]]*,9
+\\<abstemiousness\\>,9
+\\<upright\\>,09 11x
+\\<limpid\\>,9
+\\<unadulterated\\>,9
+\\<maiden\\>,9
+\\<virtuous\\>,9
+\\<refined\\>,9
+\\<decen[[:lower:]]*,09 11x
+\\<immaculate\\>,9
+\\<innocent\\>,9
+\\<pristine\\>,9
+\\<church[[:lower:]]*,9
+\\<preserve\\>,01 07 09x         
+,
+purity.vice,
+\\<disgust[[:lower:]]*,10
+\\<deprav[[:lower:]]*,10
+\\<disease[[:lower:]]*,10
+\\<unclean[[:lower:]]*,10
+\\<contagio[[:lower:]]*,10
+\\<indecen[[:lower:]]*,10 11x
+\\<sin\\>,10
+\\<sinful[[:lower:]]*,10
+\\<sinner[[:lower:]]*,10
+\\<sins\\>,10
+\\<sinned\\>,10
+\\<sinning\\>,10
+\\<slut[[:lower:]]*,10
+\\<whore\\>,10
+\\<dirt[[:lower:]]*,10
+\\<impiety\\>,10
+\\<impious\\>,10
+\\<profan[[:lower:]]*,10
+\\<gross\\>,10
+\\<repuls[[:lower:]]*,10
+\\<sick[[:lower:]]*,10
+\\<promiscu[[:lower:]]*,10
+\\<lewd[[:lower:]]*,10
+\\<adulter[[:lower:]]*,10
+\\<debauche[[:lower:]]* ,10
+\\<defile[[:lower:]]*,10
+\\<tramp\\>,10
+\\<prostitut[[:lower:]]*,10
+\\<unchaste\\>,10
+\\<intemperate\\>,10
+\\<wanton\\>,10
+\\<profligate\\>,10
+\\<filth[[:lower:]]* ,10
+\\<trashy\\>,10
+\\<obscen[[:lower:]]*,10
+\\<lax\\>,10
+\\<taint[[:lower:]]*,10
+\\<stain[[:lower:]]*,10
+\\<tarnish[[:lower:]]*,10
+\\<debase[[:lower:]]*,10
+\\<desecrat[[:lower:]]*,10
+\\<wicked[[:lower:]]*,10 11x
+\\<blemish\\>,10
+\\<exploitat[[:lower:]]*,10
+\\<pervert\\>,10
+\\<wretched[[:lower:]]*,10 11x
+\\<ruin[[:lower:]]*,02 10x
+\\<exploit\\>,02 10x           
+\\<exploits\\>,02 10x
+\\<exploited\\>,02 10x
+\\<exploiting\\>,02 10x
+\\<apostasy\\>,06 08 10x
+\\<apostate\\>,06 08 10x
+\\<heretic[[:lower:]]*,08 10x
+,
+general,
+\\<righteous[[:lower:]]*,11
+\\<moral[[:lower:]]*          ,11
+\\<ethic[[:lower:]]*          ,11
+\\<value[[:lower:]]*          ,11
+\\<upstanding\\>      ,11
+\\<good\\>            ,11
+\\<goodness\\>        ,11
+\\<principle[[:lower:]]*      ,11
+\\<blameless\\>,11
+\\<exemplary\\>,11
+\\<lesson\\>,11
+\\<canon\\>,11
+\\<doctrine\\>,11
+\\<noble\\>,11
+\\<worth[[:lower:]]*,11
+\\<ideal[[:lower:]]*,11
+\\<praiseworthy\\>,11
+\\<commendable\\>,11
+\\<character\\>,11
+\\<proper\\>,11
+\\<laudable\\>,11
+\\<correct\\>,11
+\\<wrong[[:lower:]]*,11
+\\<evil\\>,11
+\\<immoral[[:lower:]]*,11
+\\<bad\\>,11
+\\<offend[[:lower:]]*,11
+\\<offensive[[:lower:]]*,11
+\\<transgress[[:lower:]]*,11
+\\<honest[[:lower:]]*,03 11x
+\\<lawful[[:lower:]]*,07 11x
+\\<legal[[:lower:]]*,07 11x
+\\<piety\\>,09 11x
+\\<pious\\>,09 11x
+\\<wholesome[[:lower:]]*,09 11x
+\\<integrity\\>,09 11x
+\\<upright\\>,09 11x
+\\<decen[[:lower:]]*,09 11x
+\\<indecen[[:lower:]]*,10 11x
+\\<wicked[[:lower:]]*,10 11x
+\\<wretched[[:lower:]]*,10 11x
