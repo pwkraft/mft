@@ -49,19 +49,33 @@ for(i in 2:ncol(raw)){
   spell[,i] <- aspellCheck(raw[,i], "fix", sep=T, split_missing=F, mode="normal"
                             ,word_flag=c("barack","obama","obamacare","romney"))
 }
-colnames(spell) <- c("id","ca.li.dem","ca.di.dem","ca.li.rep","ca.di.rep","pa.li.dem","pa.di.dem","pa.li.rep","pa.di.rep")
+colnames(spell) <- c("id","ca_li_dem","ca_di_dem","ca_li_rep","ca_di_rep","pa_li_dem","pa_di_dem","pa_li_rep","pa_di_rep")
 
 # replace NA strings (created by aspellCheck) with actual NAs
 for(i in 2:ncol(spell)){
   spell[,i][spell[,i]=="NA"] <- NA
 }
 
-# load dictionaries
-dict <- list(auth = read.csv("./in/authority.csv",allowEscapes=T)[,1]
-             , fair = read.csv("./in/fairness.csv",allowEscapes=T)[,1]
-             , harm = read.csv("./in/harm.csv",allowEscapes=T)[,1]
-             , ingr = read.csv("./in/ingroup.csv",allowEscapes=T)[,1]
-             , puri = read.csv("./in/purity.csv",allowEscapes=T)[,1])
+# load dictionaries (old)
+dict <- list(auth = read.csv("./in/graham/authority.csv",allowEscapes=T)[,1]
+             , fair = read.csv("./in/graham/fairness.csv",allowEscapes=T)[,1]
+             , harm = read.csv("./in/graham/harm.csv",allowEscapes=T)[,1]
+             , ingr = read.csv("./in/graham/ingroup.csv",allowEscapes=T)[,1]
+             , puri = read.csv("./in/graham/purity.csv",allowEscapes=T)[,1])
+
+# load dictionaries (new)
+dict2 <- list(auth_vice = read.csv("./in/dict/authority.virtue.csv",allowEscapes=T)[,1]
+             , fair_vice = read.csv("./in/dict/fairness.virtue.csv",allowEscapes=T)[,1]
+             , harm_vice = read.csv("./in/dict/harm.virtue.csv",allowEscapes=T)[,1]
+             , ingr_vice = read.csv("./in/dict/ingroup.virtue.csv",allowEscapes=T)[,1]
+             , puri_vice = read.csv("./in/dict/purity.virtue.csv",allowEscapes=T)[,1]
+             , auth_virtue = read.csv("./in/dict/authority.virtue.csv",allowEscapes=T)[,1]
+             , fair_virtue = read.csv("./in/dict/fairness.virtue.csv",allowEscapes=T)[,1]
+             , harm_virtue = read.csv("./in/dict/harm.virtue.csv",allowEscapes=T)[,1]
+             , ingr_virtue = read.csv("./in/dict/ingroup.virtue.csv",allowEscapes=T)[,1]
+             , puri_virtue = read.csv("./in/dict/purity.virtue.csv",allowEscapes=T)[,1])
+
+
 
 # check responses for dictionary entries
 resp <- data.frame(spell[,1])
@@ -70,7 +84,16 @@ for(v in 2:ncol(spell)){
     resp <- cbind(resp,apply(laply(dict[[d]], function(x) {str_detect(spell[,v], x)}),2,sum))
   }
 }
-colnames(resp) <- c("id",as.vector(laply(names(dict),function(x) paste(x,colnames(spell)[-1],sep="."))))
+colnames(resp) <- c("id",as.vector(laply(names(dict),function(x) paste(x,colnames(spell)[-1],sep="_"))))
+
+# check responses for dictionary entries
+resp2 <- data.frame(spell[,1])
+for(v in 2:ncol(spell)){
+  for(d in 1:length(dict2)){
+    resp2 <- cbind(resp2,apply(laply(dict2[[d]], function(x) {str_detect(spell[,v], x)}),2,sum))
+  }
+}
+colnames(resp2) <- c("id",as.vector(laply(names(dict2),function(x) paste(x,colnames(spell)[-1],sep="_"))))
 
 # function to count number of words
 nwords <- function(string, pseudo=F){
@@ -82,7 +105,7 @@ nwords <- function(string, pseudo=F){
 }
 # count number of words in each item
 num <- data.frame(apply(spell[,-1],2,nwords))
-colnames(num) <- paste("num", colnames(num), sep = ".")
+colnames(num) <- paste("num", colnames(num), sep = "_")
 # adjust for NAs
 for(i in 1:ncol(num)){
     num[is.na(spell[,i+1]),i] <- 0
@@ -91,6 +114,7 @@ for(i in 1:ncol(num)){
 num$num.total <- apply(num, 1, sum)
 # add to resp matrix
 resp <- cbind(resp,num)
+resp2 <- cbind(resp2,num)
 
 # save objects for analyses
-save(resp, spell, file="/data/Dropbox/1-src/data/anes/anes2012mft.RData")
+save(resp, resp2, spell, file="/data/Dropbox/1-src/data/anes/anes2012mft.RData")
