@@ -1,14 +1,12 @@
-setwd("/data/Dropbox/Uni/618-Ideology/paper")
+setwd("/data/Uni/projects/2014/mft")
+pkg <- c("foreign","car","reshape2","ggplot2","stargazer","Zelig")
+inst <- pkg %in% installed.packages()  
+if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
+lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(list=ls())
-library(foreign)
-library(car)
-library(reshape2)
-library(ggplot2)
-library(stargazer)
-# I had to install an old Zelig version because the new one still had bugs...
-# install.packages("/data/Dropbox/Uni/618-Ideology/paper/analyses/Zelig_3.5.5.tar.gz",repos=NULL)
-library(Zelig)
 source("/data/Dropbox/1-src/func/lookfor.R")
+
+
 
 
 ####################
@@ -26,27 +24,27 @@ anes <- data.frame(id=raw$caseid)
 anes$ideol <- factor(recode(raw$libcpre_self
                             , "1:3=1; c(-2,-8,4)=3; 5:7=2; else=NA")
                      , labels = c("Liberal","Conservative","Moderate"))
-anes$ideol.lib <- as.numeric(anes$ideol=="Liberal")
-anes$ideol.con <- as.numeric(anes$ideol=="Conservative")
+anes$ideol_lib <- as.numeric(anes$ideol=="Liberal")
+anes$ideol_con <- as.numeric(anes$ideol=="Conservative")
 
 ## strength of ideology
-anes$ideol.str <- abs(recode(raw$libcpre_self, "c(-2,-8)=0; -9=NA") - 4)
-anes$ideol.str.c <- anes$ideol.str - mean(anes$ideol.str, na.rm = T)
+anes$ideol_str <- abs(recode(raw$libcpre_self, "c(-2,-8)=0; -9=NA") - 4)
+anes$ideol_str_c <- anes$ideol_str - mean(anes$ideol_str, na.rm = T)
 
 ## party identification
 anes$pid <- factor(recode(raw$pid_x
                           , "1:3=1; 4=3; 5:7=2; else=NA")
                    , labels = c("Democrat","Republican","Independent"))
-anes$pid.dem <- as.numeric(anes$pid=="Democrat")
-anes$pid.rep <- as.numeric(anes$pid=="Republican")
+anes$pid_dem <- as.numeric(anes$pid=="Democrat")
+anes$pid_rep <- as.numeric(anes$pid=="Republican")
 
 ## strength of partisanship
-anes$pid.str <- abs(recode(raw$pid_x, "-2 = NA") - 4)
-anes$pid.str.c <- anes$pid.str - mean(anes$pid.str, na.rm = T)
+anes$pid_str <- abs(recode(raw$pid_x, "-2 = NA") - 4)
+anes$pid_str_c <- anes$pid_str - mean(anes$pid_str, na.rm = T)
 
 ## political interest
 anes$polint <- (-1) * recode(raw$interest_attention, "lo:0 = NA") + 5
-anes$polint.c <- anes$polint - mean(anes$polint, na.rm = T)
+anes$polint_c <- anes$polint - mean(anes$polint, na.rm = T)
 
 ## religiosity (church attendance)
 anes$relig <- (-1) * recode(raw$relig_churchoft, "lo:0 = NA") + 5
@@ -86,28 +84,28 @@ respAgg <- function(groupname){
   x[apply(!is.na(resp[,grep(groupname,colnames(resp))]),1,sum)==0] <- NA
   x
 }
-mft$harm.all <- respAgg("harm")
-mft$fair.all <- respAgg("fair")
-mft$ingr.all <- respAgg("ingr")
-mft$auth.all <- respAgg("auth")
-mft$puri.all <- respAgg("puri")
-mft$mft.all <- as.numeric(apply(mft[,grep(".all",colnames(mft))],1,sum) > 0)
+mft$harm_all <- respAgg("harm")
+mft$fair_all <- respAgg("fair")
+mft$ingr_all <- respAgg("ingr")
+mft$auth_all <- respAgg("auth")
+mft$puri_all <- respAgg("puri")
+mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
 
 ## aggregating over party evaluations
-mft$harm.pa <- respAgg("harm.pa")
-mft$fair.pa <- respAgg("fair.pa")
-mft$ingr.pa <- respAgg("ingr.pa")
-mft$auth.pa <- respAgg("auth.pa")
-mft$puri.pa <- respAgg("puri.pa")
-mft$mft.pa <- as.numeric(apply(mft[,grep(".pa",colnames(mft))],1,sum) > 0)
+mft$harm_pa <- respAgg("harm_pa")
+mft$fair_pa <- respAgg("fair_pa")
+mft$ingr_pa <- respAgg("ingr_pa")
+mft$auth_pa <- respAgg("auth_pa")
+mft$puri_pa <- respAgg("puri_pa")
+mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
 
 ## aggregating over candidate evaluations
-mft$harm.ca <- respAgg("harm.ca")
-mft$fair.ca <- respAgg("fair.ca")
-mft$ingr.ca <- respAgg("ingr.ca")
-mft$auth.ca <- respAgg("auth.ca")
-mft$puri.ca <- respAgg("puri.ca")
-mft$mft.ca <- as.numeric(apply(mft[,grep(".ca",colnames(mft))],1,sum) > 0)
+mft$harm_ca <- respAgg("harm_ca")
+mft$fair_ca <- respAgg("fair_ca")
+mft$ingr_ca <- respAgg("ingr_ca")
+mft$auth_ca <- respAgg("auth_ca")
+mft$puri_ca <- respAgg("puri_ca")
+mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
 
 ### merge datasets
 anes <- merge(anes,mft)
@@ -120,22 +118,22 @@ anes <- merge(anes,mft)
 
 ### function to plot proportions
 
-prop.plot <- function(data, title, fmtvarnames, groupvarname){
+prop_plot <- function(data, title, fmtvarnames, groupvarname){
   ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/sum(!is.na(x)))}
-  prop.df <-  cbind(melt(aggregate(data[,fmtvarnames]
+  prop_df <-  cbind(melt(aggregate(data[,fmtvarnames]
                                    ,by=list(groupvar = data[,groupvarname]),FUN="mean",na.rm=T))
                     , melt(aggregate(data[,fmtvarnames],by=list(groupvar = data[,groupvarname])
                                      ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
                     , melt(aggregate(data[,fmtvarnames],by=list(groupvar = data[,groupvarname])
                                      ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
                     )
-  colnames(prop.df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi")
-  levels(prop.df$mft)[grep("puri",levels(prop.df$mft))] <- "Purity / Sanctity"
-  levels(prop.df$mft)[grep("auth",levels(prop.df$mft))] <- "Authority / Respect"
-  levels(prop.df$mft)[grep("ingr",levels(prop.df$mft))] <- "Ingroup / Loyalty"
-  levels(prop.df$mft)[grep("fair",levels(prop.df$mft))] <- "Fairness / Reciprocity"
-  levels(prop.df$mft)[grep("harm",levels(prop.df$mft))] <- "Harm / Care"
-  ggplot(prop.df, aes(x = Proportion, y = mft)) +
+  colnames(prop_df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi")
+  levels(prop_df$mft)[grep("puri",levels(prop_df$mft))] <- "Purity / Sanctity"
+  levels(prop_df$mft)[grep("auth",levels(prop_df$mft))] <- "Authority / Respect"
+  levels(prop_df$mft)[grep("ingr",levels(prop_df$mft))] <- "Ingroup / Loyalty"
+  levels(prop_df$mft)[grep("fair",levels(prop_df$mft))] <- "Fairness / Reciprocity"
+  levels(prop_df$mft)[grep("harm",levels(prop_df$mft))] <- "Harm / Care"
+  ggplot(prop_df, aes(x = Proportion, y = mft)) +
     geom_point(size=3) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) +
     facet_grid(groupvar ~ .) + labs(y = "Moral Foundation", x = "Proportion of Respondents") +
     scale_x_continuous(limits = c(0, 0.521)) + theme_bw()
@@ -143,27 +141,27 @@ prop.plot <- function(data, title, fmtvarnames, groupvarname){
 
 # plot overview
 pdf("p1_mft_ideol.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.all", "auth.all", "ingr.all", "fair.all", "harm.all"), groupvarname="ideol")
+prop_plot(data=anes, fmtvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all"), groupvarname="ideol")
 dev.off()
 
 pdf("p2_mft_ideol_pa.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.pa", "auth.pa", "ingr.pa", "fair.pa", "harm.pa"), groupvarname="ideol")
+prop_plot(data=anes, fmtvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa"), groupvarname="ideol")
 dev.off()
 
 pdf("p3_mft_ideol_ca.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.ca", "auth.ca", "ingr.ca", "fair.ca", "harm.ca"), groupvarname="ideol")
+prop_plot(data=anes, fmtvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca"), groupvarname="ideol")
 dev.off()
 
 pdf("a1_mft_pid.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.all", "auth.all", "ingr.all", "fair.all", "harm.all"), groupvarname="pid")
+prop_plot(data=anes, fmtvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all"), groupvarname="pid")
 dev.off()
 
 pdf("a2_mft_pid_pa.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.pa", "auth.pa", "ingr.pa", "fair.pa", "harm.pa"), groupvarname="pid")
+prop_plot(data=anes, fmtvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa"), groupvarname="pid")
 dev.off()
 
 pdf("a3_mft_pid_ca.pdf")
-prop.plot(data=anes, fmtvarnames=c("puri.ca", "auth.ca", "ingr.ca", "fair.ca", "harm.ca"), groupvarname="pid")
+prop_plot(data=anes, fmtvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca"), groupvarname="pid")
 dev.off()
 
 
@@ -173,8 +171,8 @@ dev.off()
 ############
 
 ## models predicting references to moral foundations in general
-m1a <- zelig(mft.all ~ ideol + polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m1b <- zelig(mft.all ~ ideol*polint.c + relig + educ + age + female + black, data=anes, model="logit")
+m1a <- zelig(mft_all ~ ideol + polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m1b <- zelig(mft_all ~ ideol*polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
 stargazer(m1a,m1b
           , type="text", out="m1_all.tex"
           , title="Logit Models Predicting overall References to Moral Foundations"
@@ -187,14 +185,14 @@ stargazer(m1a,m1b
 )
 
 ## models predicting references to specific moral foundations
-m2a <- zelig(harm.all ~ ideol + polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2b <- zelig(harm.all ~ ideol*polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2c <- zelig(fair.all ~ ideol + polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2d <- zelig(fair.all ~ ideol*polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2e <- zelig(ingr.all ~ ideol + polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2f <- zelig(ingr.all ~ ideol*polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2g <- zelig(auth.all ~ ideol + polint.c + relig + educ + age + female + black, data=anes, model="logit")
-m2h <- zelig(auth.all ~ ideol*polint.c + relig + educ + age + female + black, data=anes, model="logit")
+m2a <- zelig(harm_all ~ ideol + polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2b <- zelig(harm_all ~ ideol*polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2c <- zelig(fair_all ~ ideol + polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2d <- zelig(fair_all ~ ideol*polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2e <- zelig(ingr_all ~ ideol + polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2f <- zelig(ingr_all ~ ideol*polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2g <- zelig(auth_all ~ ideol + polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m2h <- zelig(auth_all ~ ideol*polint_c + relig + educ + age + female + black, data=anes, model="logit",cite=F)
 stargazer(m2a,m2b,m2c,m2d,m2e,m2f,m2g,m2h
           , type="text", out="m2_specific.tex"
           , title="Logit Models Predicting Specific Moral Foundations"
@@ -208,35 +206,36 @@ stargazer(m2a,m2b,m2c,m2d,m2e,m2f,m2g,m2h
 )
 
 ## Plot predicted probabilities / expected values
-m2.x <- setx(m2a, ideol=c("Liberal","Conservative"))
-m2a.sim <- sim(m2a,x=m2.x)
-m2c.sim <- sim(m2c,x=m2.x)
-m2e.sim <- sim(m2e,x=m2.x)
-m2g.sim <- sim(m2g,x=m2.x)
-m2.sim <- data.frame(rbind(c(mean(m2a.sim$qi$ev[,1] - m2a.sim$qi$ev[,2])
-                             , quantile(m2a.sim$qi$ev[,1] - m2a.sim$qi$ev[,2], probs=c(0.025,0.975)))
-                           , c(mean(m2c.sim$qi$ev[,1] - m2c.sim$qi$ev[,2])
-                               , quantile(m2c.sim$qi$ev[,1] - m2c.sim$qi$ev[,2], probs=c(0.025,0.975)))
-                           , c(mean(m2e.sim$qi$ev[,1] - m2e.sim$qi$ev[,2])
-                               , quantile(m2e.sim$qi$ev[,1] - m2e.sim$qi$ev[,2], probs=c(0.025,0.975)))
-                           , c(mean(m2g.sim$qi$ev[,1] - m2g.sim$qi$ev[,2])
-                               , quantile(m2g.sim$qi$ev[,1] - m2g.sim$qi$ev[,2], probs=c(0.025,0.975)))
+m2_x <- setx(m2a, ideol="Liberal")
+m2_x1 <- setx(m2a, ideol="Conservative")
+m2a_sim <- sim(m2a,x=m2_x, x1=m2_x1)
+m2c_sim <- sim(m2c,x=m2_x)
+m2e_sim <- sim(m2e,x=m2_x)
+m2g_sim <- sim(m2g,x=m2_x)
+m2_sim <- data.frame(rbind(c(mean(m2a_sim$qi$ev[,1] - m2a_sim$qi$ev[,2])
+                             , quantile(m2a_sim$qi$ev[,1] - m2a_sim$qi$ev[,2], probs=c(0.025,0.975)))
+                           , c(mean(m2c_sim$qi$ev[,1] - m2c_sim$qi$ev[,2])
+                               , quantile(m2c_sim$qi$ev[,1] - m2c_sim$qi$ev[,2], probs=c(0.025,0.975)))
+                           , c(mean(m2e_sim$qi$ev[,1] - m2e_sim$qi$ev[,2])
+                               , quantile(m2e_sim$qi$ev[,1] - m2e_sim$qi$ev[,2], probs=c(0.025,0.975)))
+                           , c(mean(m2g_sim$qi$ev[,1] - m2g_sim$qi$ev[,2])
+                               , quantile(m2g_sim$qi$ev[,1] - m2g_sim$qi$ev[,2], probs=c(0.025,0.975)))
                            )
                      )
-colnames(m2.sim) <- c("mean","cilo","cihi")
-m2.sim$mft <- factor(x=1:4, labels=c("Harm / Care", "Fairness / Reciprocity", "Ingroup / Loyalty", "Authority / Respect"), ordered=T)
+colnames(m2_sim) <- c("mean","cilo","cihi")
+m2_sim$mft <- factor(x=1:4, labels=c("Harm / Care", "Fairness / Reciprocity", "Ingroup / Loyalty", "Authority / Respect"), ordered=T)
 pdf("p4_models.pdf")
-ggplot(m2.sim, aes(x = mean, y = factor(mft, levels = rev(levels(mft))))) +
+ggplot(m2_sim, aes(x = mean, y = factor(mft, levels = rev(levels(mft))))) +
   geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) +
   labs(y = "Moral Foundation", x= "Liberals - Conservatives") + geom_vline(xintercept=0) +
   theme_bw()
 dev.off()
 
 ## models predicting including party identification for appendix
-m3a <- zelig(harm.all ~ ideol + polint.c + pid + relig + educ + age + female + black, data=anes, model="logit")
-m3b <- zelig(fair.all ~ ideol + polint.c + pid + relig + educ + age + female + black, data=anes, model="logit")
-m3c <- zelig(ingr.all ~ ideol + polint.c + pid + relig + educ + age + female + black, data=anes, model="logit")
-m3d <- zelig(auth.all ~ ideol + polint.c + pid + relig + educ + age + female + black, data=anes, model="logit")
+m3a <- zelig(harm_all ~ ideol + polint_c + pid + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m3b <- zelig(fair_all ~ ideol + polint_c + pid + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m3c <- zelig(ingr_all ~ ideol + polint_c + pid + relig + educ + age + female + black, data=anes, model="logit",cite=F)
+m3d <- zelig(auth_all ~ ideol + polint_c + pid + relig + educ + age + female + black, data=anes, model="logit",cite=F)
 stargazer(m3a,m3b,m3c,m3d
           , type="text", out="m3_app.tex"
           , title="Logit Models Predicting Specific Moral Foundations"
