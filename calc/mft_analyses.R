@@ -1,115 +1,22 @@
-setwd("/data/Uni/projects/2014/mft")
-pkg <- c("foreign","car","reshape2","ggplot2","stargazer","Zelig")
+##########################################################################################
+# Project:  Moral foundations of Political Reasoning
+# File:     mft_analyses.R
+# Overview: this file contains the main analyses and generates all plots and tables
+#           for the paper. Uses the dataset generated in mft_prep
+# Author:   Patrick Kraft
+# Date:     12/08/2014
+##########################################################################################
+
+
+### Load packages and functions
+
+# install / load packages from CRAN
+setwd("/data/Uni/projects/2014/mft/calc")
+pkg <- c("reshape2","ggplot2","stargazer","Zelig")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(list=ls())
-source("/data/Dropbox/1-src/func/lookfor.R")
-
-
-
-
-####################
-# Data Preparation #
-####################
-
-
-### recode independent variables
-
-raw <- read.dta("/data/Dropbox/1-src/data/anes/anes_timeseries_2012.dta",convert.factors=F)
-anes <- data.frame(id=raw$caseid)
-
-## ideology
-# d/k -> moderate
-anes$ideol <- factor(recode(raw$libcpre_self
-                            , "1:3=1; c(-2,-8,4)=3; 5:7=2; else=NA")
-                     , labels = c("Liberal","Conservative","Moderate"))
-anes$ideol_lib <- as.numeric(anes$ideol=="Liberal")
-anes$ideol_con <- as.numeric(anes$ideol=="Conservative")
-
-## strength of ideology
-anes$ideol_str <- abs(recode(raw$libcpre_self, "c(-2,-8)=0; -9=NA") - 4)
-anes$ideol_str_c <- anes$ideol_str - mean(anes$ideol_str, na.rm = T)
-
-## party identification
-anes$pid <- factor(recode(raw$pid_x
-                          , "1:3=1; 4=3; 5:7=2; else=NA")
-                   , labels = c("Democrat","Republican","Independent"))
-anes$pid_dem <- as.numeric(anes$pid=="Democrat")
-anes$pid_rep <- as.numeric(anes$pid=="Republican")
-
-## strength of partisanship
-anes$pid_str <- abs(recode(raw$pid_x, "-2 = NA") - 4)
-anes$pid_str_c <- anes$pid_str - mean(anes$pid_str, na.rm = T)
-
-## political interest
-anes$polint <- (-1) * recode(raw$interest_attention, "lo:0 = NA") + 5
-anes$polint_c <- anes$polint - mean(anes$polint, na.rm = T)
-
-## religiosity (church attendance)
-anes$relig <- (-1) * recode(raw$relig_churchoft, "lo:0 = NA") + 5
-anes$relig[raw$relig_church==2] <- 0
-anes$relig[raw$relig_churchwk==2] <- 5
-
-## education: college degree (bachelor)
-anes$educ <- recode(raw$dem_edugroup_x, "1:3=0; 4:5=1; lo:0 = NA")
-
-## age
-anes$age <- recode(raw$dem_age_r_x, "-2 = NA")
-
-## sex
-anes$female <- raw$gender_respondent_x - 1
-
-## race
-anes$black <- as.numeric(recode(raw$dem_raceeth_x, "lo:0 = NA") == 2)
-
-
-### recode response data
-
-load("/data/Dropbox/1-src/data/anes/anes2012mft.RData")
-
-## delete spanish open-ended responses: web / pre capi / post capi
-lookfor(raw,"lang")
-spell[raw$profile_spanishsurv==1,2:ncol(spell)] <- NA
-spell[raw$admin_pre_lang_start==2,2:ncol(spell)] <- NA
-spell[raw$admin_post_lang_start==2,2:ncol(spell)] <- NA
-resp[raw$profile_spanishsurv==1,2:ncol(resp)] <- NA
-resp[raw$admin_pre_lang_start==2,2:ncol(resp)] <- NA
-resp[raw$admin_post_lang_start==2,2:ncol(resp)] <- NA
-mft <- data.frame(id = resp[,1])
-
-## aggregating over all items
-respAgg <- function(groupname){
-  x <- as.numeric(apply(resp[,grep(groupname,colnames(resp))],1,sum,na.rm=T) > 0)
-  x[apply(!is.na(resp[,grep(groupname,colnames(resp))]),1,sum)==0] <- NA
-  x
-}
-mft$harm_all <- respAgg("harm")
-mft$fair_all <- respAgg("fair")
-mft$ingr_all <- respAgg("ingr")
-mft$auth_all <- respAgg("auth")
-mft$puri_all <- respAgg("puri")
-mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
-
-## aggregating over party evaluations
-mft$harm_pa <- respAgg("harm_pa")
-mft$fair_pa <- respAgg("fair_pa")
-mft$ingr_pa <- respAgg("ingr_pa")
-mft$auth_pa <- respAgg("auth_pa")
-mft$puri_pa <- respAgg("puri_pa")
-mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
-
-## aggregating over candidate evaluations
-mft$harm_ca <- respAgg("harm_ca")
-mft$fair_ca <- respAgg("fair_ca")
-mft$ingr_ca <- respAgg("ingr_ca")
-mft$auth_ca <- respAgg("auth_ca")
-mft$puri_ca <- respAgg("puri_ca")
-mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
-
-### merge datasets
-anes <- merge(anes,mft)
-
 
 
 #####################################
