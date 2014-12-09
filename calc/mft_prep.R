@@ -44,17 +44,62 @@ anes2012opend <- opend_prep(csv_src = "/data/Dropbox/1-src/data/anes2012/anes201
 
 anes2008opend$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new")
 
-anes2008opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
+anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
 
 
 ### basic data recoding for each ANES survey
 
-anes2008 <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", raw_out = TRUE)
+anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", raw_out = TRUE
+                      , id          = "V080001"
+                      , weight      = "V080101"
+                      , ideol       = c("V083069","V083069a")
+                      , issues      = list(govspend = c("V083105","V083108x","reversed")
+                                           , medins = c("V083119","V083124x"))
+                        # jobs issue was only included for half of sample -> left out
+                      , issue_aid   = "V083148"
+                      , issue_abort = NULL
+                        # abortion issue was only included for half of sample -> left out
+                      , issue_gay   = "V083213"
+                      , issue_women = NULL
+                        # women issue was only included for half of the sample -> left out
+                      , pid         = "V083098x"
+                      , polmedia    = list(c("V083019","V083024")
+                                           , c("V083021a", "V083025")
+                                           , c("V083021b", "V083023")
+                                           , c("V083022", "V083026"))
+                      , polknow     = list(V085119 = 1
+                                           , V085119a = 5)
+                      , poldisc     = list(oft = "V085108a"
+                                           , ever = "V085108"  
+                                           , alternative = "V085109")  # postelection!!!
+                      , regrdisc    = list(year = 2008
+                                           , byear="V083215a"
+                                           , bmonth="V083215b")
+                      , pastvote    = "V083007"
+                      , age         = "V081104"
+                      , female      = "V081101"
+                      , black       = "V081102"
+                      , educ        = list(V083218x = 4)
+                      , relig       = list(oft = "V083186a"
+                                           , ever = "V083186"
+                                           , more = "V083186b")
+                      , spanish     = list(V082011 = 2
+                                           , V082011 = 3)
+                      )
 
-anes2012 <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", raw_out = TRUE
+library(foreign)
+library(car)
+source("/data/Dropbox/1-src/func/lookfor.R")
+raw <- read.dta("/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", convert.factors = FALSE)
+
+lookfor(raw,"")
+table(raw$V083218x, useNA = "always")
+summary(raw$V080101)
+
+anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", raw_out = TRUE
                       , id          = "caseid"
-                      , weight      = NULL
-                      , ideol       = "libcpre_self"
+                      , weight      = "weight_full"
+                      , ideol       = c("libcpre_self","libcpre_choose")
                       , issues      = list(govspend = "spsrvpr_ssself"
                                            , medins = "inspre_self"
                                            , jobs = "guarpr_self")
@@ -63,29 +108,33 @@ anes2012 <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseri
                       , issue_gay   = "gayrt_adopt"
                       , issue_women = NULL
                       , pid         = "pid_x"
-                      , polint      = "interest_attention"
-                      , polmedia    = NULL
-                      , polknow     = NULL
-                      , poldisc     = NULL
-                      , regdisc     = list(byear=NULL, bmonth=NULL)
-                      , pastvote    = NULL
+                      , polmedia    = list("prmedia_wkinews"
+                                           , "prmedia_wktvnws"
+                                           , "prmedia_wkpaprnws"
+                                           , "prmedia_wkrdnws")
+                      , polknow     = list(preknow_prestimes = 2
+                                           , preknow_sizedef = 1
+                                           , preknow_senterm = 6
+                                           , preknow_medicare = 1
+                                           , preknow_leastsp = 1)
+                      , poldisc     = list(oft = "discuss_discpstwk"
+                                           , ever = "discuss_disc")   # postelection!!!
+                      , regrdisc    = list(year = 2012
+                                           , byear="dem_birthyr"
+                                           , bmonth=NULL)
+                      , pastvote    = "interest_voted2008"
                       , age         = "dem_age_r_x"
                       , female      = "gender_respondent_x"
                       , black       = "dem_raceeth_x"
-                      , educ        = "dem_edugroup_x"
+                      , educ        = list(dem_edugroup_x = 4)
                       , relig       = list(oft = "relig_churchoft"
                                            , ever = "relig_church"
                                            , more = "relig_churchwk")
-                      , spanish     = NULL
+                      , spanish     = list(profile_spanishsurv = 1
+                                           , admin_pre_lang_start = 2
+                                           , admin_post_lang_start = 2)
                       )
 
-library(foreign)
-source("/data/Dropbox/1-src/func/lookfor.R")
-tmp2008 <- read.dta("/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", convert.factors = FALSE)
-raw <- read.dta("/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", convert.factors = FALSE)
-
-lookfor(raw,"gay")
-table(tmp2012$gayrt_adopt)
 
 ### merge anes time series and open-ended responses
 

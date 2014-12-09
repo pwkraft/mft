@@ -104,8 +104,8 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     }
 
     ifelse(raw_out
-          , out <- list(spell = spell, raw = raw, vars = as.matrix(varlist))
-          , out <- list(spell = spell, vars = as.matrix(varlist)))
+          , out <- list(spell = spell, raw = raw, vars = as.matrix(varlist), call = match.call())
+          , out <- list(spell = spell, vars = as.matrix(varlist)), call = match.call())
     return(out)
 }
 
@@ -198,11 +198,10 @@ ts_recode <- function(dta_src, raw_out = FALSE
                       , issue_gay   = NULL
                       , issue_women = NULL
                       , pid         = NULL
-                      , polint      = NULL
                       , polmedia    = NULL
                       , polknow     = NULL
-                      , poldisc     = NULL
-                      , regdisc     = list(year = NULL, byear = NULL, bmonth = NULL)
+                      , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
+                      , regrdisc    = list(year = NULL, byear = NULL, bmonth = NULL)
                       , pastvote    = NULL
                       , age         = NULL
                       , female      = NULL
@@ -218,7 +217,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     # - dta_src: dta file location
     # - raw_out: logical argument indicating whether the original
     #            dataset should be included in the output
-    # - id to relig: respective variable names to be recoded
+    # - id to spanish: respective variable names to be recoded
     # output:
     # - data: dataset consisting of recoded variables
     # - raw: raw .dta dataset
@@ -232,17 +231,27 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(is.null(id)) stop("ID variable must be specified!")
     dat <- data.frame(id=raw[,id])
 
+    if(!is.null(weight)){
+        ## survey weights
+        dat$weight = raw[,weight]
+    }
+
     if(!is.null(ideol)){
         ## ideology
-        # d/k -> moderate
-        dat$ideol <- factor(recode(raw[,ideol]
-                            , "1:3=1; c(-2,-8,4)=3; 5:7=2; else=NA")
+        dat$ideol <- factor(recode(raw[,ideol[1]]
+                            , "1:3=1; 4=3; 5:7=2; else=NA")
                      , labels = c("Liberal","Conservative","Moderate"))
+        if(length(ideol)>1){
+            tmp <- factor(recode(raw[,ideol[2]], "lo:0=NA")
+                        , labels = c("Liberal","Conservative","Moderate"))
+            dat$ideol[is.na(dat$ideol)] <- tmp[is.na(dat$ideol)]
+            rm(tmp)
+        }
         dat$ideol_lib <- as.numeric(dat$ideol=="Liberal")
         dat$ideol_con <- as.numeric(dat$ideol=="Conservative")
 
         ## strength of ideology
-        dat$ideol_str <- abs(recode(raw[,ideol], "c(-2,-8)=0; -9=NA") - 4)
+        dat$ideol_str <- abs(recode(raw[,ideol[1]], "c(-2,-8)=0; -9=NA") - 4)
         dat$ideol_str_c <- dat$ideol_str - mean(dat$ideol_str, na.rm = T)
     }
 
@@ -250,15 +259,28 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## issue positions (7-point scales)
         if(class(issues)!="list") stop("'issues' argument must be a list")
         for(i in 1:length(issues)){
-            dat$issue <- recode(raw[,issues[[i]][1]], "-2=4; c(-9,-8,-1)=NA")
-            if(length(issues[[i]])>1) warning("Insert second var in function")
-            colnames(dat[,ncol(dat)]) <- paste0("issue_",names(issues)[i])
+            dat$issue <- recode(raw[,issues[[i]][1]], "c(-2,-7)=4; c(-9,-8,-1)=NA")
+            if(length(issues[[i]])==2){
+                tmp <- recode(raw[,issues[[i]][2]], "c(-1,-8,-9)=NA")
+                dat$issue[is.na(dat$issue)] <- tmp[is.na(dat$issue)]
+                rm(tmp)
+            }
+            if(length(issues[[i]])==3 & issues[[i]][3]=="reversed"){
+                tmp <- (-1) * recode(raw[,issues[[i]][2]], "c(-1,-8,-9)=NA") + 8
+                dat$issue[is.na(dat$issue)] <- tmp[is.na(dat$issue)]
+                rm(tmp)
+            }
+            
+            colnames(dat)[ncol(dat)] <- paste0("issue_",names(issues)[i])
         }
     }
 
     if(!is.null(issue_aid)){
         ## assistance to poor
-        dat$issue_aid <- recode(raw[,issue_aid], "2=-1; 3=0; c(-9,-8)=NA")
+        dat$issue_aid <- recode(raw[,issue_aid], "c(-8,-9) = NA")
+        dat$issue_aid <- as.numeric(factor(dat$issue_aid
+                                         , labels = (1:length(table(dat$issue_aid)))))
+        dat$issue_aid <- recode(dat$issue_aid, "c(2,4)=-1; 3=0", as.numeric.result = T)
     }
 
     if(!is.null(issue_abort)){
@@ -268,16 +290,19 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(issue_gay)){
         ## gay adoption
-        dat$issue_gay <- recode(raw[,issue_gay], "c(-9,-8)=NA; 2=0")
+        tmp <- recode(raw[,issue_gay], "c(-9,-8)=NA")
+        dat$issue_gay <- as.numeric(tmp == 1)
+        rm(tmp)
     }
 
     if(!is.null(issue_women)){
         ## women's role
-        # item does not seem to be part of anes 2012
+        dat$issue_women <- recode(raw[,issue_women[1]], "c(-9,-7,-1)=NA")
     }
 
     if(!is.null(pid)){
         ## party identification
+        tmp <- raw[,pid] + ifelse(max(raw[,pid])==6, 1, 0)
         dat$pid <- factor(recode(raw[,pid]
                           , "1:3=1; 4=3; 5:7=2; else=NA")
                    , labels = c("Democrat","Republican","Independent"))
@@ -289,33 +314,69 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$pid_str_c <- dat$pid_str - mean(dat$pid_str, na.rm = T)
     }
 
-    if(!is.null(polint)){
-        ## political interest
-        dat$polint <- (-1) * recode(raw[,polint], "lo:0 = NA") + 5
-        dat$polint_c <- dat$polint - mean(dat$polint, na.rm = T)
-    }
-
     if(!is.null(polmedia)){
         ## political media consumption
-
+        if(class(polmedia)!="list") stop("'polmedia' argument must be a list")
+        dat$polmedia <- 0
+        for(i in 1:length(polmedia)){
+            tmp <- recode(raw[,polmedia[[i]][1]], "c(-8,-9)=NA; -1=0")
+            if(length(polmedia[[i]])>1){
+                tmp[raw[,polmedia[[i]][1]]==-1] <- recode(raw[,polmedia[[i]][2]]
+                                , "c(-8,-9,-1)=NA")[raw[,polmedia[[i]][1]]==-1]
+            }
+            dat$polmedia <- dat$polmedia + tmp
+            rm(tmp)
+        }
+        dat$polmedia_c <- dat$polmedia - mean(dat$polmedia, na.rm = T)
     }
 
     if(!is.null(polknow)){
         ## political knowledge
-
+        if(class(polknow)!="list") stop("'polknow' argument must be a list")
+        dat$polknow <- 0
+        for(i in 1:length(polknow)){
+            tmp <- recode(raw[,names(polknow)[i]], "c(-1,-2)=NA") # DK/mis treated as 0
+            dat$polknow <- dat$polknow + as.numeric(tmp == polknow[[i]])
+            rm(tmp)
+        }
+        dat$polknow_c <- dat$polknow - mean(dat$polknow, na.rm = T)
     }
 
-    if(!is.null(poldisc)){
+    if(!is.null(poldisc$oft)){
         ## political discussion
+        if(class(poldisc)!="list") stop("'poldisc' argument must be a list")
+        dat$poldisc <- recode(raw[,poldisc$oft], "lo:-1 = NA")
+        if(!is.null(poldisc$ever)) dat$poldisc[raw[,poldisc$ever]>1] <- 0
+        if(!is.null(poldisc$alternative)){
+            dat$poldisc[raw[,poldisc$oft]==-1] <- recode(raw[,poldisc$alternative]
+               , "lo:-1 = NA")[raw[,poldisc$oft]==-1]
+        }
+        dat$poldisc_c <- dat$poldisc - mean(dat$poldisc, na.rm = T)
     }
 
-    if(!is.null(regdisc)){
+    if(!is.null(regrdisc$year) * !is.null(regrdisc$byear)){
         ## regression discontinuity based on eligibility in last election
+        if(class(regrdisc)!="list") stop("'regrdisc' argument must be a list")
+        tmp <- recode(raw[,regrdisc$byear], "lo:0=NA")
+        dat$regrdisc <- regrdisc$year - 4 - tmp
+        dat$regrdisc <- recode(dat$regrdisc, "18=1; 17=0; else=NA")
+        rm(tmp)
+        if(!is.null(regrdisc$bmonth)){
+            dat$regrdisc[!is.na(dat$regrdisc) & dat$regrdisc==0] <- (-1) * recode(
+               raw[,regrdisc$bmonth], "lo:0=NA")[!is.na(dat$regrdisc) & dat$regrdisc==0] - 2
+            dat$regrdisc[!is.na(dat$regrdisc) & dat$regrdisc==1] <- (-1) * (recode(
+               raw[,regrdisc$bmonth], "lo:0=NA")[!is.na(dat$regrdisc) & dat$regrdisc==1] - 11)
+        }
+    }
+
+    if(!is.null(pastvote)){
+        ## voted in previous election
+        dat$pastvote <- recode(raw[,pastvote], "lo:0=NA; c(2,5)=0")
     }
 
     if(!is.null(age)){
         ## age
-        dat$age <- recode(raw[,age], "-2 = NA")
+        dat$age <- recode(raw[,age], "c(-2,-9,-8) = NA")
     }
 
     if(!is.null(female)){
@@ -330,14 +391,32 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(educ)){
         ## education: college degree (bachelor)
-        dat$educ <- recode(raw[,educ], "1:3=0; 4:5=1; lo:0 = NA")
+        if(class(educ)!="list") stop("'educ' argument must be a list")
+        dat$educ <- raw[,names(educ)[1]]>=educ
+        dat$educ[raw[,names(educ)[1]]<0] <- NA
     }
 
     if(!is.null(relig$oft)){
         ## religiosity (church attendance)
+        if(class(relig)!="list") stop("'relig' argument must be a list")
         dat$relig <- (-1) * recode(raw[,relig$oft], "lo:0 = NA") + 5
-        if(!is.null(relig$ever)) dat$relig[raw[,relig$ever]==2] <- 0
+        if(!is.null(relig$ever)) dat$relig[raw[,relig$ever]!=1] <- 0
         if(!is.null(relig$more)) dat$relig[raw[,relig$more]==2] <- 5
+    }
+
+    if(!is.null(spanish)){
+        ## spanish speaking respondent
+        if(class(spanish)!="list") stop("'spanish' argument must be a list")
+        dat$spanish <- 0
+        for(i in 1:length(spanish)){
+            dat$spanish[raw[,names(spanish)[i]]==spanish[[i]]] <- 1
+        }
+    }
+
+    if(raw_out==TRUE){
+        out <- list(data = dat, raw = raw, call = match.call())
+    } else {
+        out <- list(data = dat, call = match.call())
     }
 }
 
@@ -345,48 +424,46 @@ ts_recode <- function(dta_src, raw_out = FALSE
 ######################################
 ### recode response data
 
-load("/data/Dropbox/1-src/data/anes/anes2012mft.RData")
 
-## delete spanish open-ended responses: web / pre capi / post capi
-lookfor(raw,"lang")
-spell[raw$profile_spanishsurv==1,2:ncol(spell)] <- NA
-spell[raw$admin_pre_lang_start==2,2:ncol(spell)] <- NA
-spell[raw$admin_post_lang_start==2,2:ncol(spell)] <- NA
-resp[raw$profile_spanishsurv==1,2:ncol(resp)] <- NA
-resp[raw$admin_pre_lang_start==2,2:ncol(resp)] <- NA
-resp[raw$admin_post_lang_start==2,2:ncol(resp)] <- NA
-mft <- data.frame(id = resp[,1])
+## ## aggregating over all items (and merge both, ts and opend datasets)
+## respAgg <- function(groupname){
+##   x <- as.numeric(apply(resp[,grep(groupname,colnames(resp))],1,sum,na.rm=T) > 0)
+##   x[apply(!is.na(resp[,grep(groupname,colnames(resp))]),1,sum)==0] <- NA
+##   x
+## }
+## mft$harm_all <- respAgg("harm")
+## mft$fair_all <- respAgg("fair")
+## mft$ingr_all <- respAgg("ingr")
+## mft$auth_all <- respAgg("auth")
+## mft$puri_all <- respAgg("puri")
+## mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
 
-## aggregating over all items
-respAgg <- function(groupname){
-  x <- as.numeric(apply(resp[,grep(groupname,colnames(resp))],1,sum,na.rm=T) > 0)
-  x[apply(!is.na(resp[,grep(groupname,colnames(resp))]),1,sum)==0] <- NA
-  x
-}
-mft$harm_all <- respAgg("harm")
-mft$fair_all <- respAgg("fair")
-mft$ingr_all <- respAgg("ingr")
-mft$auth_all <- respAgg("auth")
-mft$puri_all <- respAgg("puri")
-mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
+## ## aggregating over party evaluations
+## mft$harm_pa <- respAgg("harm_[:lower:]*_pa")
+## mft$fair_pa <- respAgg("fair_[:lower:]*_pa")
+## mft$ingr_pa <- respAgg("ingr_[:lower:]*_pa")
+## mft$auth_pa <- respAgg("auth_[:lower:]*_pa")
+## mft$puri_pa <- respAgg("puri_[:lower:]*_pa")
+## mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
 
-## aggregating over party evaluations
-mft$harm_pa <- respAgg("harm_[:lower:]*_pa")
-mft$fair_pa <- respAgg("fair_[:lower:]*_pa")
-mft$ingr_pa <- respAgg("ingr_[:lower:]*_pa")
-mft$auth_pa <- respAgg("auth_[:lower:]*_pa")
-mft$puri_pa <- respAgg("puri_[:lower:]*_pa")
-mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
+## ## aggregating over candidate evaluations
+## mft$harm_ca <- respAgg("harm_[:lower:]*_ca")
+## mft$fair_ca <- respAgg("fair_[:lower:]*_ca")
+## mft$ingr_ca <- respAgg("ingr_[:lower:]*_ca")
+## mft$auth_ca <- respAgg("auth_[:lower:]*_ca")
+## mft$puri_ca <- respAgg("puri_[:lower:]*_ca")
+## mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
 
-## aggregating over candidate evaluations
-mft$harm_ca <- respAgg("harm_[:lower:]*_ca")
-mft$fair_ca <- respAgg("fair_[:lower:]*_ca")
-mft$ingr_ca <- respAgg("ingr_[:lower:]*_ca")
-mft$auth_ca <- respAgg("auth_[:lower:]*_ca")
-mft$puri_ca <- respAgg("puri_[:lower:]*_ca")
-mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
+## ### merge datasets
+## anes <- merge(anes,mft)
 
-### merge datasets
-anes <- merge(anes,mft)
-
-### recode NAs for spanish speaking respondents!!!
+## ### recode NAs for spanish speaking respondents!!!
+## ## delete spanish open-ended responses: web / pre capi / post capi
+## lookfor(raw,"lang")
+## spell[raw$profile_spanishsurv==1,2:ncol(spell)] <- NA
+## spell[raw$admin_pre_lang_start==2,2:ncol(spell)] <- NA
+## spell[raw$admin_post_lang_start==2,2:ncol(spell)] <- NA
+## resp[raw$profile_spanishsurv==1,2:ncol(resp)] <- NA
+## resp[raw$admin_pre_lang_start==2,2:ncol(resp)] <- NA
+## resp[raw$admin_post_lang_start==2,2:ncol(resp)] <- NA
+## mft <- data.frame(id = resp[,1])
