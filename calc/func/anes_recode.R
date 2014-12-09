@@ -14,8 +14,8 @@
 
 # install / load required packages
 pkg <- c("plyr","stringr","tmt","foreign", "car") # tm, dplyr
-inst <- pkg %in% installed.packages()  
-if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
+inst <- pkg %in% installed.packages()
+if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(pkg, inst)
 
@@ -24,8 +24,9 @@ rm(pkg, inst)
 ### Preprocess open-ended survey responses, spell-checking etc.
 
 opend_prep <- function(csv_src, varlist, raw_out = FALSE
-                   , word_flag = c("barack","obama","obamacare","romney", "mccain")
-                       ) {
+                       , word_flag = c("barack","obama","obamas","obamacare"
+                                       ,"romney","romneys","mccain","mccains")
+                       ){
     #########################################################
     # This function reads in a .csv file of open-ended survey
     # responses and preprocesses it for further analyses
@@ -33,7 +34,7 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     # in mft_check
     # arguments:
     # - src: csv file location (string)
-    # - varlist: original variable names to be replaced
+    # - varlist: variables to be generated based on original varnames
     # - raw_out: logical argument, should output include raw data?
     # - word_flag: vector of strings that should not be checked for spelling
     # output:
@@ -44,10 +45,10 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     options(stringsAsFactors = FALSE)
 
     # load dataset
-    raw <- read.csv(src)
+    raw <- read.csv(csv_src)
 
     # select variables included in varlist
-    raw <- raw[, c(which(names(raw) %in% names(varlist)))]
+    raw <- raw[, c(which(names(raw) %in% unlist(varlist)))]
 
     # warning message if variables were not matched
     if(length(varlist)!=ncol(raw)) warning("Variables in varlist were not properly matched!")
@@ -86,16 +87,16 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     # weird bug-fix for aspellCheck
     # it seems like the function does not work if there is no word that is not recognized
     # Without it, the corrections are not properly implemented
-    # I should rewrite this or look for alternative ways, but it will work for now... 
+    # I should rewrite this or look for alternative ways, but it will work for now...
     for(i in 2:ncol(raw)){
         spell[,i] <- aspellCheck(spell[,i], "fix", sep=T, split_missing=F, mode="normal"
                                 , word_flag = tolower(word_flag))
     }
     spell <- spell[-1,]
-    
+
     # adjust colum names
-    spell <- spell[names(varlist)]
-    colnames(spell) <- as.vector(varlist)
+    spell <- spell[unlist(varlist)]
+    colnames(spell) <- names(varlist)
 
     # replace NA strings (created by aspellCheck) with actual NAs
     for(i in 2:ncol(spell)){
@@ -103,9 +104,9 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     }
 
     ifelse(raw_out
-          , out <- list(spell = spell, raw = raw, vars = varlist)
-          , out <- list(spell = spell, vars = varlist))
-    return(out)           
+          , out <- list(spell = spell, raw = raw, vars = as.matrix(varlist))
+          , out <- list(spell = spell, vars = as.matrix(varlist)))
+    return(out)
 }
 
 
@@ -124,7 +125,7 @@ opend_mft <- function(data, use_dict = "new") {
     #   according to the dictinary specified in the function
     #   as well as a total word count for each item
     #####################################################################
-    
+
     # set option for data.frame and read.csv!
     options(stringsAsFactors = FALSE)
 
@@ -159,9 +160,9 @@ opend_mft <- function(data, use_dict = "new") {
 
     # function to count number of words
     nwords <- function(string, pseudo=F){
-        ifelse(pseudo, 
-               pattern <- "\\S+", 
-               pattern <- "[[:alpha:]]+" 
+        ifelse(pseudo,
+               pattern <- "\\S+",
+               pattern <- "[[:alpha:]]+"
                )
         str_count(string, pattern)
     }
@@ -174,7 +175,7 @@ opend_mft <- function(data, use_dict = "new") {
     for(i in 1:ncol(num)){
         num[is.na(data[,i+1]),i] <- 0
     }
-    
+
     # calculate total number of words
     num$num.total <- apply(num, 1, sum)
 
@@ -189,6 +190,7 @@ opend_mft <- function(data, use_dict = "new") {
 
 ts_recode <- function(dta_src, raw_out = FALSE
                       , id          = NULL
+                      , weight      = NULL
                       , ideol       = NULL
                       , issues      = NULL
                       , issue_aid   = NULL
@@ -207,9 +209,10 @@ ts_recode <- function(dta_src, raw_out = FALSE
                       , black       = NULL
                       , educ        = NULL
                       , relig       = list(oft = NULL, ever = NULL, more = NULL)
+                      , spanish     = NULL
                       ){
     ###############################################################
-    # This function implements basic recoding for each of the 
+    # This function implements basic recoding for each of the
     # anes time-series datasets
     # arguments:
     # - dta_src: dta file location
@@ -294,12 +297,12 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(polmedia)){
         ## political media consumption
-        
+
     }
 
     if(!is.null(polknow)){
         ## political knowledge
-        
+
     }
 
     if(!is.null(poldisc)){
@@ -329,7 +332,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## education: college degree (bachelor)
         dat$educ <- recode(raw[,educ], "1:3=0; 4:5=1; lo:0 = NA")
     }
-    
+
     if(!is.null(relig$oft)){
         ## religiosity (church attendance)
         dat$relig <- (-1) * recode(raw[,relig$oft], "lo:0 = NA") + 5
@@ -385,3 +388,5 @@ mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
 
 ### merge datasets
 anes <- merge(anes,mft)
+
+### recode NAs for spanish speaking respondents!!!
