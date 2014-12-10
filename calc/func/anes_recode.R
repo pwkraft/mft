@@ -204,6 +204,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
                       , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
                       , regrdisc    = list(year = NULL, byear = NULL, bmonth = NULL)
                       , pastvote    = NULL
+                      , vote_dem    = NULL
                       , age         = NULL
                       , female      = NULL
                       , black       = NULL
@@ -376,6 +377,11 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## voted in previous election
         dat$pastvote <- recode(raw[,pastvote], "lo:0=NA; c(2,5)=0")
     }
+    
+    if(!is.null(vote_dem)){
+        ## intends to vote for democratic presidential candidate
+        dat$vote_dem <- recode(raw[,vote_dem], "lo:0=NA; 2=0; c(5,7)=NA")
+    }
 
     if(!is.null(age)){
         ## age
@@ -440,9 +446,9 @@ respAgg <- function(data, mftdim){
     # output:
     # - x: dummy variable indicating whether mftdim was mentioned
     ###############################################################
-    x <- as.numeric(apply(data[, grep(mftdim, colnames(data), perl = TRUE)]
+    x <- as.numeric(apply(data[, grep(mftdim, colnames(data))]
                          , 1, sum,na.rm = TRUE) > 0)
-    x[apply(!is.na(data[, grep(mftdim, colnames(data), perl = TRUE)])
+    x[apply(!is.na(data[, grep(mftdim, colnames(data))])
            , 1, sum) == 0] <- NA
     return(x)
 }
