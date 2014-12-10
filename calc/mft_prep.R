@@ -67,8 +67,7 @@ anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timese
                                            , c("V083021a", "V083025")
                                            , c("V083021b", "V083023")
                                            , c("V083022", "V083026"))
-                      , polknow     = list(V085119 = 1
-                                           , V085119a = 5)
+                      , polknow     = list(V085119a = 5)
                       , poldisc     = list(oft = "V085108a"
                                            , ever = "V085108"  
                                            , alternative = "V085109")  # postelection!!!
@@ -86,15 +85,6 @@ anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timese
                       , spanish     = list(V082011 = 2
                                            , V082011 = 3)
                       )
-
-library(foreign)
-library(car)
-source("/data/Dropbox/1-src/func/lookfor.R")
-raw <- read.dta("/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", convert.factors = FALSE)
-
-lookfor(raw,"")
-table(raw$V083218x, useNA = "always")
-summary(raw$V080101)
 
 anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", raw_out = TRUE
                       , id          = "caseid"
@@ -138,7 +128,20 @@ anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timese
 
 ### merge anes time series and open-ended responses
 
+anes2008merge <- anes_merge(ts = anes2008ts, opend = anes2008opend
+                            , valence = FALSE, check = TRUE)
+
+anes2012merge <- anes_merge(ts = anes2012ts, opend = anes2012opend
+                            , valence = FALSE, check = TRUE)
+
 
 ### save objects for analyses
 
-save(anes2008opend, anes2012opend, file="out/anes_opend.RData")
+save(anes2008ts, anes2008opend, anes2008merge
+     , anes2012ts, anes2012opend, anes2012merge
+     , file="out/anes_full.RData")
+
+anes2008 <- anes2008merge$data
+anes2012 <- anes2012merge$data
+
+save(anes2008, anes2012, file="out/anes.RData")

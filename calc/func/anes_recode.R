@@ -103,10 +103,11 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
         spell[,i][spell[,i]=="NA"] <- NA
     }
 
-    ifelse(raw_out
-          , out <- list(spell = spell, raw = raw, vars = as.matrix(varlist), call = match.call())
-          , out <- list(spell = spell, vars = as.matrix(varlist)), call = match.call())
-    return(out)
+    if(raw_out == TRUE){
+        list(spell = spell, raw = raw, vars = as.matrix(varlist), call = match.call())
+    } else if(raw_out == FALSE){
+        list(spell = spell, vars = as.matrix(varlist), call = match.call())
+    } else stop("'raw_out' must be a logical argument")
 }
 
 
@@ -177,7 +178,7 @@ opend_mft <- function(data, use_dict = "new") {
     }
 
     # calculate total number of words
-    num$num.total <- apply(num, 1, sum)
+    num$num_total <- apply(num, 1, sum)
 
     # add to resp matrix
     resp <- cbind(resp,num)
@@ -424,46 +425,145 @@ ts_recode <- function(dta_src, raw_out = FALSE
 ######################################
 ### recode response data
 
+## internal function to aggregate over all items
+respAgg <- function(data, mftdim){
+    ###############################################################
+    # This is an internal function for anes_merge. It creates a
+    # dummy indicating whether the respective moral foundation
+    # dimension was mentioned in any of the items
+    # arguments:
+    # - data: matrix of response 
+    # - mftdim: character string indicating the respective
+    #           mft dimension
+    # output:
+    # - x: dummy variable indicating whether mftdim was mentioned
+    ###############################################################
+    x <- as.numeric(apply(data[, grep(mftdim, colnames(data), perl = TRUE)]
+                         , 1, sum,na.rm = TRUE) > 0)
+    x[apply(!is.na(data[, grep(mftdim, colnames(data), perl = TRUE)])
+           , 1, sum) == 0] <- NA
+    return(x)
+}
 
-## ## aggregating over all items (and merge both, ts and opend datasets)
-## respAgg <- function(groupname){
-##   x <- as.numeric(apply(resp[,grep(groupname,colnames(resp))],1,sum,na.rm=T) > 0)
-##   x[apply(!is.na(resp[,grep(groupname,colnames(resp))]),1,sum)==0] <- NA
-##   x
-## }
-## mft$harm_all <- respAgg("harm")
-## mft$fair_all <- respAgg("fair")
-## mft$ingr_all <- respAgg("ingr")
-## mft$auth_all <- respAgg("auth")
-## mft$puri_all <- respAgg("puri")
-## mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
+anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
+    ###############################################################
+    # This function aggregates the mft instances over defined
+    # item categories, aggregates word counts, and then merges
+    # the aggregated data with the recoded time-series datasets
+    # arguments:
+    # - ts: time-series/cross-sectional anes data
+    # - open: preprocessed open-ended anes data (from opend_mft)
+    # - valence: logical argument indicating whether valence in
+    #            the dictionaries should be differentiated for
+    #            aggregation
+    # - check: logical argument indicating whether the output
+    #          should contain an additional full data frame to
+    #          make it easier to check all recodings
+    # output:
+    # - data: dataset ready for subsequent analyses; contains
+    #         ts as well as evaluated opend data
+    # - check: complete dataset to check all recodings
+    # - call: original function call
+    ###############################################################
+    
+    ## extract relevant objects from ts and opend
+    dat <- ts$data
+    resp <- opend$resp
+    spell <- opend$spell
 
-## ## aggregating over party evaluations
-## mft$harm_pa <- respAgg("harm_[:lower:]*_pa")
-## mft$fair_pa <- respAgg("fair_[:lower:]*_pa")
-## mft$ingr_pa <- respAgg("ingr_[:lower:]*_pa")
-## mft$auth_pa <- respAgg("auth_[:lower:]*_pa")
-## mft$puri_pa <- respAgg("puri_[:lower:]*_pa")
-## mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
+    ## recode spanish open-ended responses as NA
+    spell[spell$id %in% dat$id[dat$spanish==1], 2:ncol(spell)] <- NA
+    resp[resp$id %in% dat$id[dat$spanish==1], 2:ncol(resp)] <- NA
+    mft <- data.frame(id = resp$id)
 
-## ## aggregating over candidate evaluations
-## mft$harm_ca <- respAgg("harm_[:lower:]*_ca")
-## mft$fair_ca <- respAgg("fair_[:lower:]*_ca")
-## mft$ingr_ca <- respAgg("ingr_[:lower:]*_ca")
-## mft$auth_ca <- respAgg("auth_[:lower:]*_ca")
-## mft$puri_ca <- respAgg("puri_[:lower:]*_ca")
-## mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
+    ## aggregating over all items
+    mft$harm_all <- respAgg(resp,"harm")
+    mft$fair_all <- respAgg(resp,"fair")
+    mft$ingr_all <- respAgg(resp,"ingr")
+    mft$auth_all <- respAgg(resp,"auth")
+    mft$puri_all <- respAgg(resp,"puri")
+    mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
 
-## ### merge datasets
-## anes <- merge(anes,mft)
+    ## aggregating over party evaluations
+    mft$harm_pa <- respAgg(resp,"harm.*_pa")
+    mft$fair_pa <- respAgg(resp,"fair.*_pa")
+    mft$ingr_pa <- respAgg(resp,"ingr.*_pa")
+    mft$auth_pa <- respAgg(resp,"auth.*_pa")
+    mft$puri_pa <- respAgg(resp,"puri.*_pa")
+    mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
 
-## ### recode NAs for spanish speaking respondents!!!
-## ## delete spanish open-ended responses: web / pre capi / post capi
-## lookfor(raw,"lang")
-## spell[raw$profile_spanishsurv==1,2:ncol(spell)] <- NA
-## spell[raw$admin_pre_lang_start==2,2:ncol(spell)] <- NA
-## spell[raw$admin_post_lang_start==2,2:ncol(spell)] <- NA
-## resp[raw$profile_spanishsurv==1,2:ncol(resp)] <- NA
-## resp[raw$admin_pre_lang_start==2,2:ncol(resp)] <- NA
-## resp[raw$admin_post_lang_start==2,2:ncol(resp)] <- NA
-## mft <- data.frame(id = resp[,1])
+    ## aggregating over candidate evaluations
+    mft$harm_ca <- respAgg(resp,"harm.*_ca")
+    mft$fair_ca <- respAgg(resp,"fair.*_ca")
+    mft$ingr_ca <- respAgg(resp,"ingr.*_ca")
+    mft$auth_ca <- respAgg(resp,"auth.*_ca")
+    mft$puri_ca <- respAgg(resp,"puri.*_ca")
+    mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
+        
+    if(valence == TRUE){
+        ## aggregating over all items
+        mft$harm_virtue_all <- respAgg(resp,"harm_virtue")
+        mft$harm_vice_all   <- respAgg(resp,"harm_vice")
+        mft$fair_virtue_all <- respAgg(resp,"fair_virtue")
+        mft$fair_vice_all   <- respAgg(resp,"fair_vice")
+        mft$ingr_virtue_all <- respAgg(resp,"ingr_virtue")
+        mft$ingr_vice_all   <- respAgg(resp,"ingr_vice")
+        mft$auth_virtue_all <- respAgg(resp,"auth_virtue")
+        mft$auth_vice_all   <- respAgg(resp,"auth_vice")
+        mft$puri_virtue_all <- respAgg(resp,"puri_virtue")
+        mft$puri_vice_all   <- respAgg(resp,"puri_vice")
+        mft$mft_virtue_all  <- as.numeric(apply(mft[,grep("virtue_all"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_all    <- as.numeric(apply(mft[,grep("vice_all"
+                                                        ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over party evaluations
+        mft$harm_virtue_pa <- respAgg(resp,"harm_virtue_pa")
+        mft$harm_vice_pa   <- respAgg(resp,"harm_vice_pa")
+        mft$fair_virtue_pa <- respAgg(resp,"fair_virtue_pa")
+        mft$fair_vice_pa   <- respAgg(resp,"fair_vice_pa")
+        mft$ingr_virtue_pa <- respAgg(resp,"ingr_virtue_pa")
+        mft$ingr_vice_pa   <- respAgg(resp,"ingr_vice_pa")
+        mft$auth_virtue_pa <- respAgg(resp,"auth_virtue_pa")
+        mft$auth_vice_pa   <- respAgg(resp,"auth_vice_pa")
+        mft$puri_virtue_pa <- respAgg(resp,"puri_virtue_pa")
+        mft$puri_vice_pa   <- respAgg(resp,"puri_vice_pa")
+        mft$mft_virtue_pa  <- as.numeric(apply(mft[,grep("virtue_pa"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_pa    <- as.numeric(apply(mft[,grep("vice_pa"
+                                                        ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over candidate evaluations
+        mft$harm_virtue_ca <- respAgg(resp,"harm_virtue_ca")
+        mft$harm_vice_ca   <- respAgg(resp,"harm_vice_ca")
+        mft$fair_virtue_ca <- respAgg(resp,"fair_virtue_ca")
+        mft$fair_vice_ca   <- respAgg(resp,"fair_vice_ca")
+        mft$ingr_virtue_ca <- respAgg(resp,"ingr_virtue_ca")
+        mft$ingr_vice_ca   <- respAgg(resp,"ingr_vice_ca")
+        mft$auth_virtue_ca <- respAgg(resp,"auth_virtue_ca")
+        mft$auth_vice_ca   <- respAgg(resp,"auth_vice_ca")
+        mft$puri_virtue_ca <- respAgg(resp,"puri_virtue_ca")
+        mft$puri_vice_ca   <- respAgg(resp,"puri_vice_ca")
+        mft$mft_virtue_ca  <- as.numeric(apply(mft[,grep("virtue_ca"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_ca    <- as.numeric(apply(mft[,grep("vice_ca"
+                                                        ,colnames(mft))],1,sum) > 0)
+    }
+
+    ## include number of words in items
+    mft$num_total <- resp$num_total
+    mft$num_ca <- apply(resp[, grep("num_ca", colnames(resp))], 1, sum,na.rm = TRUE)
+    mft$num_pa <- apply(resp[, grep("num_pa", colnames(resp))], 1, sum,na.rm = TRUE)
+
+    ## output
+    if(check == TRUE){
+        anes <- merge(dat,mft)
+        anes_check <- merge(dat,spell)
+        anes_check <- merge(anes_check,resp)
+        anes_check <- merge(anes_check, mft)
+        out <- list(data = anes, check = anes_check, call = match.call())
+    } else {
+        anes <- merge(dat,mft)
+        out <- list(data = anes, call = match.call())
+    }
+}
