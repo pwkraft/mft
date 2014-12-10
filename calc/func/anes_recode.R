@@ -252,7 +252,8 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$ideol_con <- as.numeric(dat$ideol=="Conservative")
 
         ## strength of ideology
-        dat$ideol_str <- abs(recode(raw[,ideol[1]], "c(-2,-8)=0; -9=NA") - 4)
+        dat$ideol_str <- abs(recode(raw[,ideol[1]], "lo:0=NA") - 4)
+        if(length(ideol)>1) dat$ideol_str[ideol[2]>0] <- 0
         dat$ideol_str_c <- dat$ideol_str - mean(dat$ideol_str, na.rm = T)
     }
 
@@ -311,8 +312,9 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$pid_rep <- as.numeric(dat$pid=="Republican")
 
         ## strength of partisanship
-        dat$pid_str <- abs(recode(raw[,pid], "-2 = NA") - 4)
+        dat$pid_str <- abs(tmp - 4)
         dat$pid_str_c <- dat$pid_str - mean(dat$pid_str, na.rm = T)
+        rm(tmp)
     }
 
     if(!is.null(polmedia)){
