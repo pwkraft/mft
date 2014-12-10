@@ -335,7 +335,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         if(class(polknow)!="list") stop("'polknow' argument must be a list")
         dat$polknow <- 0
         for(i in 1:length(polknow)){
-            tmp <- recode(raw[,names(polknow)[i]], "c(-1,-2)=NA") # DK/mis treated as 0
+            tmp <- recode(raw[,names(polknow)[i]], "c(-2)=NA") # DK/mis treated as 0
             dat$polknow <- dat$polknow + as.numeric(tmp == polknow[[i]])
             rm(tmp)
         }
@@ -392,7 +392,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(!is.null(educ)){
         ## education: college degree (bachelor)
         if(class(educ)!="list") stop("'educ' argument must be a list")
-        dat$educ <- raw[,names(educ)[1]]>=educ
+        dat$educ <- as.numeric(raw[,names(educ)[1]]>=educ)
         dat$educ[raw[,names(educ)[1]]<0] <- NA
     }
 
