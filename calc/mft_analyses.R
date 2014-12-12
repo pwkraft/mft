@@ -2,75 +2,62 @@
 # Project:  Moral foundations of Political Reasoning
 # File:     mft_analyses.R
 # Overview: this file contains the main analyses and generates all plots and tables
-#           for the paper. Uses the dataset generated in mft_prep
+#           for the paper. Uses the datasets generated in mft_prep
 # Author:   Patrick Kraft
 # Date:     12/08/2014
 ##########################################################################################
 
 
-### Load packages and functions
-
-# install / load packages from CRAN
+rm(list=ls())
 setwd("/data/Uni/projects/2014/mft/calc")
+
+# load packages
 pkg <- c("reshape2","ggplot2","stargazer","Zelig")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(list=ls())
 
+# load additional functions
+source("func/anes_plot.R")
+
+# load recoded dataset
+load("out/anes.RData")
+#load("out/anes_full.RData")
+
 
 #####################################
 # Data Overview: Dependent Variable #
 #####################################
 
-### function to plot proportions
-
-prop_plot <- function(data, title, fmtvarnames, groupvarname){
-  ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/sum(!is.na(x)))}
-  prop_df <-  cbind(melt(aggregate(data[,fmtvarnames]
-                                   ,by=list(groupvar = data[,groupvarname]),FUN="mean",na.rm=T))
-                    , melt(aggregate(data[,fmtvarnames],by=list(groupvar = data[,groupvarname])
-                                     ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
-                    , melt(aggregate(data[,fmtvarnames],by=list(groupvar = data[,groupvarname])
-                                     ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
-                    )
-  colnames(prop_df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi")
-  levels(prop_df$mft)[grep("puri",levels(prop_df$mft))] <- "Purity / Sanctity"
-  levels(prop_df$mft)[grep("auth",levels(prop_df$mft))] <- "Authority / Respect"
-  levels(prop_df$mft)[grep("ingr",levels(prop_df$mft))] <- "Ingroup / Loyalty"
-  levels(prop_df$mft)[grep("fair",levels(prop_df$mft))] <- "Fairness / Reciprocity"
-  levels(prop_df$mft)[grep("harm",levels(prop_df$mft))] <- "Harm / Care"
-  ggplot(prop_df, aes(x = Proportion, y = mft)) +
-    geom_point(size=3) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) +
-    facet_grid(groupvar ~ .) + labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-    scale_x_continuous(limits = c(0, 0.521)) + theme_bw()
-}
-
 # plot overview
-pdf("p1_mft_ideol.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all"), groupvarname="ideol")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/p1_mft_ideol.pdf")
 
-pdf("p2_mft_ideol_pa.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa"), groupvarname="ideol")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/p2_mft_ideol_ca.pdf")
 
-pdf("p3_mft_ideol_ca.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca"), groupvarname="ideol")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/p3_mft_ideol_pa.pdf")
 
-pdf("a1_mft_pid.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all"), groupvarname="pid")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/a1_mft_pid.pdf")
 
-pdf("a2_mft_pid_pa.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa"), groupvarname="pid")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/a2_mft_pid_ca.pdf")
 
-pdf("a3_mft_pid_ca.pdf")
-prop_plot(data=anes, fmtvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca"), groupvarname="pid")
-dev.off()
+prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa")
+          , groupvarname="ideol", legendname = "Ideology"
+          , file = "fig/a3_mft_pid_pa.pdf")
 
+### table for missing cases
+# how many did not say anything?
+# how many spanish speaking?
 
 
 ############

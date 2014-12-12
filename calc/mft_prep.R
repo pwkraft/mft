@@ -51,8 +51,9 @@ anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
 
 anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", raw_out = TRUE
                       , id          = "V080001"
+                      , year        = 2008
                       , weight      = "V080101"
-                      , ideol       = c("V083069","V083069a")
+                      , ideol       = c("V083069") #,"V083069a")
                       , issues      = list(govspend = c("V083105","V083108x","reversed")
                                            , medins = c("V083119","V083124x"))
                         # jobs issue was only included for half of sample -> left out
@@ -89,8 +90,9 @@ anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timese
 
 anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", raw_out = TRUE
                       , id          = "caseid"
+                      , year        = 2012
                       , weight      = "weight_full"
-                      , ideol       = c("libcpre_self","libcpre_choose")
+                      , ideol       = c("libcpre_self") #,"libcpre_choose")
                       , issues      = list(govspend = "spsrvpr_ssself"
                                            , medins = "inspre_self"
                                            , jobs = "guarpr_self")

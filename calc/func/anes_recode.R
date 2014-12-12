@@ -191,6 +191,7 @@ opend_mft <- function(data, use_dict = "new") {
 
 ts_recode <- function(dta_src, raw_out = FALSE
                       , id          = NULL
+                      , year        = NULL
                       , weight      = NULL
                       , ideol       = NULL
                       , issues      = NULL
@@ -232,6 +233,11 @@ ts_recode <- function(dta_src, raw_out = FALSE
     raw <- read.dta(dta_src, convert.factors = FALSE)
     if(is.null(id)) stop("ID variable must be specified!")
     dat <- data.frame(id=raw[,id])
+    
+    if(!is.null(year)) {
+      ## survey year  
+      dat$year = year
+    }
 
     if(!is.null(weight)){
         ## survey weights
@@ -363,7 +369,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         if(class(regrdisc)!="list") stop("'regrdisc' argument must be a list")
         tmp <- recode(raw[,regrdisc$byear], "lo:0=NA")
         dat$regrdisc <- regrdisc$year - 4 - tmp
-        dat$regrdisc <- recode(dat$regrdisc, "18=1; 17=0; else=NA")
+        # dat$regrdisc <- recode(dat$regrdisc, "18=1; 17=0; else=NA")
         rm(tmp)
         if(!is.null(regrdisc$bmonth)){
             dat$regrdisc[!is.na(dat$regrdisc) & dat$regrdisc==0] <- (-1) * recode(
