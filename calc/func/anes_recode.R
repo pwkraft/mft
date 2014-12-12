@@ -13,7 +13,7 @@
 ### Load packages and functions
 
 # install / load required packages
-pkg <- c("plyr","stringr","tmt","foreign", "car") # tm, dplyr
+pkg <- c("plyr","stringr","tmt","foreign", "car","mondate") # tm, dplyr
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -203,10 +203,10 @@ ts_recode <- function(dta_src, raw_out = FALSE
                       , polmedia    = NULL
                       , polknow     = NULL
                       , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
-                      , regrdisc    = list(year = NULL, byear = NULL, bmonth = NULL)
                       , pastvote    = NULL
                       , vote_dem    = NULL
                       , age         = NULL
+                      , regdi_month = list(byear = NULL, bmonth = NULL)
                       , female      = NULL
                       , black       = NULL
                       , educ        = NULL
@@ -364,21 +364,6 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$poldisc_c <- dat$poldisc - mean(dat$poldisc, na.rm = T)
     }
 
-    if(!is.null(regrdisc$year) * !is.null(regrdisc$byear)){
-        ## regression discontinuity based on eligibility in last election
-        if(class(regrdisc)!="list") stop("'regrdisc' argument must be a list")
-        tmp <- recode(raw[,regrdisc$byear], "lo:0=NA")
-        dat$regrdisc <- regrdisc$year - 4 - tmp
-        # dat$regrdisc <- recode(dat$regrdisc, "18=1; 17=0; else=NA")
-        rm(tmp)
-        if(!is.null(regrdisc$bmonth)){
-            dat$regrdisc[!is.na(dat$regrdisc) & dat$regrdisc==0] <- (-1) * recode(
-               raw[,regrdisc$bmonth], "lo:0=NA")[!is.na(dat$regrdisc) & dat$regrdisc==0] - 2
-            dat$regrdisc[!is.na(dat$regrdisc) & dat$regrdisc==1] <- (-1) * (recode(
-               raw[,regrdisc$bmonth], "lo:0=NA")[!is.na(dat$regrdisc) & dat$regrdisc==1] - 11)
-        }
-    }
-
     if(!is.null(pastvote)){
         ## voted in previous election
         dat$pastvote <- recode(raw[,pastvote], "lo:0=NA; c(2,5)=0")
@@ -392,6 +377,18 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(!is.null(age)){
         ## age
         dat$age <- recode(raw[,age], "c(-2,-9,-8) = NA")
+        
+        ## regression discontinuity based on eligibility in last election (based on age)
+        dat$regdi_year <- dat$age - 4 - 18
+    }
+    
+    if(!is.null(regdi_month$byear)&!is.null(regdi_month$bmonth)){
+      ## regression discontinuity based on year and month of birth
+      if(class(regdi_month)!="list") stop("'regdi_month' argument must be a list")
+      dat$byear <- recode(raw[,regdi_month$byear], "lo:0=NA")
+      dat$bmonth <- recode(raw[,regdi_month$bmonth], "lo:0=NA")
+      dat$regdi_month <- as.numeric(round(mondate(paste0((year-4), "-11-01"))
+                                          - mondate(paste((dat$byear+18),dat$bmonth,"01",sep="-"))))
     }
 
     if(!is.null(female)){
@@ -427,7 +424,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
             dat$spanish[raw[,names(spanish)[i]]==spanish[[i]]] <- 1
         }
     }
-
+        
     if(raw_out==TRUE){
         out <- list(data = dat, raw = raw, call = match.call())
     } else {

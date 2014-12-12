@@ -72,12 +72,11 @@ anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timese
                       , poldisc     = list(oft = "V085108a"
                                            , ever = "V085108"  
                                            , alternative = "V085109")  # postelection!!!
-                      , regrdisc    = list(year = 2008
-                                           , byear="V083215a"
-                                           , bmonth="V083215b")
                       , pastvote    = "V083007"
                       , vote_dem    = "V083169a"
                       , age         = "V081104"
+                      , regdi_month = list(byear="V083215a"
+                                           , bmonth="V083215b")
                       , female      = "V081101"
                       , black       = "V081102"
                       , educ        = list(V083218x = 4)
@@ -112,9 +111,6 @@ anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timese
                                            , preknow_leastsp = 1)
                       , poldisc     = list(oft = "discuss_discpstwk"
                                            , ever = "discuss_disc")   # postelection!!!
-                      , regrdisc    = list(year = 2012
-                                           , byear="dem_birthyr"
-                                           , bmonth=NULL)
                       , pastvote    = "interest_voted2008"
                       , vote_dem    = "prevote_intpreswho"
                       , age         = "dem_age_r_x"
