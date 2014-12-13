@@ -246,21 +246,17 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(ideol)){
         ## ideology
-        dat$ideol <- factor(recode(raw[,ideol[1]]
-                            , "1:3=1; 4=3; 5:7=2; else=NA")
-                     , labels = c("Liberal","Conservative","Moderate"))
-        if(length(ideol)>1){
-            tmp <- factor(recode(raw[,ideol[2]], "lo:0=NA")
-                        , labels = c("Liberal","Conservative","Moderate"))
-            dat$ideol[is.na(dat$ideol)] <- tmp[is.na(dat$ideol)]
-            rm(tmp)
-        }
+        dat$ideol <- factor(recode(raw[,ideol]
+                            , "1:3=1; 4=2; 5:7=3; else=NA")
+                     , labels = c("Liberal","Moderate","Conservative"))
         dat$ideol_lib <- as.numeric(dat$ideol=="Liberal")
         dat$ideol_con <- as.numeric(dat$ideol=="Conservative")
+        
+        ## ideology as a continuoum
+        dat$ideol_ct <- recode(raw[,ideol], "lo:0=NA")
 
         ## strength of ideology
-        dat$ideol_str <- abs(recode(raw[,ideol[1]], "lo:0=NA") - 4)
-        if(length(ideol)>1) dat$ideol_str[ideol[2]>0] <- 0
+        dat$ideol_str <- abs(recode(raw[,ideol], "lo:0=NA") - 4)
         dat$ideol_str_c <- dat$ideol_str - mean(dat$ideol_str, na.rm = T)
     }
 
@@ -313,10 +309,13 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## party identification
         tmp <- raw[,pid] + ifelse(max(raw[,pid])==6, 1, 0)
         dat$pid <- factor(recode(raw[,pid]
-                          , "1:3=1; 4=3; 5:7=2; else=NA")
-                   , labels = c("Democrat","Republican","Independent"))
+                          , "1:2=1; c(3,4,5)=2; 6:7=3; else=NA")
+                   , labels = c("Democrat","Independent","Republican"))
         dat$pid_dem <- as.numeric(dat$pid=="Democrat")
         dat$pid_rep <- as.numeric(dat$pid=="Republican")
+        
+        ## pid continuous
+        dat$pid_cont <- recode(raw[,pid], "lo:0=NA")
 
         ## strength of partisanship
         dat$pid_str <- abs(tmp - 4)
@@ -379,7 +378,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$age <- recode(raw[,age], "c(-2,-9,-8) = NA")
         
         ## regression discontinuity based on eligibility in last election (based on age)
-        dat$regdi_year <- dat$age - 4 - 18
+        dat$regdi_year <- dat$age - 4
     }
     
     if(!is.null(regdi_month$byear)&!is.null(regdi_month$bmonth)){
