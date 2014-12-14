@@ -27,7 +27,7 @@ Moral Foundations, Ideology, Political Reasoning
 - change spell check mode at the end for final analysis
 - check literature (Peter): Weeden & Kurzban. "Hidden Agenda of the Political Mind"
 - question: include weights in the analyses?
-- strategy: 1) show that there are differences b/w liberals and conservatives. 2) show general learning effects. 3) open question: do the learning effects increase differences between liberals and conservatives?
+- strategy: 1) show that there are differences b/w liberals and conservatives. 2) show general learning effects. potential argument: we are controlling for total number of words, but this might still be problematic because of endogeneity etc, so we need regression discontinuity 3) open question: do the learning effects increase differences between liberals and conservatives?
 
 ## General Ideas for Future Studies
 - effects of campaign exposure

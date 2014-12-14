@@ -46,8 +46,8 @@ prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file =
             ggtitle(title) + theme_bw() +
             guides(color=guide_legend(title=legendname), shape=guide_legend(title=legendname)) +
             scale_x_continuous(limits = c(0, 0.521)) + theme(legend.position="bottom") +
-            scale_y_continuous(breaks=1:5, labels=c("Purity / Sanctity", "Authority / Respect", "Ingroup / Loyalty"
-                                                    , "Fairness / Reciprocity", "Harm / Care"))
+            scale_y_continuous(breaks=1:5, labels=c("Purity / \nSanctity", "Authority / \nRespect", "Ingroup / \nLoyalty"
+                                                    , "Fairness / \nReciprocity", "Harm / \nCare"))
   
   ## save plot
   if(!is.null(file)){
