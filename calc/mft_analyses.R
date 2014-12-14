@@ -79,7 +79,8 @@ colnames(tab_mis) <- c("No","Yes","Percent (Yes)")
 rownames(tab_mis) <- c("Spanish Interview (2008)", "(2012)", "No Responses (Overall, 2008)", "No Responses (Overall, 2012)"
                        , "No Responses (Candidate Evaluations, 2008)", "No Responses (Candidate Evaluations, 2012)"
                        , "No Responses (Party Evaluations, 2008)", "No Responses (Party Evaluations, 2012)")
-print(xtable(tab_mis, align="lccc",digits=c(0,0,0,2), caption = "Overview: Missing Open-Ended Responses"),file="tab/a1_tab_mis.tex")
+print(xtable(tab_mis, align="lccc",digits=c(0,0,0,2), caption = "Overview: Missing Open-Ended Responses"
+             ,label="tab:a1_mis"),file="tab/a1_mis.tex")
 
 
 ### plot number of words
@@ -156,7 +157,7 @@ ggplot(m1_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color 
   labs(y = "Dependent Variable: Moral Foundation"
        , x= "Conservatives more likey                                                       Liberals more likely") + 
   geom_vline(xintercept=0) + theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-  ggtitle("Change in Predicted Probabilities to Mention each Moral Foundation") +
+  ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
   theme(legend.position="bottom") + 
   scale_y_continuous(breaks=1:4, labels=c("Authority / \nRespect", "Ingroup / \nLoyalty"
@@ -286,11 +287,11 @@ ggplot(m3_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shap
   geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable", x= "Change in Probability") + geom_vline(xintercept=0) + 
   theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-  ggtitle("Change in Predicted Probabilities to Mention each Moral Foundation") +
-  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Model Includes All Foundations")) +
+  ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for Both Remaining Variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
   scale_y_continuous(breaks=3:1, labels=c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions"))
-ggsave(filename = "fig/m3_vote.pdf")
+ggsave(filename = "fig/m3_learn.pdf")
 
 
 ### regression discontinuity design investigating the effect of previous voting
@@ -298,85 +299,122 @@ ggsave(filename = "fig/m3_vote.pdf")
 # plot discontinuity for aggregate data
 anes2008regdi <- aggregate(anes2008$mft_all,by=list(anes2008$regdi_year),FUN=mean,na.rm=T)
 anes2008regdi$cond <- anes2008regdi$Group.1 >= 18
-ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
-  theme_bw() + geom_smooth(method=lm)
-ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
+rd1a <- ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Loess Fit (2008 Survey)") +
   geom_smooth() + theme_bw()
-ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
+rd1b <- ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Linear Fit (2008 Survey)") +
+  theme_bw() + geom_smooth(method=lm)
+rd1c <- ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Quadratic Fit (2008 Survey)") +
   geom_smooth(method=lm, formula = y~poly(x,2)) + theme_bw()
 
 anes2012regdi <- aggregate(anes2012$mft_all,by=list(anes2012$regdi_year),FUN=mean,na.rm=T)
 anes2012regdi$cond <- anes2012regdi$Group.1 >= 18
-ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
+rd1d <- ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Loess Fit (2012 Survey)") +
   geom_smooth() + theme_bw()
-ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
+rd1e <- ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Linear Fit (2012 Survey)") +
   theme_bw() + geom_smooth(method=lm)
-ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
-  scale_color_manual(values=c("royalblue", "firebrick")) +
+rd1f <- ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
+  scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Quadratic Fit (2012 Survey)") +
   theme_bw() + geom_smooth(method=lm, formula = y~poly(x,2))
+pdf("fig/rd1_overview.pdf")
+multiplot(rd1a, rd1b, rd1d, rd1e, cols=2)
+dev.off()
+# question: calculate simple mean differences for regression discontinuity?
+# I should write a function for that
 
-
-### sharp discontinuity (ITT effect of prior eligibility)
+# sharp discontinuity (ITT effect of prior eligibility)
 m4y_2008 <- RDestimate(mft_all ~ regdi_year, data = anes2008, cutpoint = 17.5)
 summary(m4y_2008)
 plot(m4y_2008)
-
 m4y_2012 <- RDestimate(mft_all ~ regdi_year, data = anes2012, cutpoint = 17.5)
 summary(m4y_2012)
 plot(m4y_2012)
+m4m_2008a <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 0.5)
+summary(m4m_2008a)
+plot(m4m_2008a)
+m4m_2008b <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 0.5, bw=20)
+summary(m4m_2008b)
+plot(m4m_2008b)
+rd_tab <- function(model,title,file,lab){
+  tab <- cbind(model$bw,model$obs,model$est,model$se,model$p,m4y_2008$ci)
+  colnames(tab) <- c("Bandwidth","Observations","Estimate","Std. Error","Pr(>|z|)","CI (low)","CI (high)")
+  print(xtable(tab, align="lrrrrrrr",digits=c(0,4,0,4,4,4,4,4), caption = title, label = lab),file=file)
+}
+rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)"
+       , file="tab/rd2008y.tex", lab="tab:rd2008y")
+rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012)"
+       , file="tab/rd2012y.tex", lab="tab:rd2012y")
+rd_tab(m4m_2008a, title="Regression Discontinuity Estimates Based on Month of Birth (2008)"
+       , file="tab/rd2008m1.tex", lab="tab:rd2008m1")
+rd_tab(m4m_2008b, title="Regression Discontinuity Estimates Based on Month of Birth (2008)"
+       , file="tab/rd2008m2.tex", lab="tab:rd2008m2")
 
-m4m_2008 <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 0.5)
-summary(m4m_2008)
-plot(m4m_2008)
-
-m4m20_2008 <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 0.5, bw=20)
-summary(m4m20_2008)
-plot(m4m20_2008)
-
-
-### density of rating variable
-
-ggplot(anes2008, aes(x=regdi_year)) + geom_density() +
+# density of rating variable
+rd2a <- ggplot(anes2008, aes(x=regdi_year)) + geom_density() +
+  scale_y_continuous(name="Density") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  ggtitle("2008 Survey, Discontinuity Based on Age") +
   geom_vline(aes(xintercept=17.5)) + theme_bw()
-ggplot(anes2008, aes(x=regdi_month)) + geom_density() +
+rd2b <- ggplot(anes2012, aes(x=regdi_year)) + geom_density() +
+  scale_y_continuous(name="Density") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  ggtitle("2012 Survey, Discontinuity Based on Age") +
+  geom_vline(aes(xintercept=17.5)) + theme_bw()
+rd2c <- ggplot(anes2008, aes(x=regdi_month)) + geom_density() +
+  scale_y_continuous(name="Density") +
+  scale_x_continuous(name="Number of Months Respondent has been\n18 Years Old Before the Previous Election") +
+  ggtitle("2008 Survey, Discontinuity Based Month of Birth") +
   geom_vline(aes(xintercept=-0.5)) + theme_bw()
-ggplot(anes2012, aes(x=regdi_year)) + geom_density() +
-  geom_vline(aes(xintercept=17.5)) + theme_bw()
+pdf("fig/rd2_density.pdf")
+multiplot(rd2a, rd2b, rd2c, cols=1)
+dev.off()
 
-
-### placebo test
-
+# placebo test
 m4y_2008 <- RDestimate(mft_all ~ regdi_year, data = anes2008, cutpoint = 21.5)
-summary(m4y_2008)
-
 m4y_2012 <- RDestimate(mft_all ~ regdi_year, data = anes2012, cutpoint = 21.5)
-summary(m4y_2012)
-
 m4m_2008 <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 47.5, bw=20)
-summary(m4m_2008)
+rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)//Placebo Test using different Cutoff"
+       , file="tab/rd2008y_plac.tex", lab="tab:rd2008y_plac")
+rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012)//Placebo Test using different Cutoff"
+       , file="tab/rd2012y_plac.tex", lab="tab:rd2012_plac")
+rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008)//Placebo Test using different Cutoff"
+       , file="tab/rd2008m_plac.tex", lab="tab:rd2008m_plac")
 
-
-### non-outcome
-
+# non-outcome
 m4y_2008 <- RDestimate(issue_gay ~ regdi_year, data = anes2008, cutpoint = 17.5)
-summary(m4y_2008)
-plot(m4y_2008)
-
 m4y_2012 <- RDestimate(issue_gay ~ regdi_year, data = anes2012, cutpoint = 17.5)
-summary(m4y_2012)
-plot(m4y_2012)
-
 m4m_2008 <- RDestimate(issue_gay ~ regdi_month, data = anes2008, cutpoint = -0.5, bw=20)
-summary(m4m_2008)
-plot(m4m_2008)
+rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)//Validity Test using Non-Outcome"
+       , file="tab/rd2008y_non.tex", lab="tab:rd2008y_non")
+rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012)//Validity Test using Non-Outcome"
+       , file="tab/rd2012y_non.tex", lab="tab:rd2012y_non")
+rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008)//Validity Test using Non-Outcome"
+       , file="tab/rd2008m_non.tex", lab="tab:rd2008m_non")
 
 
-## optional: fuzzy discontinuity  (ATT effect of prior vote)
+### optional: fuzzy discontinuity  (ATT effect of prior vote)
 
 m4m_2008p <- rdrobust(anes2008$mft_all, anes2008$regdi_month, c=-0.5, p=2, q=3)
 summary(m4m_2008p)
