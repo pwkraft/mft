@@ -1,4 +1,4 @@
-\documentclass[12pt]{paper}
+\documentclass[12pt]{article}
 \usepackage[top=1in, bottom= 1in, left= 1in, right= 1in]{geometry}
 \usepackage[USenglish]{babel} % set the language; greek allows \textgreek{\euro}
 \usepackage{multirow} % For tables
@@ -14,36 +14,32 @@
 \usepackage{dcolumn} % align at decimal mark
 \usepackage{floatrow} % description paragraphs below figures and tables
 \usepackage{enumerate} % alter enumerate items (i,ii,iii etc)
+\usepackage[title]{appendix} % enumerated appendices etc.
 \usepackage{xcolor}
 \usepackage{todonotes}
-\usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=black]{hyperref}
+\usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
 \setlength{\headheight}{15pt}
 % http://en.wikibooks.org/wiki/LaTeX/Page_Layout for additional info
 
-\author{Patrick W. Kraft}
-\institution{Stony Brook University \\ {\footnotesize \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}}}
+\author{Patrick W. Kraft\footnote{PhD Student, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}}}
+\date{today}
 
-\title{{\small Working Paper}\\
-Moral Foundations of Political Reasoning\\
-\subtitle{Investigating the Moral Underpinnings of Political Judgment}}
+\title{Moral Foundations of Political Reasoning\footnote{Draft in preparation for the 2015 Annual Conference of the Midwest Political Science Association, comments welcome!}\\
+\large{Investigating the Moral Underpinnings of Political Judgment}}
 \date{\today}
 
 
 \begin{document}
 \maketitle
 
-\hrule
 \begin{abstract}%\onehalfspacing
 According to Moral Foundations Theory, moral thinking is fundamentally structured by five central innate intuitions \citep{haidt2008moral}. Furthermore, as \citet{graham2009liberals} showed in a subsequent set of studies, liberals and conservatives rely on different sets of moral foundations \citep[see also][]{haidt2007morality}. The goal of the paper presented here is to extend the analyses conducted by \citet{graham2009liberals} and investigate whether individuals actually rely on moral foundations when evaluating political candidates and parties. Based on open-ended survey responses in the 2012 American National Election Study, it will be examined to what extent the apparent differences in moral judgments between liberals and conservatives actually shape and structure individual reasoning and evaluations in the political context. More specifically, I utilize the moral word lists used by \citet{graham2009liberals} in the context of sermons to identify references to basic moral intuitions when individuals report on their attitudes towards political parties and candidates. Consistent with \citet{graham2009liberals}, it is hypothesized that liberals and conservatives differ with regard to the set of moral foundations they rely on when evaluating political actors. Furthermore, it will be investigated whether these relationships connecting ideology and moral reasoning are moderated by political interest or expertise. The results indicate that moral values can indeed be seen as determinants of ideological thinking, rather than only being a rhetorical device that citizens learn to bolster their political views.
-\end{abstract}
-\hrule
 
-\begin{keywords}
-Moral Foundations Theory, Political Ideology, Political Reasoning, Open-ended Survey Responses
-\end{keywords}
+\noindent \textbf{keywords} Moral Foundations Theory, Political Ideology, Political Reasoning, Open-ended Survey Responses
+\end{abstract}
 
 \newpage
-\doublespacing
+\singlespacing
 
 \section{Introduction}
 
@@ -129,19 +125,19 @@ The second independent variable under consideration is \textit{political interes
 Before discussing the actual model estimates, figure~\ref{fig:mft_ideol} provides an overview over the response patterns for individuals who identified as liberals, conservatives, and moderates. For each group, the figure displays the proportion of respondents who mentioned words that were included in the five different moral foundations dictionaries as well as their 95\% confidence intervals.
 
 \begin{figure}\centering
-\includegraphics[scale=.55]{../calc/fig/p1_mft_ideol.pdf}
+\includegraphics[scale=.4]{../calc/fig/p1_mft_ideol.pdf}
 \caption{Moral Foundations and Ideology (all Statements)}\label{fig:mft_ideol}
 \end{figure}
 
 The patterns are largely consistent with our theoretical expectations. Liberals were most likely to mention the harm/care foundation. About half of the respondents who identified as liberals mentioned words belonging to this category in their responses. Furthermore, they were more likely than conservatives to mention the fairness/reciprocity foundation. However, it should be noted that fairness/reciprocity was emphasized significantly less than the authority/respect foundation among liberals. Even more surprising is the fact that the proportion of liberal respondents referencing authority/respect is actually larger than the proportion of conservatives. These results, which are inconsistent with previous evidence on moral foundations, as well as the fact that the purity/sanctity foundation was almost never mentioned by any of the respondents suggests that subsequent analyses of survey responses might necessitate a revision of the moral foundation dictionary which was originally developed in the context of sermons. Accordingly, some of the words (e.g. in the case of purity/sanctity) are just too uncommon in the political context. Due to the very rare mentioning of the purity/sanctity dimension, the subsequent analyses will only concentrate on the remaining four moral foundations.
 
 \begin{figure}\centering
-\includegraphics[scale=.55]{../calc/fig/p2_mft_ideol_pa.pdf}
+\includegraphics[scale=.4]{../calc/fig/p2_mft_ideol_ca.pdf}
 \caption{Moral Foundations and Ideology (Party Evaluations)}\label{fig:mft_ideol_pa}
 \end{figure}
 
 \begin{figure}\centering
-\includegraphics[scale=.55]{../calc/fig/p3_mft_ideol_ca.pdf}
+\includegraphics[scale=.4]{../calc/fig/p3_mft_ideol_pa.pdf}
 \caption{Moral Foundations and Ideology (Candidate Evaluations)}\label{fig:mft_ideol_ca}
 \end{figure}
 
@@ -151,24 +147,41 @@ The patterns are similar to the pooled analyses. Conservatives tend to emphasize
 
 Table~\ref{tab:m2_specific} displays the estimates of the logistic regressions predicting the reference to either moral foundation (excluding purity/sanctity). Again, equivalent to the discussion of figure~\ref{fig:mft_ideol}, the responses for each individual was collapsed such that the dependent variables indicate whether any of the responses contained a reference to the moral foundations as identified by the dictionary. Each model includes dummy variables indicating whether the respondents identified as conservative or moderate. Accordingly, the coefficient for conservatives can be directly interpreted as the comparison to the reference category, namely respondents who identified as liberals.
 
-\begin{landscape}\centering
-\section*{}\vspace{1.5cm}
-\input{../calc/tab/m2_specific}
-\end{landscape}
 
 The first column for each moral foundation only looks at the effects of ideology and political interest without taking into account the potential interaction between both variables. Looking at the coefficients for conservatives, we find that the effects are consistent with our first hypothesis for three out of five moral foundations. Conservatives are significantly less likely to mention harm/care and fairness/reciprocity when evaluating political parties and candidates than liberals. Conversely, being conservative increases the likelihood of mentioning words that belong to the category of ingroup/loyalty. However, as already indicated in the previous discussion of the descriptive patterns, liberals appear to be significantly more likely to reference the moral foundation of authority/respect when evaluating political actors. This result is inconsistent with previous evidence for the prevalence of of authority/respect among conservatives. It is worth noting, however, that once partisanship is included in the analyses, the conservatives have a significantly positive effect for this moral foundation as well (see Appendix C).
 
 In order to assess whether these effects are also substantively important, I calculated the differences in predicted probabilities to refer to either of the moral foundations between liberals and conservatives based on the models discussed in table~\ref{tab:m2_specific} (not including the interaction effects). The results are displayed in figure~\ref{fig:models}, along with 95\% confidence intervals. All other variables were held constant at their mean (for continuous variables) or their median (for dichotomous variables). Positive values indicate a higher probability to mention the respective moral foundation in a response among respondents who identified as liberals while negative values indicate a higher probability among conservatives. Accordingly, the probability to mention a word connected to the harm/care foundation is about 7.5 percentage points higher among liberals than conservatives. The effect is slightly stronger for the fairness/reciprocity dimension. Substantively, the ideological difference in the ingroup/loyalty foundation appears to be smallest. The probability to refer to the moral foundation decreases by less than 5 percentage points among liberals as compared to conservatives.
 
 \begin{figure}\centering
-\includegraphics[scale=.55]{../calc/fig/p4_models.pdf}
-\caption{Differences in Predicted Probabilities between Liberals and Conservatives}\label{fig:models}
+\includegraphics[scale=.4]{../calc/fig/m1_mft.pdf}
+\caption{Difference in Predicted Probabilities to Reference each Moral Foundation between Liberals and Conservatives}\label{fig:m1_mft}
 \end{figure}
 
 Political interest itself has a significant positive effect for any of the moral foundations considered in the analyses. Irrespective of the specific dimension, individuals with higher political interest are more likely to refer to moral values when talking about their political preferences. This result indicates that political sophistication and expertise in general increases the extent to which respondents take into account moral considerations in the political context, without necessarily differentiating between the respective dimensions. A similar effect can be observed for education as well. One possible explanation for these homogeneous effects could be the fact that the analyses did not control for individual response lengths. Accordingly, since it could be expected that educated and politically interested individuals provide more detailed answers to each of the questions, the likelihood of mentioning any of the words included in the moral foundations dictionary increases by `pure chance'. Subsequent analyses should include a word count for each individual as an additional covariate in order to account for these differences. Another interesting result is the fact that religiosity (measured by church attendance) does not appear to have a significant effect on the likelihood to mention any of the moral foundations except ingroup/loyalty.
 
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/m2_vote.pdf}
+\caption{Change in Predicted Probabilities to Vote for Democratic Candidate Depending on References to Specific Moral Foundations}\label{fig:m2_vote}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/m3_learn.pdf}
+\caption{Change in Predicted Probabilities to Reference any of the Moral Foundations Depending on Political Knowledge, Media Exposure, and Frequency of Political Discussions}\label{fig:m3_learn}
+\end{figure}
+
 The models presented in the right column for each of the moral foundations in table~\ref{tab:m2_specific} additionally include interaction terms between political interest and ideology. It can be directly observed that the interactions are insignificant for each of the moral foundations included in the analyses. As such, political interest does not moderate the ideological differences in the emphasis on specific moral foundations. Furthermore, comparing the Akaike information criterion between models including and excluding the interaction effects suggests that the inclusion does not increase the fit of any of the models. This result provides no support for the second hypothesis. Accordingly, the empirical evidence appears to be more consistent with the notion that moral foundations provide a universal framework that shapes how individual political reasoning rather than a rhetoric device that is employed among highly sophisticated individuals in order to support their political views.
 
+\begin{figure}\centering
+\includegraphics[scale=.8]{../calc/fig/rd1_overview.pdf}
+\caption{Visualization of Regression Discontinuity. Proportions Based on Aggregation for Each Age Group (by year).}\label{fig:m2_vote}
+\end{figure}
+
+\input{../calc/tab/rd2008y}
+\input{../calc/tab/rd2012y}
+\input{../calc/tab/rd2008m1}
+\input{../calc/tab/rd2008m2}
+
+\section{Limitations}
 
 \section{Conclusion}
 
@@ -183,8 +196,17 @@ An alternative approach to the analysis of open-ended survey responses could be 
 Notwithstanding these reservations and the resulting tentativeness of the empirical results presented thus far, the analyses of open-ended survey responses can provide important and valuable insights in the context of moral foundations and the individual underpinnings of political ideology. As such, there are numerous avenues for future research. For example, it would be interesting to investigate the degree to which contextual factors such as campaign exposure and social networks affect political (and moral) reasoning among individuals. Furthermore, it could be analyzed whether the reference to specific moral foundations differs between survey questions: Do individuals differ in terms of their moral considerations if they describe in-party or out-party candidates? Does the evaluations of parties and candidate elicit different considerations? Furthermore, are there sources of heterogeneity in moral foundations among liberals and conservatives? Utilizing available responses to open-ended survey questions provides a useful and still largely neglected data source to investigate these and other important research questions from novel perspectives.
 
 
-\clearpage\flushleft\singlespace
-\section*{Appendix A: Moral Foundations Dictionary \\\citep[c.f.][]{graham2009liberals}}
+\clearpage\flushleft\footnotesize
+\appendices
+\section{Moral Foundations Dictionary}
+\renewcommand\thefigure{\thesection.\arabic{figure}}
+\renewcommand\thetable{\thesection.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\textit{Sources:}\\
+\citet{graham2009liberals}, as well as \url{http://www.moralfoundations.org/}
+\vspace{.5cm}
 
 \textit{Note:}\\
 Words with (*) indicate that the word stem rather than the exact word was matched in the open-ended survey responses.
@@ -210,30 +232,74 @@ obey*, obedien*, duty, law, lawful*, legal*, duti*, honor*, respect, respectful*
 piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, saint*, wholesome*, celiba*, abstention, virgin, virgins, virginity, virginal, austerity, integrity, modesty, abstinen*, abstemiousness, upright, limpid, unadulterated, maiden, virtuous, refined, intemperate, decen*, immaculate, innocent, pristine, humble, disgust*, deprav*, disease*, unclean*, contagio*, indecen*, sin, sinful*, sinner*, sins, sinned, sinning, slut*, whore, dirt*, impiety, impious, profan*, gross, repuls*, sick*, promiscu*, lewd*, adulter*, debauche*, defile*, tramp, prostitut*, unchaste, wanton, profligate, filth*, trashy, obscen*, lax, taint*, stain*, tarnish*, debase*, desecrat*, wicked*, blemish, exploitat*, pervert, wretched*
 
 
-\section*{Appendix B: Moral Foundations and Partisanship}
+\clearpage
+\section{Additional Tables and Figures - Overview}
+\renewcommand\thefigure{\thesection.\arabic{figure}}
+\renewcommand\thetable{\thesection.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\input{../calc/tab/a1_mis}
 
 \begin{figure}[ht]\centering
-\includegraphics[scale=.55]{../calc/fig/a1_mft_pid.pdf}
-\caption{Moral Foundations and Partisanship (all Statements)}\label{fig:mft_pid}
+\includegraphics[scale=.8]{../calc/fig/a0_num.pdf}
+\caption{Distribution of Numbers of Words in Open-Ended Responses}\label{fig:a0_num}
 \end{figure}
 
 \begin{figure}[ht]\centering
-\includegraphics[scale=.55]{../calc/fig/a2_mft_pid_pa.pdf}
-\caption{Moral Foundations and Partisanship (Party Evaluations)}\label{fig:mft_pid_pa}
+\includegraphics[scale=.4]{../calc/fig/a1_mft_pid.pdf}
+\caption{Moral Foundations and Partisanship (all Statements)}\label{fig:a1_mft_pid}
 \end{figure}
 
 \begin{figure}[ht]\centering
-\includegraphics[scale=.55]{../calc/fig/a3_mft_pid_ca.pdf}
-\caption{Moral Foundations and Partisanship (Candidate Evaluations)}\label{fig:mft_pid_ca}
+\includegraphics[scale=.4]{../calc/fig/a2_mft_pid_ca.pdf}
+\caption{Moral Foundations and Partisanship (Candidate Evaluations)}\label{fig:a2_mft_pid_ca}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics[scale=.4]{../calc/fig/a3_mft_pid_pa.pdf}
+\caption{Moral Foundations and Partisanship (Party Evaluations)}\label{fig:a3_mft_pid_pa}
 \end{figure}
 
 
 \clearpage
-\section*{Appendix C: Logit Models including Partisanship}
+\section{Tables of Logit Model Estimates}
+\renewcommand\thefigure{\thesection.\arabic{figure}}
+\renewcommand\thetable{\thesection.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
 
-\input{../calc/tab/m3_app}
+\input{../calc/tab/m1_mft}
+
+\input{../calc/tab/m2_vote}
+
+\input{../calc/tab/m3_learn}
 
 \clearpage
-\bibliographystyle{apsr}
+\section{Additional Tables and Figures - Regression Discontinuity}
+\renewcommand\thefigure{\thesection.\arabic{figure}}
+\renewcommand\thetable{\thesection.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\begin{figure}[ht]\centering
+\includegraphics[scale=.5]{../calc/fig/rd2_density.pdf}
+\caption{Density of Running Variable (Age / Months)}\label{fig:rd2_density}
+\end{figure}
+
+\clearpage
+\subsection{Placebo Tests}
+\input{../calc/tab/rd2008y_plac}
+\input{../calc/tab/rd2012y_plac}
+\input{../calc/tab/rd2008m_plac}
+
+\clearpage
+\subsection{Non-Outcome Analyses}
+\input{../calc/tab/rd2008y_non}
+\input{../calc/tab/rd2012y_non}
+\input{../calc/tab/rd2008m_non}
+
+\clearpage
+\bibliographystyle{/data/Dropbox/1-src/lit/apsr2006}
 \bibliography{/data/Dropbox/1-src/lit/Literature}
 \end{document}

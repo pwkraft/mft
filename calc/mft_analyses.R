@@ -76,10 +76,10 @@ tab_mis <- rbind(c(table(anes2008$spanish),table(anes2008$spanish)[2]*100/sum(ta
                  , c(table(anes2008$num_pa==0),table(anes2008$num_pa==0)[2]*100/sum(table(anes2008$num_pa==0)))
                  , c(table(anes2012$num_pa==0),table(anes2012$num_pa==0)[2]*100/sum(table(anes2012$num_pa==0))))
 colnames(tab_mis) <- c("No","Yes","Percent (Yes)")
-rownames(tab_mis) <- c("Spanish Interview (2008)", "(2012)", "No Responses (Overall, 2008)", "No Responses (Overall, 2012)"
+rownames(tab_mis) <- c("Spanish Interview (2008)", "Spanish Interview (2012)", "No Responses (Overall, 2008)", "No Responses (Overall, 2012)"
                        , "No Responses (Candidate Evaluations, 2008)", "No Responses (Candidate Evaluations, 2012)"
                        , "No Responses (Party Evaluations, 2008)", "No Responses (Party Evaluations, 2012)")
-print(xtable(tab_mis, align="lccc",digits=c(0,0,0,2), caption = "Overview: Missing Open-Ended Responses"
+print(xtable(tab_mis, align="lccc",digits=c(0,0,0,2), caption = "Overview - Missing Open-Ended Responses"
              ,label="tab:a1_mis"),file="tab/a1_mis.tex")
 
 
@@ -135,7 +135,7 @@ stargazer(m1_2008_harm, m1_2012_harm, m1_2008_fair, m1_2012_fair, m1_2008_ingr, 
           , column.labels = c("2008","2012","2008","2012","2008","2012","2008","2012")
           , model.numbers = FALSE, order=c(2,1,3:8)
           , dep.var.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect")
-          , align=T, column.sep.width="1pt", digits=3, digits.extra=1, font.size="tiny"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
           , label="tab:m1_mft", no.space=T, table.placement="ht"
 )
 
@@ -182,7 +182,7 @@ stargazer(m2_2008_vote1,m2_2008_vote2,m2_2012_vote1,m2_2012_vote2
                                ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
           , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
           , dep.var.labels="Vote for Democratic Presidential Candidate"
-          , align=T, column.sep.width="1pt", digits=3, digits.extra=1, font.size="tiny"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
           , label="tab:m2_vote", no.space=T, table.placement="ht"
 )
 
@@ -235,7 +235,7 @@ stargazer(m3_2008_polknow, m3_2012_polknow, m3_2008_polmedia, m3_2012_polmedia, 
                                ,"Number of Words")
           , column.labels = rep(c("2008","2012"),4), model.numbers = TRUE
           , dep.var.labels="Reference to any Moral Foundation"
-          , align=T, column.sep.width="1pt", digits=3, digits.extra=1, font.size="tiny"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
           , label="tab:m3_learn", no.space=T, table.placement="ht"
 )
 
@@ -359,7 +359,7 @@ summary(m4m_2008b)
 plot(m4m_2008b)
 rd_tab <- function(model,title,file,lab){
   tab <- cbind(model$bw,model$obs,model$est,model$se,model$p,m4y_2008$ci)
-  colnames(tab) <- c("Bandwidth","Observations","Estimate","Std. Error","Pr(>|z|)","CI (low)","CI (high)")
+  colnames(tab) <- c("Bandwidth","Obs.","Est.","SE","Pr(>|z|)","CI (low)","CI (high)")
   print(xtable(tab, align="lrrrrrrr",digits=c(0,4,0,4,4,4,4,4), caption = title, label = lab),file=file)
 }
 rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)"
@@ -395,22 +395,22 @@ dev.off()
 m4y_2008 <- RDestimate(mft_all ~ regdi_year, data = anes2008, cutpoint = 21.5)
 m4y_2012 <- RDestimate(mft_all ~ regdi_year, data = anes2012, cutpoint = 21.5)
 m4m_2008 <- RDestimate(mft_all ~ regdi_month, data = anes2008, cutpoint = 47.5, bw=20)
-rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)//Placebo Test using different Cutoff"
+rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008) - Placebo Test using Different Cutoff (4 years later)"
        , file="tab/rd2008y_plac.tex", lab="tab:rd2008y_plac")
-rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012)//Placebo Test using different Cutoff"
+rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012) - Placebo Test using Different Cutoff (4 years later)"
        , file="tab/rd2012y_plac.tex", lab="tab:rd2012_plac")
-rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008)//Placebo Test using different Cutoff"
+rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008) - Placebo Test using Different Cutoff (48 months later)"
        , file="tab/rd2008m_plac.tex", lab="tab:rd2008m_plac")
 
 # non-outcome
 m4y_2008 <- RDestimate(issue_gay ~ regdi_year, data = anes2008, cutpoint = 17.5)
 m4y_2012 <- RDestimate(issue_gay ~ regdi_year, data = anes2012, cutpoint = 17.5)
 m4m_2008 <- RDestimate(issue_gay ~ regdi_month, data = anes2008, cutpoint = -0.5, bw=20)
-rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008)//Validity Test using Non-Outcome"
+rd_tab(m4y_2008, title="Regression Discontinuity Estimates Based on Age (2008) - Validity Test using Non-Outcome"
        , file="tab/rd2008y_non.tex", lab="tab:rd2008y_non")
-rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012)//Validity Test using Non-Outcome"
+rd_tab(m4y_2012, title="Regression Discontinuity Estimates Based on Age (2012) - Validity Test using Non-Outcome"
        , file="tab/rd2012y_non.tex", lab="tab:rd2012y_non")
-rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008)//Validity Test using Non-Outcome"
+rd_tab(m4m_2008, title="Regression Discontinuity Estimates Based on Month of Birth (2008) - Validity Test using Non-Outcome"
        , file="tab/rd2008m_non.tex", lab="tab:rd2008m_non")
 
 
