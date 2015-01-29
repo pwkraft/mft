@@ -3,7 +3,7 @@ $ cat .gitignore
 *~
 memo
 /info/
-*.Rdata
+*.RData
 *.Rhistory
 *.log
 *.out
