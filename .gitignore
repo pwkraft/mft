@@ -2,6 +2,7 @@ $ cat .gitignore
 
 *~
 memo
+/info/
 *.Rdata
 *.Rhistory
 *.log
