@@ -1,4 +1,4 @@
-## Working Paper:
+### Working Paper:
 # Moral Foundations of Political Reasoning - Investigating the Moral Underpinnings of Political Judgment
 
 ## Overview
