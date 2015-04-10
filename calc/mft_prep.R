@@ -15,7 +15,7 @@ source("func/anes_recode.R")
 
 ### spell checking and preprocessing of open survey responses
 
-anes2008opend <- opend_prep(csv_src = "/data/Dropbox/1-src/data/anes2008/anes2008TSopenends_redacted_Dec2012Revision.csv"
+anes2008opend <- opend_prep(csv_src = "/data/Copy/1-src/data/anes2008/anes2008TSopenends_redacted_Dec2012Revision.csv"
                       , varlist = list(id = "caseid"
                                   , ca_li_dem = "DemPC_like"
                                   , ca_di_dem = "DemPC_dislike"
@@ -27,7 +27,7 @@ anes2008opend <- opend_prep(csv_src = "/data/Dropbox/1-src/data/anes2008/anes200
                                   , pa_di_rep = "RepParty_dislike"
                                   ), raw_out = TRUE)
 
-anes2012opend <- opend_prep(csv_src = "/data/Dropbox/1-src/data/anes2012/anes2012TS_openends.csv"
+anes2012opend <- opend_prep(csv_src = "/data/Copy/1-src/data/anes2012/anes2012TS_openends.csv"
                       , varlist = list(id = "caseid"
                                   , ca_li_dem = "candlik_likewhatdpc"
                                   , ca_di_dem = "candlik_dislwhatdpc"
@@ -49,7 +49,8 @@ anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
 
 ### basic data recoding for each ANES survey
 
-anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timeseries_2008.dta", raw_out = TRUE
+anes2008ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2008/anes_timeseries_2008.dta"
+                      , raw_out = TRUE
                       , id          = "V080001"
                       , year        = 2008
                       , weight      = "V080101"
@@ -87,7 +88,8 @@ anes2008ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2008/anes_timese
                                            , V082011 = 3)
                       )
 
-anes2012ts <- ts_recode(dta_src = "/data/Dropbox/1-src/data/anes2012/anes_timeseries_2012.dta", raw_out = TRUE
+anes2012ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2012/anes_timeseries_2012.dta"
+                      , raw_out = TRUE
                       , id          = "caseid"
                       , year        = 2012
                       , weight      = "weight_full"

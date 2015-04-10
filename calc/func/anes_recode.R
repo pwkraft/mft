@@ -226,6 +226,12 @@ ts_recode <- function(dta_src, raw_out = FALSE
     # - raw: raw .dta dataset
     ###############################################################
 
+    zero_one <- function(x){
+        # This auxiliary function transforms a variable to 0-1 range
+        x <- (x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T))
+        return(x)
+    }
+    
     ### set option for data.frame and read.csv!
     options(stringsAsFactors = FALSE)
 
@@ -254,9 +260,11 @@ ts_recode <- function(dta_src, raw_out = FALSE
         
         ## ideology as a continuoum
         dat$ideol_ct <- recode(raw[,ideol], "lo:0=NA")
+        dat$ideol_ct <- zero_one(dat$ideol_ct)
 
         ## strength of ideology
         dat$ideol_str <- abs(recode(raw[,ideol], "lo:0=NA") - 4)
+        dat$ideol_str <- zero_one(dat$ideol_str)
         dat$ideol_str_c <- dat$ideol_str - mean(dat$ideol_str, na.rm = T)
     }
 
@@ -264,15 +272,15 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## issue positions (7-point scales)
         if(class(issues)!="list") stop("'issues' argument must be a list")
         for(i in 1:length(issues)){
-            dat$issue <- recode(raw[,issues[[i]][1]], "c(-2,-7)=4; c(-9,-8,-1)=NA")
+            dat$issue <- zero_one(recode(raw[,issues[[i]][1]], "c(-2,-7)=4; c(-9,-8,-1)=NA"))
             if(length(issues[[i]])==2){
                 tmp <- recode(raw[,issues[[i]][2]], "c(-1,-8,-9)=NA")
-                dat$issue[is.na(dat$issue)] <- tmp[is.na(dat$issue)]
+                dat$issue[is.na(dat$issue)] <- zero_one(tmp[is.na(dat$issue)])
                 rm(tmp)
             }
             if(length(issues[[i]])==3 & issues[[i]][3]=="reversed"){
                 tmp <- (-1) * recode(raw[,issues[[i]][2]], "c(-1,-8,-9)=NA") + 8
-                dat$issue[is.na(dat$issue)] <- tmp[is.na(dat$issue)]
+                dat$issue[is.na(dat$issue)] <- zero_one(tmp[is.na(dat$issue)])
                 rm(tmp)
             }
             
@@ -285,12 +293,12 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$issue_aid <- recode(raw[,issue_aid], "c(-8,-9) = NA")
         dat$issue_aid <- as.numeric(factor(dat$issue_aid
                                          , labels = (1:length(table(dat$issue_aid)))))
-        dat$issue_aid <- recode(dat$issue_aid, "c(2,4)=-1; 3=0", as.numeric.result = T)
+        dat$issue_aid <- zero_one(recode(dat$issue_aid, "c(2,4)=-1; 3=0", as.numeric.result = T))
     }
 
     if(!is.null(issue_abort)){
         ## abortion
-        dat$issue_abort <- recode(raw[,issue_abort], "c(-9,-8,5)=NA")
+        dat$issue_abort <- zero_one(recode(raw[,issue_abort], "c(-9,-8,5)=NA"))
     }
 
     if(!is.null(issue_gay)){
@@ -302,7 +310,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(issue_women)){
         ## women's role
-        dat$issue_women <- recode(raw[,issue_women[1]], "c(-9,-7,-1)=NA")
+        dat$issue_women <- zero_one(recode(raw[,issue_women[1]], "c(-9,-7,-1)=NA"))
     }
 
     if(!is.null(pid)){
@@ -562,8 +570,18 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
 
     ## include number of words in items
     mft$num_total <- resp$num_total
-    mft$num_ca <- apply(resp[, grep("num_ca", colnames(resp))], 1, sum,na.rm = TRUE)
-    mft$num_pa <- apply(resp[, grep("num_pa", colnames(resp))], 1, sum,na.rm = TRUE)
+    mft$num_ca <- apply(resp[, grep("num_ca", colnames(resp))], 1, sum, na.rm = TRUE)
+    mft$num_pa <- apply(resp[, grep("num_pa", colnames(resp))], 1, sum, na.rm = TRUE)
+
+    ## include percentage of moral considerations in total words
+    mft$num_moral <- as.numeric(apply(resp[, c(grep("harm_", colnames(resp))
+                                               , grep("fair_", colnames(resp))
+                                               , grep("ingr_", colnames(resp))
+                                               , grep("auth_", colnames(resp))
+                                               , grep("puri_", colnames(resp)))]
+                                         , 1, sum,na.rm = TRUE))
+    mft$num_moral[mft$num_total == 0] <- NA
+    mft$num_prop <- mft$num_moral/mft$num_total
 
     ## output
     if(check == TRUE){
