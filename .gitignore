@@ -3,6 +3,7 @@ $ cat .gitignore
 *~
 memo
 /info/
+/text/auto/
 *.RData
 *.Rhistory
 *.log

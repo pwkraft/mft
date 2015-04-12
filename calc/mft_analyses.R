@@ -67,19 +67,19 @@ prop_plot(data=list(anes2008,anes2012), mftvarnames=c("puri_pa", "auth_pa", "ing
 
 ### table for missing cases
 
-tab_mis <- rbind(c(table(anes2008$spanish),table(anes2008$spanish)[2]*100/sum(table(anes2008$spanish)))
-                 , c(table(anes2012$spanish),table(anes2012$spanish)[2]*100/sum(table(anes2012$spanish)))
-                 , c(table(anes2008$num_total==0),table(anes2008$num_total==0)[2]*100/sum(table(anes2008$num_total==0)))
-                 , c(table(anes2012$num_total==0),table(anes2012$num_total==0)[2]*100/sum(table(anes2012$num_total==0)))
-                 , c(table(anes2008$num_ca==0),table(anes2008$num_ca==0)[2]*100/sum(table(anes2008$num_ca==0)))
-                 , c(table(anes2012$num_ca==0),table(anes2012$num_ca==0)[2]*100/sum(table(anes2012$num_ca==0)))
-                 , c(table(anes2008$num_pa==0),table(anes2008$num_pa==0)[2]*100/sum(table(anes2008$num_pa==0)))
-                 , c(table(anes2012$num_pa==0),table(anes2012$num_pa==0)[2]*100/sum(table(anes2012$num_pa==0))))
-colnames(tab_mis) <- c("No","Yes","Percent (Yes)")
+tab_mis <- rbind(c(table(anes2008$spanish)[2],table(anes2008$spanish)[2]*100/sum(table(anes2008$spanish)))
+                 , c(table(anes2012$spanish)[2],table(anes2012$spanish)[2]*100/sum(table(anes2012$spanish)))
+                 , c(table(anes2008$num_total==0)[2],table(anes2008$num_total==0)[2]*100/sum(table(anes2008$num_total==0)))
+                 , c(table(anes2012$num_total==0)[2],table(anes2012$num_total==0)[2]*100/sum(table(anes2012$num_total==0)))
+                 , c(table(anes2008$num_ca==0)[2],table(anes2008$num_ca==0)[2]*100/sum(table(anes2008$num_ca==0)))
+                 , c(table(anes2012$num_ca==0)[2],table(anes2012$num_ca==0)[2]*100/sum(table(anes2012$num_ca==0)))
+                 , c(table(anes2008$num_pa==0)[2],table(anes2008$num_pa==0)[2]*100/sum(table(anes2008$num_pa==0)))
+                 , c(table(anes2012$num_pa==0)[2],table(anes2012$num_pa==0)[2]*100/sum(table(anes2012$num_pa==0))))
+colnames(tab_mis) <- c("N","Percent")
 rownames(tab_mis) <- c("Spanish Interview (2008)", "Spanish Interview (2012)", "No Responses (Overall, 2008)", "No Responses (Overall, 2012)"
                        , "No Responses (Candidate Evaluations, 2008)", "No Responses (Candidate Evaluations, 2012)"
                        , "No Responses (Party Evaluations, 2008)", "No Responses (Party Evaluations, 2012)")
-print(xtable(tab_mis, align="lccc",digits=c(0,0,0,2), caption = "Overview - Missing Open-Ended Responses"
+print(xtable(tab_mis, align="lcc",digits=c(0,0,2), caption = "Overview - Missing Open-Ended Responses"
              ,label="tab:a1_mis"),file="tab/a1_mis.tex")
 
 
@@ -169,10 +169,11 @@ ggsave(filename = "fig/m1_mft.pdf")
 
 # combine issue positions to dimension (mean)
 # high values -> more liberal position
-anes2008$ideol_social <- anes2008$issue_gay
 anes2008$ideol_econ <- with(anes2008, (issue_aid + issue_govspend - issue_medins + 1)/3)
-anes2012$ideol_social <- with(anes2012, (issue_gay + issue_abort)/2)
+anes2008$ideol_social <- anes2008$issue_gay
 anes2012$ideol_econ <- with(anes2012, (issue_aid + issue_govspend - issue_medins - issue_jobs + 2)/4)
+anes2012$ideol_social <- with(anes2012, (issue_gay + issue_abort)/2)
+
 
 # check factor analysis for 2012
 factanal(na.omit(anes2012[,grep("issue",names(anes2012))]), 1, rotation="varimax")
@@ -195,10 +196,10 @@ stargazer(m1b_2008_harm, m1b_2012_harm, m1b_2008_fair, m1b_2012_fair, m1b_2008_i
           , covariate.labels = c("Economic Liberalism","Social Liberalism","Moderate","Church Attendance","Education (College Degree)"
                                  ,"Age","Sex (Female)","Race (African American)","Number of Words")
           , column.labels = c("2008","2012","2008","2012","2008","2012","2008","2012")
-          , model.numbers = FALSE, order=c(2,1,3:8)
+          , model.numbers = FALSE
           , dep.var.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect")
           , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-          , label="tab:m1_mft", no.space=T, table.placement="ht"
+          , label="tab:m1b_mft", no.space=T, table.placement="ht"
 )
 
 # Plot predicted probabilities / expected values
