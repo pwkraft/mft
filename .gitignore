@@ -4,6 +4,7 @@ $ cat .gitignore
 memo
 /info/
 /text/auto/
+/pres/auto/
 *.RData
 *.Rhistory
 *.log

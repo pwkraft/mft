@@ -1,0 +1,259 @@
+\documentclass{beamer}
+\usepackage{xcolor}
+\usepackage{natbib} % package to organize literature
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{wasysym} % additional symbols
+\usepackage{graphicx} % to include graphics, gifs
+\usepackage{color} % add colored text
+\usepackage{lmodern} % to fix font size error, might be problematic with math symbols
+\usepackage{array}
+
+\usetheme{Frankfurt}
+\usecolortheme{beaver}
+\setbeamertemplate{footline}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor \hspace{1em} (\insertshortinstitute)
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.4\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.3\paperwidth,ht=2.25ex,dp=1ex,right]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertdate \hspace{2em}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{1em}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+%\definecolor{beamer@sbred}{rgb}{0.65,0.15,0.18}
+\definecolor{beamer@sbred}{rgb}{0.22,0.22,0.66}
+\setbeamercolor{title}{fg=beamer@sbred,bg=black!5}
+\setbeamercolor{structure}{fg=beamer@sbred}
+\setbeamercolor{frametitle}{fg=beamer@sbred}
+\setbeamercolor{palette primary}{fg=beamer@sbred,bg=black!10}
+\setbeamercolor{palette secondary}{fg=beamer@sbred}
+\setbeamercolor{palette tertiary}{bg=beamer@sbred}
+\setbeamercolor{palette quaternary}{fg=white,bg=beamer@sbred}
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[default]
+\setbeamersize{text margin left=1em,text margin right=1em}
+\DeclareTextFontCommand{\emph}{\color{beamer@sbred}}
+
+\setbeamercolor*{block title example}{fg= white, bg= beamer@sbred!90}
+\setbeamercolor*{block body example}{fg= black, bg= beamer@sbred!10}
+
+\author[Patrick Kraft]{Patrick Kraft}
+\institute[Stony Brook]{73rd MPSA Conference}
+\title[Moral Foundations of Political Reasoning]{Moral Foundations of Political Reasoning \\ {\small Investigating the Moral Underpinnings of Political Judgment}}
+\date{April 16\textsuperscript{th}, 2015}
+\titlegraphic{\includegraphics[width=4cm]{/data/Copy/1-src/logos/logo_bk.pdf}}
+
+\begin{document}
+\frame{\titlepage}
+%\footnotesize
+
+
+\section{Introduction}
+\subsection{}
+\begin{frame}%[allowframbreaks]
+\frametitle{Open-ended survey response in 2012 ANES}
+\begin{exampleblock}{Is there anything in particular about [Candidate] that might make you want to vote for him? What is that?}
+  \begin{center}
+    \textit{``I think he represents a far more healthy vizsion for the country on a lot of levels, economically, environmentally, the vision he represents for the future of the country is much more in line with the country I hope to leave for my grandchildren, socially - protecting the rights of individuals, specifically the rights of women and individuals, the right to choose, picking a Supreme Court Justice and developing a tax system that is fair to everyone. A better vision than what we have right now.''}
+  \end{center}
+\end{exampleblock}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Questions}
+  \begin{itemize}
+    \item Do individuals rely on \emph{moral foundations} when evaluating political \emph{parties} and \emph{candidates}?
+    \item Are there systematic differences between \emph{liberals} and \emph{conservatives}?
+    \item Are moral values \emph{determinants} of political thinking, or only a \emph{rhetorical device} that citizens learn to bolster their political views?
+  \end{itemize}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Moral Foundations Theory}
+  \begin{itemize}
+    \item Moral thinking is structured by 5 central \emph{innate intuitions} \citep{haidt2008moral}:
+    \begin{itemize}
+      \item Harm / Care
+      \item Fairness / Reciprocity
+      \item Ingroup / Loyalty
+      \item Authority / Respect
+      \item Purity / Sanctity
+    \end{itemize}
+    \item \emph{Liberals} and \emph{conservatives} rely on different sets of moral foundations \citep[e.g][]{graham2009liberals,haidt2007morality}
+  \end{itemize}
+\end{frame}
+
+\section{}
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Hypotheses}
+  \begin{enumerate}
+    \item \emph{Liberals} are more likely to emphasize moral foundations of \emph{harm/care} and \emph{fairness/reciprocity} than conservatives when evaluating political parties and candidates. On the other hand, \emph{conservatives} are more likely to emphasize moral foundations of \emph{ingroup/loyalty}, \emph{authority/respect}, and \emph{purity/sanctity} than liberals.
+    \item Individuals who have more experience and are more engaged in the political system (i.e. with higher \emph{political sophistication}, high \emph{media exposure}, frequent \emph{political discussions}, prior \emph{participation}) are more likely to emphasize moral foundations when evaluating political parties and candidates.
+  \end{enumerate}
+\end{frame}
+
+\section{Empirical Analyses}
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Overview}
+  \begin{itemize}
+    \item 2012 + 2008 American National Election Study (pre-election)
+    \item Computer assisted face-to-face interviews (+ Internet panel)
+    \item Major dependent variable: \emph{open-ended questions} where respondents were asked what they \emph{liked} and \emph{disliked} about the parties and candidates
+    \item Moral Foundations \emph{dictionary} proposed by \citep{graham2009liberals} to look for \emph{signal} words.
+    \item Model individual response patterns for each of the moral foundations
+  \end{itemize}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Analyzing Open-Ended Survey Responses}
+\begin{exampleblock}{Is there anything in particular about [Candidate] that might make you want to vote for him? What is that?}
+  \begin{center}
+    \textit{``I think he represents a far more healthy \underline{vision} for the country on a lot of levels, economically, environmentally, the vision he represents for the future of the country is much more in line with the country I hope to leave for my grandchildren, socially - {\color{blue}protecting} the {\color{green}rights} of {\color{red}individuals}, specifically the {\color{green}rights} of women and {\color{red}individuals}, the right to choose, picking a Supreme Court {\color{green}Justice} and developing a tax system that is {\color{green}fair} to everyone. A better vision than what we have right now.''}
+  \end{center}
+\end{exampleblock}
+  \begin{itemize}
+  \item \emph{\textit{Moral Foundations}}: {\color{blue}Harm}, {\color{green}Fairness}, {\color{red}Ingroup}
+  \end{itemize}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Descriptive Results}
+  \begin{figure}[ht]\centering
+    \visible<2>{\includegraphics[height=.9\textheight]{../calc/fig/p1_mft_ideol}}
+  \end{figure}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Predicting References to Moral Foundations}
+  \begin{figure}[ht]\centering
+    \visible<2>{\includegraphics[height=.9\textheight]{../calc/fig/m1_mft}}
+  \end{figure}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Predicting Vote Choice using Moral Foundations}
+  \begin{figure}[ht]\centering
+    \visible<2>{\includegraphics[height=.9\textheight]{../calc/fig/m2_vote}}
+  \end{figure}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Moral Reasoning as a Political Learning Process}
+  \begin{figure}[ht]\centering
+    \visible<2>{\includegraphics[height=.9\textheight]{../calc/fig/m3_learn}}
+  \end{figure}
+\end{frame}
+
+\section{Conclusion}
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Conclusion}
+  \begin{itemize}
+\item Liberals and conservatives differ in their emphasis on moral dimensions
+\item Differences not always consistent with Moral Foundations Theory (measurement error etc.)
+\item Political learning process
+\vspace{\baselineskip}
+\item Further developments:
+    \begin{itemize}
+     \item Experimental designs
+     \item Revise dictionary
+     \item Differentiate between rejection and approval to moral foundations
+     \item Differentiate between in-party / out-party, candidate vs. party, etc.
+     \item Structural topic models \citep{roberts2014structural}
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+\frametitle{Open-ended survey response in 2008/2012 ANES}
+\begin{exampleblock}{Is there anything in particular about [Candidate] that might make you want to vote against him? What is that?}
+  \begin{center}
+    \textit{``nostradaumas, supossedly they say he is the anti christ.''}
+  \end{center}
+\end{exampleblock}
+\begin{exampleblock}{Is there anything in particular about [Party] that might make you want to vote against him? What is that?}
+  \begin{center}
+    \textit{``The party is run by Satan - it's filled with liars, cheaters, murderers, the sexually immoral, etc. Should you reject God in life, I am sure you'll be joined alongside in hell by most Democrats, with all of you fighting to be lord of that domain also.''}
+  \end{center}
+\end{exampleblock}
+\end{frame}
+
+
+
+\section{Appendix}
+\subsection{}
+\begin{frame}%[allowframbreaks]
+  \frametitle{Moral Foundations Dictionary \citep[c.f.][]{graham2009liberals}}
+  \begin{tiny}
+    \begin{itemize}
+      \item \emph{Harm:} safe*, peace*, compassion*, empath*, sympath*, care, caring, protect*, shield, shelter, amity, secur*, benefit*, defen*, guard*, preserve, harm*, suffer*, war, wars, warl*, warring, fight*, violen*, hurt*, kill, kills, killer*, killed, killing, endanger*, cruel*, brutal*, abuse*, damag*, ruin*, ravage, detriment*, crush*, attack*, annihilate*, destroy, stomp, abandon*, spurn, impair, exploit, exploits, exploited, exploiting, wound*
+
+      \item \emph{Fairness:} fair, fairly, fairness, fair*, fairmind*, fairplay, equal*, justice, justness, justifi*, reciproc*, impartial*, egalitar*, rights, equity, evenness, equivalent, unbias*, tolerant, equable, balance*, homologous, unprejudice*, reasonable, constant, honest*, unfair*, unequal*, bias*, unjust*, injust*, bigot*, discriminat*, disproportion*, inequitable, prejud*, dishonest, unscrupulous, dissociate, preference, favoritism, segregat*, exclusion, exclud*
+
+      \item \emph{Ingroup:} together, nation*, homeland*, family, families, familial, group, loyal*, patriot*, communal, commune*, communit*, communis*, comrad*, cadre, collectiv*, joint, unison, unite*, fellow*, guild, solidarity, devot*, member, cliqu*, cohort, ally, insider, foreign*, enem*, betray*, treason*, traitor*, treacher*, disloyal*, individual*, apostasy, apostate, deserted, deserter*, deserting, deceiv*, jilt*, imposter, miscreant, spy, sequester, renegade, terroris*, immigra*
+
+      \item \emph{Authority:} obey*, obedien*, duty, law, lawful*, legal*, duti*, honor*, respect, respectful*, respected, respects, order*, father*, mother, motherl*, mothering, mothers, tradition*, hierarch*, authorit*, permit, permission, status*, rank*, leader*, class, bourgeoisie, caste*, position, complian*, command, supremacy, control, submi*, allegian*, serve, abide, defere*, defer, revere*, venerat*, comply, defian*, rebel*, dissent*, subver*, disrespect*, disobe*, sediti*, agitat*, insubordinat*, illegal*, lawless*, insurgent, mutinous, defy*, dissident, unfaithful, alienate, defector, heretic*, nonconformist, oppose, protest, refuse, denounce, remonstrate, riot*, obstruct
+
+      \item \emph{Purity:} piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, saint*, wholesome*, celiba*, abstention, virgin, virgins, virginity, virginal, austerity, integrity, modesty, abstinen*, abstemiousness, upright, limpid, unadulterated, maiden, virtuous, refined, intemperate, decen*, immaculate, innocent, pristine, humble, disgust*, deprav*, disease*, unclean*, contagio*, indecen*, sin, sinful*, sinner*, sins, sinned, sinning, slut*, whore, dirt*, impiety, impious, profan*, gross, repuls*, sick*, promiscu*, lewd*, adulter*, debauche*, defile*, tramp, prostitut*, unchaste, wanton, profligate, filth*, trashy, obscen*, lax, taint*, stain*, tarnish*, debase*, desecrat*, wicked*, blemish, exploitat*, pervert, wretched*
+    \end{itemize}
+  \end{tiny}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+\frametitle{Missing Open-ended Responses}
+\input{../calc/tab/a1_mis}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+\frametitle{Length of Responses}
+  \begin{figure}[ht]\centering
+    \includegraphics[height=.85\textheight]{../calc/fig/a0_num}
+  \end{figure}
+\end{frame}
+
+\subsection{}
+\begin{frame}%[allowframbreaks]
+\frametitle{Regression Discontinuity Design I}
+  \begin{figure}[ht]\centering
+    \includegraphics[height=.85\textheight]{../calc/fig/rd1_overview}
+  \end{figure}
+\end{frame}
+\begin{frame}%[allowframbreaks]
+\frametitle{Regression Discontinuity Design II}
+\begin{scriptsize}
+\input{../calc/tab/rd2008y}
+\input{../calc/tab/rd2012y}
+\end{scriptsize}
+\end{frame}
+
+\subsection{}
+\begin{frame}
+  \frametitle{References}
+  \def\newblock{\hskip .11em plus .33em minus .07em}
+  %\nocite{*}
+  \begin{scriptsize}
+    \bibliographystyle{apsr}
+    \bibliography{/data/Copy/1-src/lit/Literature}
+  \end{scriptsize}
+\end{frame}
+
+\end{document}

@@ -164,6 +164,18 @@ ggplot(m1_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color 
                                           , "Fairness / \nReciprocity", "Harm / \nCare"))
 ggsave(filename = "fig/m1_mft.pdf")
 
+# blank plot
+ggplot(m1_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
+geom_blank() + labs(y = "Dependent Variable: Moral Foundation"
+       , x= "Conservatives more likey                                                       Liberals more likely") + 
+  geom_vline(xintercept=0) + theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+  theme(legend.position="bottom") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority / \nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m1_mft_blank.pdf")
+
 
 ### models predicting references to moral foundations based on social/economic dimension
 
