@@ -156,8 +156,7 @@ opend_mft <- function(data, use_dict = "new") {
     resp <- data.frame(data[,1])
     for(v in 2:ncol(data)){
         for(d in 1:length(dict)){
-            resp <- cbind(resp,apply(laply(dict[[d]], function(x) {str_detect(data[,v], x)}),2,sum))
-            ### something here doesn't work anymore!!!
+            resp <- cbind(resp,apply(laply(dict[[d]], function(x) {str_count(data[,v], x)}),2,sum))
         }
     }
     colnames(resp) <- c("id",as.vector(laply(names(dict),function(x) paste(x,colnames(data)[-1],sep="_"))))
