@@ -12,12 +12,11 @@
 \usepackage{lscape}
 \usepackage{dcolumn}
 \usepackage{floatrow}
-\usepackage[title]{appendix} % enumerated appendices etc.
+\usepackage[title]{appendix}
 \usepackage{xcolor}
 \usepackage{todonotes}
 \usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
 \setlength{\headheight}{15pt}
-% http://en.wikibooks.org/wiki/LaTeX/Page_Layout for additional info
 
 \author{Patrick W. Kraft\footnote{Ph.D. Student, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}.
 %I thank Stanley Feldman, Jennifer Jerit, Scott Clifford, Peter DeScioli, Jason Barabas, and participants of the Political Science Graduate Student Colloquium at Stony Brook University as well as the participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier versions of this draft.
@@ -32,15 +31,15 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}%\onehalfspacing
-The goal of this paper is to investigate whether and how individuals rely on moral foundations when evaluating political candidates and parties. Based on open-ended survey responses in the 2008 and 2012 American National Election Study, it will be examined to what extent differences in moral judgments between liberals and conservatives shape and structure individual reasoning and evaluations in the political context. More specifically, I utilize the moral word lists proposed by \citet{graham2009liberals} to identify references to basic moral intuitions when individuals report on their attitudes towards political parties and candidates. The results indicate that liberals and conservatives differ with regard to the set of moral foundations they rely on when evaluating political actors. However, these differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory. Furthermore, it can be shown that moral reasoning in the context of politics is part of a general political learning process.
+\begin{abstract}\onehalfspacing
+The goal of this paper is to investigate whether and how individuals rely on moral foundations when evaluating political candidates and parties. Based on open-ended survey responses in the 2008 and 2012 American National Election Study, it will be examined to what extent differences in moral judgments between liberals and conservatives shape and structure individual reasoning and evaluations in the political context. More specifically, I utilize the moral word lists proposed by \citet{graham2009liberals} to identify references to basic moral intuitions when individuals report on their attitudes towards political parties and candidates. It can be shown that liberals and conservatives differ with regard to the set of moral foundations they rely on when evaluating political actors. However, these differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory. Furthermore, the results indicate that moral reasoning in the context of politics is part of a general political learning process.
 
 \vspace{\baselineskip}
 \noindent \textbf{Keywords:} Moral Foundations Theory, Political Ideology, Political Reasoning, Open-ended Survey Responses
 \end{abstract}
 
 \newpage
-\singlespacing
+\doublespacing
 
 \section{Introduction}
 
@@ -52,7 +51,7 @@ The goal of this paper is to investigate whether and how individuals rely on mor
 
 Using open-ended questions instead of closed survey responses has important advantages in the context of the research question proposed here. For example, the studies by \citet{graham2009liberals} that focused on self-reported moral judgments convincingly demonstrated systematic patterns of moral reasoning that allowed to differentiate between liberals and conservatives. However, since moral considerations and political beliefs were measured using closed items, it could be argued that these associations are only latent and do not necessarily manifest themselves in actual day-to-day political reasoning. Self-reports on moral relevance do not necessarily describe how actual moral jugments are be made (c.f. \citealt[1031]{graham2009liberals}, see also \citealt{clifford2015moral}) and therefore cannot clearly establish how morality affects political reasoning. Accordingly, one of the major contributions of this paper is to investigate patterns of moral reasoning among individuals in a more unobtrusive survey context, where the potential connection between morality and politics is not induced or facilitated by design. When answering general open-ended survey responses on likes and dislikes about either parties and candidates, respondents can \textit{decide} to talk about moral considerations (without explicitly being asked to do so), rather than explicitly asked to make moral judgments. Finding similar patterns in such a context provides much stronger evidence for the notion that political reasoning is directly influenced by basic moral intuitions.
 
-Consistent with \citet{graham2009liberals}, it is hypothesized that liberals and conservatives differ with regard to the set of moral foundations they rely on when evaluating political actors. Furthermore, it will be investigated to what extent the reliance on moral considerations is moderated by political expertise, media exposure, political discussions, and political participation. I propose a regression-discontinuity design in order to test whether political involvement increases moral reasoning in the context of politics. Overall, the results indicate that liberals and conservatives differ in their reliance on different moral considerations. However, these differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory. Furthermore, the general tendency to take into account morality appears to be the product of a political learning process and involvement in the political system.
+Consistent with \citet{graham2009liberals}, it is hypothesized that liberals and conservatives differ with regard to the set of moral foundations they rely on when evaluating political actors. Furthermore, it will be investigated to what extent the reliance on moral considerations is moderated by political expertise, media exposure, political discussions, and political participation. Overall, the results indicate that liberals and conservatives differ in their reliance on different moral considerations. However, these differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory.
 
 \section{Theoretical Framework}
 
@@ -92,7 +91,7 @@ Accordingly, numerous evidence suggests that moral foundations play an important
 \end{tabular}
 \vspace{0.5cm}
 
-However, the extent to which individuals rely on moral considerations when evaluating political actors cannot be expected to be universal among individuals. Rather, it is argued here that the general tendency to emphasize moral foundations is contingent upon individual levels of political sophistication, media exposure, political discussions, and engagement in the political system \citep[see also][]{goren2001core,goren2004political}. For example, \citet{clifford2015concerns} shows that elite rhetoric plays an important role in linking individual moral foundations with political attitudes. Accordingly, the following additional hypothesis can be specified:
+However, the extent to which individuals rely on moral considerations when evaluating political actors cannot be expected to be universal among individuals. Rather, it is argued here that the general tendency to emphasize moral foundations is contingent upon individual levels of political sophistication, media exposure, and political discussions \citep[see also][]{goren2001core,goren2004political}. For example, \citet{clifford2015concerns} shows that elite rhetoric plays an important role in linking individual moral foundations with political attitudes. Accordingly, the following additional hypothesis can be specified:
 
 %
 % THIS ARGUMENT NEEDS TO BE STRONGER
@@ -210,55 +209,6 @@ The significant positive effect of frequent political discussions in 2012 (even 
 
 The positive relationships between political knowledge, media exposure, and political discussions and moral reasoning appears to be quite robust, even when we control for overall individual response lengths. However, it should be noted that the analyses presented so far do not really allow us to make strong causal claims with regard to the political learning effects on moral reasoning. There might be other (unobserved) confounding factors which affect the degree to which individuals rely on moral considerations, as well as the remaining independent variables analyzed here.
 
-In order to establish whether engagement in the political system, and therefore increased political knowledge, frequent discussions, media exposure etc., indeed increases the relevance of moral foundations in politics, I utilize a regression-discontinuity design used previously in order to analyze the effect of past eligibility on political participation \citep[see for example][]{meredith2009persistence}.
-
-More specifically, I use the respondents' age at the time of the interview in order to evaluate whether they were eligible to vote in the \textit{previous} presidential election. Previous research argued that the endoresement of moral values and considerations predicted individual intentions to vote in national election \citep[c.f.][]{johnson2014ideology}. By comparing individuals who were just old enough to participate in the previous election with those wo barely did not pass the legal age threshold, I can investigate a potentially reverse causal mechanism: does earlier formal involvement in the political process through voting (and therefore potentially related increased frequency in political discussions etc.) affect the extent to which individuals use moral foundations when evaluating political parties and candidates?
-
-\begin{figure}\centering
-\includegraphics[scale=.9]{../calc/fig/rd1_overview.pdf}
-\caption{Visualization of Regression Discontinuity. Proportions Based on Aggregation for Each Age Group (by year).}\label{fig:rd1_overview}
-\end{figure}
-
-Figure~\ref{fig:rd1_overview} provides a visual overview over the regression discontinuity analyzed here. The graphs display the proportion of individuals in each age group (by year), who mention any moral consideration in their open-ended evaluations. The x-axis depicts the voting age at the time of the previous election. For example, whether respondents in 2008 were 17 or 18 in 2004 determines whether they were able to participate in the election prior to 2008. It is hypothesized that individuals, who were able to participate in a previous election are more likely to rely on moral considerations.
-
-Furthermore, according to the regression-discontinuity argument, individuals just below or above the threshold should be equal in expectation in terms of their potential outcomes of the dependent variable. Thus, comparing both individuals who were just above and below the legal eligibility age for the previous election allows us to identify the local treatment effect of (formal) involvement in the political system.\footnote{It should be noted that the analyses presented here essentially concentrate on the intention-to-treat effect of prior voting, since the analyses only focus on legal eligibility rather than on actual participation.}
-
-Looking at Figure~\ref{fig:rd1_overview}, it can be observed that such a discontinuity can be clearly identified in the 2012 survey (right side). The percentage of respondents increases sharply for individuals who were just old enough to vote in the previous election (i.e. in 2008). In 2008, the pattern looks relatively similar, albeit being less clear and pronounced. It is worth noting, however, that also in 2008, the proportion of individuals who mention any moral consideration is spiking for the age group that was just eligible to participate in the 2004 election.
-
-The two major challenges in regression discontinuity design contain the selection of a bandwidth to determine how close observations have to be to the cut-off in order to be included in the analyses, as well as the proper modeling of the selection variable on either side of the cut-off. \citet{dunning2012natural} argues that regression discontinuity designs should generally allow for simple estimations of treatment effects by comparing average outcomes among observations below and above the threshold (i.e. without making it necessary to model the outcome on each side of the discontinuity). However, such a simple difference in means estimator requires that the regressions on both sides of the cut-off within the area of the bandwidth have a slope of zero. In other words, the expected value of the outcome variable \textit{within} each bandwidth left or right of the cut-off should not be conditional on the variable driving the discontinuity. However, this assumption is not clearly met when looking at the data in Figure~\ref{fig:rd1_overview}. For individuals left of the discontinuity, there appears to be a positive correlation between the age at the time of the previous election and the percentage of individuals mentioning moral foundations. Moving to the right of the cut-off, however, the proportion of individuals who rely on moral considerations is constant at a higher level. Notwithstanding, it is possible to overcome the problem of potential outcomes being correlated with the assignment variable, by modeling outcomes on either side of the discontinuity (using parametric or non-parametric modeling) and estimate the treatment effect as the difference between both models' expected outcomes at the limit of the regression discontinuity \citep[see also][]{imbens2008regression}.
-
-In the analyses presented below, I used local linear regression in order to estimate treatment effects. Unless stated otherwise, I selected bandwidths according to the Imbens-Kalyanaraman optimal bandwidth choice rule \citep{imbens2011optimal}.
-
-\input{../calc/tab/rd2008y}
-
-Table~\ref{tab:rd2008y} displays the results for the analysis based on the 2008 ANES. The first row contains the local average treatment effect (LATE) for the bandwidth calculated according to the procedure described by \citet{imbens2011optimal}. The second and third row show treatment effects if the bandwidth was decreased by one half, or doubled, respectively. Looking at the LATE estimates, it can be seen that eligibility to vote in the previous election has a significant positive effect on the likelihood to emphasize moral considerations when evaluating political parties and candidates. The bandwidth used to estimate this effect includes two and a half years on both sides, which allows us to include 166 observations in the analysis. The positive effect stays significant if the bandwidth is decreased to half of its original size. However, if the bandwidth is increased to 5 years, the effect vanishes. This result should not be very concerning, since such a large bandwidth seems implausible.
-
-\input{../calc/tab/rd2012y}
-
-Table~\ref{tab:rd2012y} presents the same results for the 2012 dataset. The optimal threshold is very similar to the previous analyses (around 2.9 years), which now includes a larger number of observations due to the generally larger sample size in the 2012 survey. While all estimated treatment effects are again positive, none of them reach conventional standards of statistical significance.
-
-One argument that could be put forward against these analyses is the fact that the variable on which the regression discontinuity is based (i.e. age in years) is a relatively crude measure. Luckily, the 2008 ANES also includes a variable indicating month of birth for each respondent.\footnote{In the 2012 ANES, month of birth is a restricted item.}
-
-\input{../calc/tab/rd2008m1}
-
-Table~\ref{tab:rd2008m1} depicts the estimates of the local average treatment effects for 2008 if the discontinuity takes into account the month of birth rather than just the age in years. The discontinuity variable, therefore, indicates for how many months each respondent has been eligible to vote prior to the previous election. Now, none of the effects appear to be significant any more. However, the bandwidth calculated according to the procedure described by \citet{imbens2011optimal} is surprisingly small (less than 5 months!) and only includes a very small number of observations, which can be problematic.
-
-\input{../calc/tab/rd2008m2}
-
-Accordingly, I manually increased the bandwidth to a level comparable to the previous analyses (20 months). The results are displayed in Table~\ref{tab:rd2008m2}. Again, the positive effect of eligibility to participate in the previous election is significant and of similar size as in the analyses solely based on age.
-
-Overall, the results based on the regression discontinuity support the findings of the previous analyses. They indicate that prior individual involvement in the political process (through elections etc.) increases the probability that citizens rely on moral considerations when evaluating political candidates and parties. Accordingly, moral reasoning in the context of politics can be seen as part of a general political learning process.
-
-There are several ways to further investigate the validity of estimates based on regression discontinuity designs. The first concern is usually whether there was some kind of sorting, or self-selection among observations to move beyond the discontinuity threshold. While such a suggestion seems unrealistic in the context of age as a discontinuity variable, we can still examine kernel density plots of the variable in order to make sure that the distribution of observations is smooth on either side of the cut-off. Unsurprisingly, this appears to be the case in this analysis (c.f. kernel density plots in the appendix, Figure~\ref{fig:rd2_density}).
-
-Other possibilities to ascertain the validity of the design involve the analyses of non-outcomes at the point of the discontinuity, as well as placebo-analyses using arbitrary alternative cut-offs.
-
-The results of the placebo tests are displayed in Tables~\ref{tab:rd2008y_plac}, \ref{tab:rd2012y_plac}, as well as \ref{tab:rd2008m_plac} in the appendix. I shifted the threshold four years later (or 48 months), such that individuals who are just above the threshold became eligible to vote at the election 8 years prior to the actual election. As can be seen in the tables, non of the effects with any of the bandwidths under consideration are statistically significant.
-
-As an additional check, I analyzed individual attitudes towards LGBT adoption as a non-outcome using the actual regression discontinuity. The results are displayed in Tables~\ref{tab:rd2008y_non}, \ref{tab:rd2012y_non}, as well as \ref{tab:rd2008m_non} in the appendix. The results show that if an (arbitrary) alternative outcome is analyzed, the effect at the regression discontinuity vanishes. These results indicate that the estimates in the regression-discontinuity analyses are relatively unlikely to be an artefact of sorting and self-selection around the threshold.
-
-However, one potential problem with the regression discontinuity design is related to conceptualization of the outcome variable. As described previously, I calculated the outcome as the overall proportion of individuals in each age group, who mention any moral consideration in their open-ended evaluations. This measure might be confounded due to the fact that it does not take into account the length of individual responses. Accordingly, it might be the case that individuals at the discontinuity are more likely to mention moral considerations simply because they provide more detailed responses and are therefore more likely to signal moral reasoning by pure chance. In order to overcome this potential confounding factor, I created an alternative outcome measure by calculating the percentage of moral words in each individual open-ended response. While this measure is arguably more fuzzy and less easily interpretable, it provides an additional robustness check against the notion that the results presented thus far are solely based on the (potential) discontinuity in the length of individual answers. The results are presented in Appendix \ref{app:percent}. Unfortunately, none of the effects recovered in Tables \ref{tab:rd2008y} through \ref{tab:rd2008m2} can be replicated using this alternative measure of moral reasoning. Accordingly, the results of the regression discontinuity design can only be interpreted with great caution.
-
 
 \section{Conclusion}
 
@@ -268,7 +218,7 @@ The empirical evidence discussed in this paper is only partly consistent with pr
 
 %%% ADD MORE STUFF HERE
 
-According to the second hypothesis, it was expected that individuals show heterogeneity in terms of their tendency to rely on moral reasoning when evaluating political actors. The results showed that political knowledge, discussions, as well as media consumption increased the reliance on moral considerations. Furthermore, using a regression-discontinuity design, it has been shown that prior engagement in the political system has a positive effect as well. Thus, the evidence suggests that moral reasoning is part of a broader political learning process. It remains an open question, however, whether this learning process implies an increased differentiation between liberals and conservatives in terms of the focus on specific foundations as described by Moral Foundations Theory. The results presented here only show that moral reasoning becomes more prevalent with higher political involvement, but they are inconclusive as to whether learning process increase the ``moral differentiation'' of liberals and conservatives.
+According to the second hypothesis, it was expected that individuals show heterogeneity in terms of their tendency to rely on moral reasoning when evaluating political actors. The results showed that political knowledge, discussions, as well as media consumption increased the reliance on moral considerations. Thus, the evidence suggests that moral reasoning is part of a broader political learning process. It remains an open question, however, whether this learning process implies an increased differentiation between liberals and conservatives in terms of the focus on specific foundations as described by Moral Foundations Theory. The results presented here only show that moral reasoning becomes more prevalent with higher political involvement, but they are inconclusive as to whether learning process increase the ``moral differentiation'' of liberals and conservatives.
 
 Overall, the fact that purity/sanctity was almost never mentioned as well as the inconsistent effect of ideology on the authority/respect dimension could be attributed to the fact that the moral foundations dictionary was originally used for the analyses of sermons rather than in the context of day-to-day politics.\footnote{However, the collection of words used in \citet{graham2009liberals} was conceptualized as a general dictionary for multiple sources (see also \url{http://www.moralfoundations.org/})} Accordingly, subsequent analyses could revise the dictionary in order to make it more applicable for the analyses of survey responses. Furthermore, it should be noted that the modelling strategy based on multiple logistic regressions assumes independence between the different response categories. This assumptions does not seem to be plausible since the reference to a specific moral foundation might well affect how often individuals mention other considerations. While a multinomial logit / conditional logit framework is also not feasible due to the fact that individuals can fall in several categories, other model approaches for non-exclusive multinomial choices might allow to improve the empirical analyses \citep[see for example][]{gilbert2007models}.
 
@@ -277,7 +227,7 @@ An alternative approach to the analysis of open-ended survey responses could be 
 Irrespective of these reservations and the resulting tentativeness of the empirical results presented thus far, the analyses of open-ended survey responses can provide important and valuable insights in the context of moral foundations and the individual underpinnings of political ideology. As such, there are numerous avenues for future research. For example, it would be interesting to investigate whether the reference to specific moral foundations differs between survey questions: Do individuals differ in terms of their moral considerations if they describe in-party or out-party candidates? Does the evaluations of parties and candidate elicit different considerations? Furthermore, are there sources of heterogeneity in moral foundations among liberals and conservatives? Utilizing available responses to open-ended survey questions provides a useful and still largely neglected data source to investigate these and other important research questions from novel perspectives.
 
 
-\clearpage\flushleft\footnotesize
+\clearpage\flushleft\footnotesize\singlespacing
 \appendices
 \section{Moral Foundations Dictionary}
 \renewcommand\thefigure{\thesection.\arabic{figure}}
@@ -311,6 +261,10 @@ obey*, obedien*, duty, law, lawful*, legal*, duti*, honor*, respect, respectful*
 
 \textbf{Purity:}\\
 piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, saint*, wholesome*, celiba*, abstention, virgin, virgins, virginity, virginal, austerity, integrity, modesty, abstinen*, abstemiousness, upright, limpid, unadulterated, maiden, virtuous, refined, intemperate, decen*, immaculate, innocent, pristine, humble, disgust*, deprav*, disease*, unclean*, contagio*, indecen*, sin, sinful*, sinner*, sins, sinned, sinning, slut*, whore, dirt*, impiety, impious, profan*, gross, repuls*, sick*, promiscu*, lewd*, adulter*, debauche*, defile*, tramp, prostitut*, unchaste, wanton, profligate, filth*, trashy, obscen*, lax, taint*, stain*, tarnish*, debase*, desecrat*, wicked*, blemish, exploitat*, pervert, wretched*
+\vspace{.5cm}
+
+\textbf{General:}\\
+righteous*, moral*, ethic*, value*, upstanding, good, goodness, principle*, blameless, exemplary, lesson, canon, doctrine, noble, worth*, ideal*, praiseworthy, commendable, character, proper, laudable, correct, wrong*, evil, immoral*, bad, offend*, offensive*, transgress*, honest*, lawful*, legal*, piety, pious, wholesome*, integrity, upright, decen*, indecen*, wicked*, wretched*
 
 
 \clearpage
@@ -357,37 +311,6 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \input{../calc/tab/m2_vote}
 
 \input{../calc/tab/m3_learn}
-
-\clearpage
-\section{Additional Tables and Figures - Regression Discontinuity}
-\renewcommand\thefigure{\thesection.\arabic{figure}}
-\renewcommand\thetable{\thesection.\arabic{table}}
-\setcounter{figure}{0}
-\setcounter{table}{0}
-
-\begin{figure}[ht]\centering
-\includegraphics[scale=.5]{../calc/fig/rd2_density.pdf}
-\caption{Density of Running Variable (Age / Months)}\label{fig:rd2_density}
-\end{figure}
-
-\clearpage
-\subsection{Placebo Tests}
-\input{../calc/tab/rd2008y_plac}
-\input{../calc/tab/rd2012y_plac}
-\input{../calc/tab/rd2008m_plac}
-
-\clearpage
-\subsection{Non-Outcome Analyses}
-\input{../calc/tab/rd2008y_non}
-\input{../calc/tab/rd2012y_non}
-\input{../calc/tab/rd2008m_non}
-
-\clearpage
-\subsection{Discontinuity in Percentage of Moral Words}\label{app:percent}
-\input{../calc/tab/Xrd2008y}
-\input{../calc/tab/Xrd2012y}
-\input{../calc/tab/Xrd2008m1}
-\input{../calc/tab/Xrd2008m2}
 
 \clearpage
 \bibliographystyle{/data/Copy/1-src/lit/apsr2006}
