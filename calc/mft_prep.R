@@ -11,7 +11,7 @@
 rm(list=ls())
 setwd("/data/Uni/projects/2014/mft/calc")
 source("func/anes_recode.R")
-
+# load("out/anes_full.RData")
 
 ### spell checking and preprocessing of open survey responses
 
