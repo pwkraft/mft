@@ -9,7 +9,11 @@
 
 
 rm(list=ls())
-setwd("/data/Uni/projects/2014/mft/calc")
+if(sessionInfo()$platform == "x86_64-apple-darwin10.8.0 (64-bit)"){
+  setwd("~/research/mft/calc")
+} else {
+  setwd("/data/Uni/projects/2014/mft/calc") 
+}
 source("func/anes_recode.R")
 # load("out/anes_full.RData")
 

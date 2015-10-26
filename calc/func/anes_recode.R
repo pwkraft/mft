@@ -14,7 +14,7 @@
 
 # install / load required packages
 # I have to rewrite the code since tmt relies on old packages (Snowball etc...)
-pkg <- c("plyr","stringr","tmt","foreign", "car","mondate") # tm, dplyr
+pkg <- c("plyr","stringr","tm","foreign", "car","mondate") # tmt, dplyr
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -502,7 +502,6 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_all <- respAgg(resp,"ingr")
     mft$auth_all <- respAgg(resp,"auth")
     mft$puri_all <- respAgg(resp,"puri")
-    mft$general_all <- respAgg(resp,"general")
     mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
 
     ## aggregating over party evaluations
@@ -511,7 +510,6 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_pa <- respAgg(resp,"ingr.*_pa")
     mft$auth_pa <- respAgg(resp,"auth.*_pa")
     mft$puri_pa <- respAgg(resp,"puri.*_pa")
-    mft$general_pa <- respAgg(resp,"general.*_pa")
     mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
 
     ## aggregating over candidate evaluations
@@ -520,7 +518,6 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_ca <- respAgg(resp,"ingr.*_ca")
     mft$auth_ca <- respAgg(resp,"auth.*_ca")
     mft$puri_ca <- respAgg(resp,"puri.*_ca")
-    mft$general_ca <- respAgg(resp,"general.*_ca")
     mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
         
     if(valence == TRUE){
@@ -583,8 +580,7 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
                                                , grep("fair_", colnames(resp))
                                                , grep("ingr_", colnames(resp))
                                                , grep("auth_", colnames(resp))
-                                               , grep("puri_", colnames(resp))
-                                               , grep("general_", colnames(resp)))]
+                                               , grep("puri_", colnames(resp)))]
                                          , 1, sum,na.rm = TRUE))
     mft$num_moral[mft$num_total == 0] <- NA
     mft$num_prop <- mft$num_moral/mft$num_total
