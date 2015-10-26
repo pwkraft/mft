@@ -53,7 +53,7 @@ anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
 
 ### basic data recoding for each ANES survey
 
-anes2008ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2008/anes_timeseries_2008.dta"
+anes2008ts <- ts_recode(dta_src = "../../data/anes2008/anes_timeseries_2008.dta" #"/data/Copy/1-src/data/anes2008/anes_timeseries_2008.dta"
                       , raw_out = TRUE
                       , id          = "V080001"
                       , year        = 2008
@@ -92,7 +92,7 @@ anes2008ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2008/anes_timeserie
                                            , V082011 = 3)
                       )
 
-anes2012ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2012/anes_timeseries_2012.dta"
+anes2012ts <- ts_recode(dta_src = "../../data/anes2012/anes_timeseries_2012.dta" #"/data/Copy/1-src/data/anes2012/anes_timeseries_2012.dta"
                       , raw_out = TRUE
                       , id          = "caseid"
                       , year        = 2012

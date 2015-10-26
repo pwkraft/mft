@@ -14,7 +14,7 @@
 
 # install / load required packages
 # I have to rewrite the code since tmt relies on old packages (Snowball etc...)
-pkg <- c("plyr","stringr","tm","foreign", "car","mondate") # tmt, dplyr
+pkg <- c("plyr","stringr","tm","foreign", "car","mondate","readstata13") # tmt, dplyr
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -238,7 +238,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     options(stringsAsFactors = FALSE)
 
     ### recode independent variables
-    raw <- read.dta(dta_src, convert.factors = FALSE)
+    raw <- read.dta13(dta_src, convert.factors = FALSE)
     if(is.null(id)) stop("ID variable must be specified!")
     dat <- data.frame(id=raw[,id])
     
