@@ -160,13 +160,13 @@ anes2012ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2012/anes_timeserie
 ### merge anes time series and open-ended responses
 
 anes2008merge <- anes_merge(ts = anes2008ts, opend = anes2008opend
-                            , valence = FALSE, check = TRUE)
+                            , valence = TRUE, check = TRUE)
 anes2012merge <- anes_merge(ts = anes2012ts, opend = anes2012opend
-                          , valence = FALSE, check = TRUE)
+                          , valence = TRUE, check = TRUE)
 anes2008merge_noleader <- anes_merge(ts = anes2008ts, opend = anes2008opend_noleader
-                                   , valence = FALSE, check = TRUE)
+                                   , valence = TRUE, check = TRUE)
 anes2012merge_noleader <- anes_merge(ts = anes2012ts, opend = anes2012opend_noleader
-                                   , valence = FALSE, check = TRUE)
+                                   , valence = TRUE, check = TRUE)
 
 
 ### save objects for analyses
@@ -180,4 +180,4 @@ anes2012 <- anes2012merge$data
 anes2008noleader <- anes2008merge_noleader$data
 anes2012noleader <- anes2012merge_noleader$data
 
-save(anes2008, anes2012, file="out/anes.RData")
+save(anes2008, anes2008noleader, anes2012, anes2012noleader, file="out/anes.RData")

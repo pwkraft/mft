@@ -587,7 +587,39 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$auth_ca <- respAgg(resp,"auth.*_ca")
     mft$puri_ca <- respAgg(resp,"puri.*_ca")
     mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
-        
+
+    ## aggregating over democratic evaluations
+    mft$harm_dem <- respAgg(resp,"harm.*_dem")
+    mft$fair_dem <- respAgg(resp,"fair.*_dem")
+    mft$ingr_dem <- respAgg(resp,"ingr.*_dem")
+    mft$auth_dem <- respAgg(resp,"auth.*_dem")
+    mft$puri_dem <- respAgg(resp,"puri.*_dem")
+    mft$mft_dem <- as.numeric(apply(mft[,grep("_dem",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over republican evaluations
+    mft$harm_rep <- respAgg(resp,"harm.*_rep")
+    mft$fair_rep <- respAgg(resp,"fair.*_rep")
+    mft$ingr_rep <- respAgg(resp,"ingr.*_rep")
+    mft$auth_rep <- respAgg(resp,"auth.*_rep")
+    mft$puri_rep <- respAgg(resp,"puri.*_rep")
+    mft$mft_rep <- as.numeric(apply(mft[,grep("_rep",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over likes
+    mft$harm_li <- respAgg(resp,"harm.*_li")
+    mft$fair_li <- respAgg(resp,"fair.*_li")
+    mft$ingr_li <- respAgg(resp,"ingr.*_li")
+    mft$auth_li <- respAgg(resp,"auth.*_li")
+    mft$puri_li <- respAgg(resp,"puri.*_li")
+    mft$mft_li <- as.numeric(apply(mft[,grep("_li",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over dislikes
+    mft$harm_di <- respAgg(resp,"harm.*_di")
+    mft$fair_di <- respAgg(resp,"fair.*_di")
+    mft$ingr_di <- respAgg(resp,"ingr.*_di")
+    mft$auth_di <- respAgg(resp,"auth.*_di")
+    mft$puri_di <- respAgg(resp,"puri.*_di")
+    mft$mft_di <- as.numeric(apply(mft[,grep("_di",colnames(mft))],1,sum) > 0)
+    
     if(valence == TRUE){
         ## aggregating over all items
         mft$harm_virtue_all <- respAgg(resp,"harm_virtue")
@@ -635,6 +667,70 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
         mft$mft_virtue_ca  <- as.numeric(apply(mft[,grep("virtue_ca"
                                                         ,colnames(mft))],1,sum) > 0)
         mft$mft_vice_ca    <- as.numeric(apply(mft[,grep("vice_ca"
+                                                        ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over democratic evaluations
+        mft$harm_virtue_dem <- respAgg(resp,"harm_virtue.*_dem")
+        mft$harm_vice_dem   <- respAgg(resp,"harm_vice.*_dem")
+        mft$fair_virtue_dem <- respAgg(resp,"fair_virtue.*_dem")
+        mft$fair_vice_dem   <- respAgg(resp,"fair_vice.*_dem")
+        mft$ingr_virtue_dem <- respAgg(resp,"ingr_virtue.*_dem")
+        mft$ingr_vice_dem   <- respAgg(resp,"ingr_vice.*_dem")
+        mft$auth_virtue_dem <- respAgg(resp,"auth_virtue.*_dem")
+        mft$auth_vice_dem   <- respAgg(resp,"auth_vice.*_dem")
+        mft$puri_virtue_dem <- respAgg(resp,"puri_virtue.*_dem")
+        mft$puri_vice_dem   <- respAgg(resp,"puri_vice.*_dem")
+        mft$mft_virtue_dem  <- as.numeric(apply(mft[,grep("virtue.*_dem"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_dem    <- as.numeric(apply(mft[,grep("vice.*_dem"
+                                                         ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over republican evaluations
+        mft$harm_virtue_rep <- respAgg(resp,"harm_virtue.*_rep")
+        mft$harm_vice_rep   <- respAgg(resp,"harm_vice.*_rep")
+        mft$fair_virtue_rep <- respAgg(resp,"fair_virtue.*_rep")
+        mft$fair_vice_rep   <- respAgg(resp,"fair_vice.*_rep")
+        mft$ingr_virtue_rep <- respAgg(resp,"ingr_virtue.*_rep")
+        mft$ingr_vice_rep   <- respAgg(resp,"ingr_vice.*_rep")
+        mft$auth_virtue_rep <- respAgg(resp,"auth_virtue.*_rep")
+        mft$auth_vice_rep   <- respAgg(resp,"auth_vice.*_rep")
+        mft$puri_virtue_rep <- respAgg(resp,"puri_virtue.*_rep")
+        mft$puri_vice_rep   <- respAgg(resp,"puri_vice.*_rep")
+        mft$mft_virtue_rep  <- as.numeric(apply(mft[,grep("virtue.*_rep"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_rep    <- as.numeric(apply(mft[,grep("vice.*_rep"
+                                                         ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over likes
+        mft$harm_virtue_li <- respAgg(resp,"harm_virtue.*_li")
+        mft$harm_vice_li   <- respAgg(resp,"harm_vice.*_li")
+        mft$fair_virtue_li <- respAgg(resp,"fair_virtue.*_li")
+        mft$fair_vice_li   <- respAgg(resp,"fair_vice.*_li")
+        mft$ingr_virtue_li <- respAgg(resp,"ingr_virtue.*_li")
+        mft$ingr_vice_li   <- respAgg(resp,"ingr_vice.*_li")
+        mft$auth_virtue_li <- respAgg(resp,"auth_virtue.*_li")
+        mft$auth_vice_li   <- respAgg(resp,"auth_vice.*_li")
+        mft$puri_virtue_li <- respAgg(resp,"puri_virtue.*_li")
+        mft$puri_vice_li   <- respAgg(resp,"puri_vice.*_li")
+        mft$mft_virtue_li  <- as.numeric(apply(mft[,grep("virtue.*_li"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_li    <- as.numeric(apply(mft[,grep("vice.*_li"
+                                                        ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over dislikes
+        mft$harm_virtue_di <- respAgg(resp,"harm_virtue.*_di")
+        mft$harm_vice_di   <- respAgg(resp,"harm_vice.*_di")
+        mft$fair_virtue_di <- respAgg(resp,"fair_virtue.*_di")
+        mft$fair_vice_di   <- respAgg(resp,"fair_vice.*_di")
+        mft$ingr_virtue_di <- respAgg(resp,"ingr_virtue.*_di")
+        mft$ingr_vice_di   <- respAgg(resp,"ingr_vice.*_di")
+        mft$auth_virtue_di <- respAgg(resp,"auth_virtue.*_di")
+        mft$auth_vice_di   <- respAgg(resp,"auth_vice.*_di")
+        mft$puri_virtue_di <- respAgg(resp,"puri_virtue.*_di")
+        mft$puri_vice_di   <- respAgg(resp,"puri_vice.*_di")
+        mft$mft_virtue_di  <- as.numeric(apply(mft[,grep("virtue.*_di"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_di    <- as.numeric(apply(mft[,grep("vice.*_di"
                                                         ,colnames(mft))],1,sum) > 0)
     }
 
