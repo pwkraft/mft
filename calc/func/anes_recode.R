@@ -14,7 +14,7 @@
 
 # install / load required packages
 # I have to rewrite the code since tmt relies on old packages (Snowball etc...)
-pkg <- c("plyr","stringr","tm","foreign", "car","mondate","readstata13") # tmt, dplyr
+pkg <- c("plyr","stringr","tm","foreign", "car","mondate","readstata13","tmt") # dplyr
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -115,7 +115,7 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
 ######################################
 ### word count based on mft dictionary
 
-opend_mft <- function(data, use_dict = "new") {
+opend_mft <- function(data, use_dict = "new", leader = TRUE) {
     #####################################################################
     # This function uses the MFT dictionaries to count instances
     # for each dimension in open responses
@@ -142,16 +142,24 @@ opend_mft <- function(data, use_dict = "new") {
                 , fair_virtue = read.csv("./in/dict/fairness_virtue.csv",allowEscapes=T)[,1]
                 , harm_virtue = read.csv("./in/dict/harm_virtue.csv",allowEscapes=T)[,1]
                 , ingr_virtue = read.csv("./in/dict/ingroup_virtue.csv",allowEscapes=T)[,1]
-                , puri_virtue = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1]
-                , general = read.csv("./in/dict/general.csv",allowEscapes=T)[,1])
+                , puri_virtue = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1])
+
+        ## remove leader entry from authority dictionary
+        if(leader==FALSE){
+            dict$auth_virtue <- dict$auth_virtue[-grep("leader",dict$auth_virtue)]
+        }
     } else if(use_dict == "old"){
         dict <- list(auth = read.csv("in/graham/authority.csv",allowEscapes=T)[,1]
                , fair = read.csv("./in/graham/fairness.csv",allowEscapes=T)[,1]
                , harm = read.csv("./in/graham/harm.csv",allowEscapes=T)[,1]
                , ingr = read.csv("./in/graham/ingroup.csv",allowEscapes=T)[,1]
                , puri = read.csv("./in/graham/purity.csv",allowEscapes=T)[,1])
+        ## remove leader entry from authority dictionary
+        if(leader==FALSE){
+            dict$auth <- dict$auth[-grep("leader",dict$auth)]
+        }
     } else {stop("Argument 'dict' must be either 'new' or 'old'")}
-
+    
     # check responses for dictionary entries
     resp <- data.frame(data[,1])
     for(v in 2:ncol(data)){
@@ -192,28 +200,36 @@ opend_mft <- function(data, use_dict = "new") {
 ### Basic variable recoding for each ANES time series survey
 
 ts_recode <- function(dta_src, raw_out = FALSE
-                      , id          = NULL
-                      , year        = NULL
-                      , weight      = NULL
-                      , ideol       = NULL
-                      , issues      = NULL
-                      , issue_aid   = NULL
-                      , issue_abort = NULL
-                      , issue_gay   = NULL
-                      , issue_women = NULL
-                      , pid         = NULL
-                      , polmedia    = NULL
-                      , polknow     = NULL
-                      , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
-                      , pastvote    = NULL
-                      , vote_dem    = NULL
-                      , age         = NULL
-                      , regdi_month = list(byear = NULL, bmonth = NULL)
-                      , female      = NULL
-                      , black       = NULL
-                      , educ        = NULL
-                      , relig       = list(oft = NULL, ever = NULL, more = NULL)
-                      , spanish     = NULL
+                    , id          = NULL
+                    , year        = NULL
+                    , weight      = NULL
+                    , ideol       = NULL
+                    , issues      = NULL
+                    , issue_aid   = NULL
+                    , issue_abort = NULL
+                    , issue_gay   = NULL
+                    , issue_women = NULL
+                    , pid         = NULL
+                    , polmedia    = NULL
+                    , polknow     = NULL
+                    , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
+                    , trait       = list(moral = NULL, lead = NULL, care = NULL
+                                       , know = NULL, int = NULL, honst = NULL)
+                    , eval_cand   = NULL
+                    , eval_party  = NULL
+                    , pastvote    = NULL
+                    , vote        = NULL
+                    , vote_dem    = NULL
+                    , protest     = NULL
+                    , petition    = NULL
+                    , button      = NULL
+                    , age         = NULL
+                    , regdi_month = list(byear = NULL, bmonth = NULL)
+                    , female      = NULL
+                    , black       = NULL
+                    , educ        = NULL
+                    , relig       = list(oft = NULL, ever = NULL, more = NULL)
+                    , spanish     = NULL
                       ){
     ###############################################################
     # This function implements basic recoding for each of the
@@ -373,14 +389,66 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$poldisc_c <- dat$poldisc - mean(dat$poldisc, na.rm = T)
     }
 
+    if(class(trait)=="list"){
+        for(i in 1:length(trait)){
+            if(length(trait[[i]] == 2)){
+                dat$trait <- (zero_one(5 - recode(raw[,trait[[i]][1]], "lo:-1 = NA")) -
+                              zero_one(5 - recode(raw[,trait[[i]][2]], "lo:-1 = NA")))
+            } else {
+                tmp1 <- zero_one(5 - recode(raw[,trait[[i]][1]], "lo:-1 = NA"))
+                tmp1[is.na(tmp1)] <- zero_one(5 - recode(raw[,trait[[i]][2]]
+                                                          , "lo:-1 = NA"))[is.na(tmp1)]
+                tmp2 <- zero_one(5 - recode(raw[,trait[[i]][3]], "lo:-1 = NA"))
+                tmp2[is.na(tmp2)] <- zero_one(5 - recode(raw[,trait[[i]][4]]
+                                                          , "lo:-1 = NA"))[is.na(tmp2)]
+                dat$trait <- tmp1 - tmp2
+                rm(tmp1, tmp2)
+            }
+            colnames(dat)[ncol(dat)] <- paste0("trait_",names(trait)[i])
+        }
+    }
+
+    if(!is.null(eval_cand)){
+        ## candidate evaluation
+        eval_cand <- (recode(raw[,eval_cand[1]], "lo:-1=NA; 101:hi=NA") -
+                      recode(raw[,eval_cand[2]], "lo:-1=NA; 101:hi=NA"))
+    }
+
+    if(!is.null(eval_party)){
+        ## party evaluation
+        eval_party <- (recode(raw[,eval_party[1]], "lo:-1=NA; 101:hi=NA") -
+                       recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))        
+    }
+
     if(!is.null(pastvote)){
         ## voted in previous election
-        dat$pastvote <- recode(raw[,pastvote], "lo:0=NA; c(2,5)=0")
+        dat$pastvote <- recode(raw[,pastvote], "c(2,5)=0; lo:-1=NA")
+    }
+
+    if(!is.null(vote)){
+        ## voted in current election
+        dat$vote <- recode(raw[,vote], "2=0; lo:-1=NA")
     }
     
     if(!is.null(vote_dem)){
         ## intends to vote for democratic presidential candidate
         dat$vote_dem <- recode(raw[,vote_dem], "lo:0=NA; 2=0; c(5,7)=NA")
+    }
+
+    if(!is.null(protest)){
+        ## participated in protest march / rally
+        dat$protest <- recode(raw[,protest], "c(2,5)=0; lo:-1=NA")
+    }
+
+    if(!is.null(petition)){
+        ## signed a petition
+        dat$petition <- as.numeric((recode(raw[,petition[1]], "c(2,5)=0; lo:-1=NA") +
+                                    recode(raw[,petition[2]], "c(2,5)=0; lo:-1=NA")) > 0)
+    }
+
+    if(!is.null(button)){
+        ## wear a campaign button
+        dat$button <- recode(raw[,protest], "c(2,5)=0; lo:-1=NA")
     }
 
     if(!is.null(age)){

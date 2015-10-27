@@ -47,13 +47,14 @@ anes2012opend <- opend_prep(csv_src = "/data/Copy/1-src/data/anes2012/anes2012TS
 ### mft dictionary and word count
 
 anes2008opend$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new")
-
 anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
+anes2008opend_noleader$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new", leader=F)
+anes2012opend_noleader$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new", leader=F)
 
 
 ### basic data recoding for each ANES survey
 
-anes2008ts <- ts_recode(dta_src = "../../data/anes2008/anes_timeseries_2008.dta" #"/data/Copy/1-src/data/anes2008/anes_timeseries_2008.dta"
+anes2008ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2008/anes_timeseries_2008.dta"
                       , raw_out = TRUE
                       , id          = "V080001"
                       , year        = 2008
@@ -76,9 +77,21 @@ anes2008ts <- ts_recode(dta_src = "../../data/anes2008/anes_timeseries_2008.dta"
                       , polknow     = list(V085119a = 5)
                       , poldisc     = list(oft = "V085108a"
                                            , ever = "V085108"  
-                                           , alternative = "V085109")  # postelection!!!
+                                         , alternative = "V085109")  # postelection!!!
+                      , trait       = list(moral = c("V083099a","V083100a","V083101a","V083102a")
+                                         , lead = c("V083099b","V083100b","V083101b","V083102b")
+                                         , care = c("V083099c","V083100c","V083101c","V083102c")
+                                         , know = c("V083099d","V083100d","V083101d","V083102d")
+                                         , int = c("V083099e","V083100e","V083101e","V083102e")
+                                         , honst = c("V083099f","V083100f","V083101f","V083102f"))
+                      , eval_cand   = c("V083037a","V083037b")
+                      , eval_party  = c("V083044a","V083044b")
                       , pastvote    = "V083007"
+                      , vote        = "V085036x"
                       , vote_dem    = "V083169a"
+                      , protest     = "V085201a"
+                      , petition    = c("V085201c","V085201d")
+                      , button      = "V085031"
                       , age         = "V081104"
                       , regdi_month = list(byear="V083215a"
                                            , bmonth="V083215b")
@@ -92,7 +105,7 @@ anes2008ts <- ts_recode(dta_src = "../../data/anes2008/anes_timeseries_2008.dta"
                                            , V082011 = 3)
                       )
 
-anes2012ts <- ts_recode(dta_src = "../../data/anes2012/anes_timeseries_2012.dta" #"/data/Copy/1-src/data/anes2012/anes_timeseries_2012.dta"
+anes2012ts <- ts_recode(dta_src = "/data/Copy/1-src/data/anes2012/anes_timeseries_2012.dta"
                       , raw_out = TRUE
                       , id          = "caseid"
                       , year        = 2012
@@ -116,9 +129,21 @@ anes2012ts <- ts_recode(dta_src = "../../data/anes2012/anes_timeseries_2012.dta"
                                            , preknow_medicare = 1
                                            , preknow_leastsp = 1)
                       , poldisc     = list(oft = "discuss_discpstwk"
-                                           , ever = "discuss_disc")   # postelection!!!
+                                         , ever = "discuss_disc")   # postelection!!!
+                      , trait       = list(moral = c("ctrait_dpcmoral","ctrait_rpcmoral")
+                                         , lead = c("ctrait_dpclead","ctrait_rpclead")
+                                         , care = c("ctrait_dpccare","ctrait_rpccare")
+                                         , know = c("ctrait_dpcknow","ctrait_rpcknow")
+                                         , int = c("ctrait_dpcint","ctrait_rpcint")
+                                         , honst = c("ctrait_dpchonst","ctrait_rpchonst"))
+                      , eval_cand   = c("ft_dpc","ft_rpc")
+                      , eval_party  = c("ft_dem","ft_rep")
                       , pastvote    = "interest_voted2008"
+                      , vote        = "rvote2012_x"
                       , vote_dem    = "prevote_intpreswho"
+                      , protest     = "dhsinvolv_march"
+                      , petition    = c("dhsinvolv_netpetition","dhsinvolv_petition")
+                      , button      = "mobilpo_sign"
                       , age         = "dem_age_r_x"
                       , female      = "gender_respondent_x"
                       , black       = "dem_raceeth_x"
@@ -136,18 +161,23 @@ anes2012ts <- ts_recode(dta_src = "../../data/anes2012/anes_timeseries_2012.dta"
 
 anes2008merge <- anes_merge(ts = anes2008ts, opend = anes2008opend
                             , valence = FALSE, check = TRUE)
-
 anes2012merge <- anes_merge(ts = anes2012ts, opend = anes2012opend
-                            , valence = FALSE, check = TRUE)
+                          , valence = FALSE, check = TRUE)
+anes2008merge_noleader <- anes_merge(ts = anes2008ts, opend = anes2008opend_noleader
+                                   , valence = FALSE, check = TRUE)
+anes2012merge_noleader <- anes_merge(ts = anes2012ts, opend = anes2012opend_noleader
+                                   , valence = FALSE, check = TRUE)
 
 
 ### save objects for analyses
 
-save(anes2008ts, anes2008opend, anes2008merge
-     , anes2012ts, anes2012opend, anes2012merge
+save(anes2008ts, anes2008opend, anes2008opend_noleader, anes2008merge, anes2008merge_noleader
+     , anes2012ts, anes2012opend, anes2012opend_noleader, anes2012merge, anes2012merge_noleader
      , file="out/anes_full.RData")
 
 anes2008 <- anes2008merge$data
 anes2012 <- anes2012merge$data
+anes2008noleader <- anes2008merge_noleader$data
+anes2012noleader <- anes2012merge_noleader$data
 
 save(anes2008, anes2012, file="out/anes.RData")
