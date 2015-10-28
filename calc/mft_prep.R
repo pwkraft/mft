@@ -45,7 +45,8 @@ anes2012opend <- opend_prep(csv_src = "/data/Copy/1-src/data/anes2012/anes2012TS
 
 
 ### mft dictionary and word count
-
+anes2008opend_noleader <- anes2008opend
+anes2012opend_noleader <- anes2012opend
 anes2008opend$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new")
 anes2012opend$resp <- opend_mft(data = anes2012opend$spell, use_dict = "new")
 anes2008opend_noleader$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new", leader=F)

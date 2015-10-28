@@ -133,11 +133,11 @@ opend_mft <- function(data, use_dict = "new", leader = TRUE) {
 
     # load dictionary (new or old)
     if(use_dict == "new"){
-        dict <- list(auth_vice = read.csv("./in/dict/authority_virtue.csv",allowEscapes=T)[,1]
-                , fair_vice = read.csv("./in/dict/fairness_virtue.csv",allowEscapes=T)[,1]
-                , harm_vice = read.csv("./in/dict/harm_virtue.csv",allowEscapes=T)[,1]
-                , ingr_vice = read.csv("./in/dict/ingroup_virtue.csv",allowEscapes=T)[,1]
-                , puri_vice = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1]
+        dict <- list(auth_vice = read.csv("./in/dict/authority_vice.csv",allowEscapes=T)[,1]
+                , fair_vice = read.csv("./in/dict/fairness_vice.csv",allowEscapes=T)[,1]
+                , harm_vice = read.csv("./in/dict/harm_vice.csv",allowEscapes=T)[,1]
+                , ingr_vice = read.csv("./in/dict/ingroup_vice.csv",allowEscapes=T)[,1]
+                , puri_vice = read.csv("./in/dict/purity_vice.csv",allowEscapes=T)[,1]
                 , auth_virtue = read.csv("./in/dict/authority_virtue.csv",allowEscapes=T)[,1]
                 , fair_virtue = read.csv("./in/dict/fairness_virtue.csv",allowEscapes=T)[,1]
                 , harm_virtue = read.csv("./in/dict/harm_virtue.csv",allowEscapes=T)[,1]
