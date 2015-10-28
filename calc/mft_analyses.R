@@ -584,21 +584,363 @@ ggplot(m2_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shap
                                           , "Fairness / \nReciprocity", "Harm / \nCare"))
 ggsave(filename = "fig/m2_vote.pdf")
 
-###### no plots, only tables? -> html might be best
 
 ### models predicting turnout based on moral foundations
 
+# model estimation
+m2b_2008_vote1 <- zelig(vote ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2b_2012_vote1 <- zelig(vote ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m2b_2008_vote2 <- zelig(vote ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2b_2012_vote2 <- zelig(vote ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2b_2008_vote1,m2b_2008_vote2,m2b_2012_vote1,m2b_2012_vote2
+          , type="text", out="tab/m2b_vote.tex"
+          , title="Logit Models Predicting Turnout Based on Moral Foundations"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Strength of Party Identification"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2b_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2b_res <- data.frame()
+mlist <- list(m2b_2008_vote1, m2b_2012_vote1, m2b_2008_vote2, m2b_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2b_res <- rbind(m2b_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2b_res) <- c("mean","cilo","cihi")
+m2b_res$var <- rep(4:1,4)
+m2b_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2b_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2b_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Predicted Probabilities to Participate in Election") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2b_vote.pdf")
+
+
 ### models predicting protest behavior based on moral foundations
+
+# model estimation
+m2c_2008_vote1 <- zelig(protest ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2c_2012_vote1 <- zelig(protest ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m2c_2008_vote2 <- zelig(protest ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2c_2012_vote2 <- zelig(protest ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2c_2008_vote1,m2c_2008_vote2,m2c_2012_vote1,m2c_2012_vote2
+          , type="text", out="tab/m2c_vote.tex"
+          , title="Logit Models Predicting Turnout Choice Based on Moral Foundations"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Strength of Party Identification"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2c_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2c_res <- data.frame()
+mlist <- list(m2c_2008_vote1, m2c_2012_vote1, m2c_2008_vote2, m2c_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2c_res <- rbind(m2c_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2c_res) <- c("mean","cilo","cihi")
+m2c_res$var <- rep(4:1,4)
+m2c_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2c_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2c_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Predicted Probabilities to Participate in Protest") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2c_vote.pdf")
+
 
 ### models predicting petition based on moral foundations
 
+# model estimation
+m2d_2008_vote1 <- zelig(petition ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2d_2012_vote1 <- zelig(petition ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m2d_2008_vote2 <- zelig(petition ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2d_2012_vote2 <- zelig(petition ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2d_2008_vote1,m2d_2008_vote2,m2d_2012_vote1,m2d_2012_vote2
+          , type="text", out="tab/m2d_vote.tex"
+          , title="Logit Models Predicting Petition Signing Based on Moral Foundations"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Strength of Party Identification"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2d_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2d_res <- data.frame()
+mlist <- list(m2d_2008_vote1, m2d_2012_vote1, m2d_2008_vote2, m2d_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2d_res <- rbind(m2d_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2d_res) <- c("mean","cilo","cihi")
+m2d_res$var <- rep(4:1,4)
+m2d_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2d_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2d_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Predicted Probabilities to Sign a Petition") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2d_vote.pdf")
+
+
 ### models predicting button based on moral foundations
 
-### models predicting candidate and party preferences based on moral foundations
+# model estimation
+m2e_2008_vote1 <- zelig(button ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2e_2012_vote1 <- zelig(button ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m2e_2008_vote2 <- zelig(button ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2e_2012_vote2 <- zelig(button ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2e_2008_vote1,m2e_2008_vote2,m2e_2012_vote1,m2e_2012_vote2
+          , type="text", out="tab/m2e_vote.tex"
+          , title="Logit Models Predicting Wearing Button/Sign Based on Moral Foundations"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Strength of Party Identification"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2e_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2e_res <- data.frame()
+mlist <- list(m2e_2008_vote1, m2e_2012_vote1, m2e_2008_vote2, m2e_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2e_res <- rbind(m2e_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2e_res) <- c("mean","cilo","cihi")
+m2e_res$var <- rep(4:1,4)
+m2e_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2e_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2e_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Predicted Probabilities to Show Button/Sign") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2e_vote.pdf")
+
+
+### models predicting party evaluations based on moral foundations
+
+# model estimation
+m2f_2008_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2f_2012_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2f_2008_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2f_2012_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+# generate table
+stargazer(m2f_2008_vote1,m2f_2008_vote2,m2f_2012_vote1,m2f_2012_vote2
+          , type="text", out="tab/m2f_vote.tex"
+          , title="Linear Model Predicting Feeling Thermometer Differential (Parties)"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Party Identification (Democrats)", "Party Identification (Republicans)"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2f_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2f_res <- data.frame()
+mlist <- list(m2f_2008_vote1, m2f_2012_vote1, m2f_2008_vote2, m2f_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2f_res <- rbind(m2f_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2f_res) <- c("mean","cilo","cihi")
+m2f_res$var <- rep(4:1,4)
+m2f_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2f_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2f_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Feeling Thermometer") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Feeling Thermometer Differential (Parties)") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for Party Identification")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2f_vote.pdf")
+
+
+### models predicting candidate evaluations based on moral foundations
+
+# model estimation
+m2g_2008_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2g_2012_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2g_2008_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2g_2012_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+# generate table
+stargazer(m2g_2008_vote1,m2g_2008_vote2,m2g_2012_vote1,m2g_2012_vote2
+          , type="text", out="tab/m2g_vote.tex"
+          , title="Linear Model Predicting Feeling Thermometer Differential (Candidates)"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Party Identification (Democrats)", "Party Identification (Republicans)"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2g_vote", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2g_res <- data.frame()
+mlist <- list(m2g_2008_vote1, m2g_2012_vote1, m2g_2008_vote2, m2g_2012_vote2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2g_res <- rbind(m2g_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2g_res) <- c("mean","cilo","cihi")
+m2g_res$var <- rep(4:1,4)
+m2g_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2g_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2g_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Feeling Thermometer") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Feeling Thermometer Differential (Candidates)") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for Party Identification")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2g_vote.pdf")
+
 
 ### models predicting candidate evaluations based on mftXtraits
 
+# model estimation
+m2h_2008a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+m2h_2008b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+m2h_2008c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+m2h_2008d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+m2h_2008e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+m2h_2008f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
+m2h_2012f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+
+# generate table
+stargazer(m2h_2008a,m2h_2012a,m2h_2008b,m2h_2012b,m2h_2008c,m2h_2012c,m2h_2008d,m2h_2012d,m2h_2008e,m2h_2012e,m2h_2008f,m2h_2012f
+          , type="text", out="tab/m2h_vote.html"
+          , title="Linear Model Predicting Feeling Thermometer Differential (Candidates)"
+          , column.labels = rep(c("2008","2012"),6), model.numbers = TRUE
+          , dep.var.labels="Feeling Thermometer Differential (preference for Democratic Candidate)"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , no.space=T
+)
+
+
 ### models predicting vote choice based on mftXtraits
+
+# model estimation
+m2i_2008a <- zelig(vote_dem ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012a <- zelig(vote_dem ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+m2i_2008b <- zelig(vote_dem ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012b <- zelig(vote_dem ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+m2i_2008c <- zelig(vote_dem ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012c <- zelig(vote_dem ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+m2i_2008d <- zelig(vote_dem ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012d <- zelig(vote_dem ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+m2i_2008e <- zelig(vote_dem ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012e <- zelig(vote_dem ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+m2i_2008f <- zelig(vote_dem ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2008, model="logit",cite=F)
+m2i_2012f <- zelig(vote_dem ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2i_2008a,m2i_2012a,m2i_2008b,m2i_2012b,m2i_2008c,m2i_2012c,m2i_2008d,m2i_2012d,m2i_2008e,m2i_2012e,m2i_2008f,m2i_2012f
+          , type="text", out="tab/m2i_vote.html"
+          , title="Logit Model Predicting Vote Choice for Democratic Candidate"
+          , column.labels = rep(c("2008","2012"),6), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , no.space=T
+)
 
 
 ### models predicting general references to moral foundations depending on political knowledge, media exposure, political discussions
@@ -680,3 +1022,9 @@ ggplot(m3_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shap
   scale_y_continuous(breaks=3:1, labels=c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions"))
 ggsave(filename = "fig/m3_learn.pdf")
 
+
+### models predicting the reference to specific moral foundations based on the interaction of ideology and political knowledge
+
+# estimate models
+m3b_2008_harm       <- zelig(harm_all ~ polknow*ideol + polmedia*ideol + poldisc*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm       <- zelig(harm_all ~ polknow*ideol + polmedia*ideol + poldisc*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)

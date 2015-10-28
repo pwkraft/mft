@@ -391,7 +391,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(class(trait)=="list"){
         for(i in 1:length(trait)){
-            if(length(trait[[i]] == 2)){
+            if(length(trait[[i]]) == 2){
                 dat$trait <- (zero_one(5 - recode(raw[,trait[[i]][1]], "lo:-1 = NA")) -
                               zero_one(5 - recode(raw[,trait[[i]][2]], "lo:-1 = NA")))
             } else {
@@ -410,14 +410,14 @@ ts_recode <- function(dta_src, raw_out = FALSE
 
     if(!is.null(eval_cand)){
         ## candidate evaluation
-        eval_cand <- (recode(raw[,eval_cand[1]], "lo:-1=NA; 101:hi=NA") -
-                      recode(raw[,eval_cand[2]], "lo:-1=NA; 101:hi=NA"))
+        dat$eval_cand <- (recode(raw[,eval_cand[1]], "lo:-1=NA; 101:hi=NA") -
+                          recode(raw[,eval_cand[2]], "lo:-1=NA; 101:hi=NA"))
     }
 
     if(!is.null(eval_party)){
         ## party evaluation
-        eval_party <- (recode(raw[,eval_party[1]], "lo:-1=NA; 101:hi=NA") -
-                       recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))        
+        dat$eval_party <- (recode(raw[,eval_party[1]], "lo:-1=NA; 101:hi=NA") -
+                           recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))        
     }
 
     if(!is.null(pastvote)){
