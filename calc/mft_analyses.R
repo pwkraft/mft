@@ -601,7 +601,7 @@ stargazer(m2b_2008_vote1,m2b_2008_vote2,m2b_2012_vote1,m2b_2012_vote2
                                , "Strength of Party Identification"
                                ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
           , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
-          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , dep.var.labels="Turnout"
           , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
           , label="tab:m2b_vote", no.space=T, table.placement="ht"
 )
@@ -632,6 +632,25 @@ ggplot(m2b_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), sha
   scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
                                           , "Fairness / \nReciprocity", "Harm / \nCare"))
 ggsave(filename = "fig/m2b_vote.pdf")
+
+
+### mft X ideology -> turnout
+
+# model estimation
+m2b_2008_vote1 <- zelig(vote ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2b_2012_vote1 <- zelig(vote ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m2b_2008_vote2 <- zelig(vote ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m2b_2012_vote2 <- zelig(vote ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m2b_2008_vote1,m2b_2008_vote2,m2b_2012_vote1,m2b_2012_vote2
+          , type="text", out="tab/m2b_vote2.tex"
+          , title="Logit Models Predicting Turnout Based on Moral Foundations"
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Turnout"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2b_vote2", no.space=T, table.placement="ht"
+)
 
 
 ### models predicting protest behavior based on moral foundations
@@ -779,6 +798,78 @@ ggplot(m2e_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), sha
   scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
                                           , "Fairness / \nReciprocity", "Harm / \nCare"))
 ggsave(filename = "fig/m2e_vote.pdf")
+
+
+### models predicting combined index of non-voting participation based on moral foundations
+
+# recode variables
+anes2008$part <- with(anes2008, protest + petition + button)
+anes2012$part <- with(anes2012, protest + petition + button)
+
+# model estimation
+m2e_2008_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
+m2e_2012_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+m2e_2008_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
+m2e_2012_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+
+# generate table
+stargazer(m2e_2008_part1,m2e_2008_part2,m2e_2012_part1,m2e_2012_part2
+          , type="text", out="tab/m2e_part.tex"
+          , title="OLS Models Predicting Protest Behavior Index Based on Moral Foundations"
+          , covariate.labels=c("Harm / Care","Fairness / Reciprocity","Ingroup / Loyalty","Authority / Respect"
+                               , "Strength of Party Identification"
+                               ,"Church Attendance","Education (College Degree)","Age","Sex (Female)","Race (African American)")
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2e_part", no.space=T, table.placement="ht"
+)
+
+# Plot predicted probabilities / expected values
+m2e_res <- data.frame()
+mlist <- list(m2e_2008_part1, m2e_2012_part1, m2e_2008_part2, m2e_2012_part2)
+for(i in 1:length(mlist)){
+  for(j in 1:4){
+    x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
+    sim <- sim(mlist[[i]], x=x)
+    m2e_res <- rbind(m2e_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
+                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
+    )
+  }
+}
+colnames(m2e_res) <- c("mean","cilo","cihi")
+m2e_res$var <- rep(4:1,4)
+m2e_res$year <- rep(c("2008","2012","2008","2012"),each = 4)
+m2e_res$cond <- rep(c("No", "Yes"), each=8)
+ggplot(m2e_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Protest Index") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Protest Behavior Index") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=1:4, labels=c("Authority /\nRespect", "Ingroup / \nLoyalty"
+                                          , "Fairness / \nReciprocity", "Harm / \nCare"))
+ggsave(filename = "fig/m2e_part.pdf")
+
+
+### moral foundations X ideology -> protest behavior
+
+# model estimation
+m2e_2008_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
+m2e_2012_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+m2e_2008_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
+m2e_2012_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+
+# generate table
+stargazer(m2e_2008_part1,m2e_2008_part2,m2e_2012_part1,m2e_2012_part2
+          , type="text", out="tab/m2e_part2.tex"
+          , title="OLS Models Predicting Protest Behavior Index Based on Moral Foundations"
+          , column.labels = c("2008","2012"), column.separate = c(2,2), model.numbers = TRUE
+          , dep.var.labels="Vote for Democratic Presidential Candidate"
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m2e_part2", no.space=T, table.placement="ht"
+)
 
 
 ### models predicting party evaluations based on moral foundations
@@ -1026,5 +1117,52 @@ ggsave(filename = "fig/m3_learn.pdf")
 ### models predicting the reference to specific moral foundations based on the interaction of ideology and political knowledge
 
 # estimate models
-m3b_2008_harm       <- zelig(harm_all ~ polknow*ideol + polmedia*ideol + poldisc*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
-m3b_2012_harm       <- zelig(harm_all ~ polknow*ideol + polmedia*ideol + poldisc*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_harm       <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm       <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_fair       <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_fair       <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_ingr       <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_ingr       <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_auth       <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_auth       <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table
+stargazer(m3b_2008_harm,m3b_2012_harm,m3b_2008_fair,m3b_2012_fair,m3b_2008_ingr,m3b_2012_ingr,m3b_2008_auth,m3b_2012_auth
+          , type="text", out="tab/m3b_learn.tex"
+          , title="Logit Models Predicting References to Specific Moral Foundations"
+          , column.labels = rep(c("2008","2012"),4), model.numbers = TRUE
+          , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+          , label="tab:m3_learn", no.space=T, table.placement="ht"
+)
+
+
+### look relationship between moral foundations
+
+## correlation matrix
+stargazer(cor(anes2008[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")]
+            , use="pairwise.complete.obs")
+        , type = "text", out = "tab/cor2008.tex", label = "tab:cor2008")
+stargazer(cor(anes2012[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")]
+            , use="pairwise.complete.obs")
+        , type = "text", out = "tab/cor2012.tex", label = "tab:cor2012")
+
+## factor analyses of MFT dimensions
+fact2008 <- factanal(na.omit(anes2008[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")])
+                    , 2, rotation="varimax")
+print(fact2008, digits=2, cutoff=.2, sort=TRUE)
+
+fact2012 <- factanal(na.omit(anes2012[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")])
+                    , 2, rotation="varimax")
+print(fact2012, digits=2, cutoff=.2, sort=TRUE)
+
+
+# plot factor 1 by factor 2
+load <- fit$loadings[,1:2]
+plot(load,type="n") # set up plot
+text(load,labels=names(mydata),cex=.7) # add variable names 
+
+
+
+
+
+
