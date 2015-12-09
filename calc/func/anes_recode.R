@@ -14,7 +14,7 @@
 
 # install / load required packages
 # I have to rewrite the code since tmt relies on old packages (Snowball etc...)
-pkg <- c("plyr","stringr","tmt","foreign", "car","mondate") # tm, dplyr
+pkg <- c("plyr","stringr","tm","foreign", "car","mondate","readstata13","tmt") # dplyr
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -115,7 +115,7 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
 ######################################
 ### word count based on mft dictionary
 
-opend_mft <- function(data, use_dict = "new") {
+opend_mft <- function(data, use_dict = "new", leader = TRUE) {
     #####################################################################
     # This function uses the MFT dictionaries to count instances
     # for each dimension in open responses
@@ -133,25 +133,33 @@ opend_mft <- function(data, use_dict = "new") {
 
     # load dictionary (new or old)
     if(use_dict == "new"){
-        dict <- list(auth_vice = read.csv("./in/dict/authority_virtue.csv",allowEscapes=T)[,1]
-                , fair_vice = read.csv("./in/dict/fairness_virtue.csv",allowEscapes=T)[,1]
-                , harm_vice = read.csv("./in/dict/harm_virtue.csv",allowEscapes=T)[,1]
-                , ingr_vice = read.csv("./in/dict/ingroup_virtue.csv",allowEscapes=T)[,1]
-                , puri_vice = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1]
+        dict <- list(auth_vice = read.csv("./in/dict/authority_vice.csv",allowEscapes=T)[,1]
+                , fair_vice = read.csv("./in/dict/fairness_vice.csv",allowEscapes=T)[,1]
+                , harm_vice = read.csv("./in/dict/harm_vice.csv",allowEscapes=T)[,1]
+                , ingr_vice = read.csv("./in/dict/ingroup_vice.csv",allowEscapes=T)[,1]
+                , puri_vice = read.csv("./in/dict/purity_vice.csv",allowEscapes=T)[,1]
                 , auth_virtue = read.csv("./in/dict/authority_virtue.csv",allowEscapes=T)[,1]
                 , fair_virtue = read.csv("./in/dict/fairness_virtue.csv",allowEscapes=T)[,1]
                 , harm_virtue = read.csv("./in/dict/harm_virtue.csv",allowEscapes=T)[,1]
                 , ingr_virtue = read.csv("./in/dict/ingroup_virtue.csv",allowEscapes=T)[,1]
-                , puri_virtue = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1]
-                , general = read.csv("./in/dict/general.csv",allowEscapes=T)[,1])
+                , puri_virtue = read.csv("./in/dict/purity_virtue.csv",allowEscapes=T)[,1])
+
+        ## remove leader entry from authority dictionary
+        if(leader==FALSE){
+            dict$auth_virtue <- dict$auth_virtue[-grep("leader",dict$auth_virtue)]
+        }
     } else if(use_dict == "old"){
         dict <- list(auth = read.csv("in/graham/authority.csv",allowEscapes=T)[,1]
                , fair = read.csv("./in/graham/fairness.csv",allowEscapes=T)[,1]
                , harm = read.csv("./in/graham/harm.csv",allowEscapes=T)[,1]
                , ingr = read.csv("./in/graham/ingroup.csv",allowEscapes=T)[,1]
                , puri = read.csv("./in/graham/purity.csv",allowEscapes=T)[,1])
+        ## remove leader entry from authority dictionary
+        if(leader==FALSE){
+            dict$auth <- dict$auth[-grep("leader",dict$auth)]
+        }
     } else {stop("Argument 'dict' must be either 'new' or 'old'")}
-
+    
     # check responses for dictionary entries
     resp <- data.frame(data[,1])
     for(v in 2:ncol(data)){
@@ -192,28 +200,36 @@ opend_mft <- function(data, use_dict = "new") {
 ### Basic variable recoding for each ANES time series survey
 
 ts_recode <- function(dta_src, raw_out = FALSE
-                      , id          = NULL
-                      , year        = NULL
-                      , weight      = NULL
-                      , ideol       = NULL
-                      , issues      = NULL
-                      , issue_aid   = NULL
-                      , issue_abort = NULL
-                      , issue_gay   = NULL
-                      , issue_women = NULL
-                      , pid         = NULL
-                      , polmedia    = NULL
-                      , polknow     = NULL
-                      , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
-                      , pastvote    = NULL
-                      , vote_dem    = NULL
-                      , age         = NULL
-                      , regdi_month = list(byear = NULL, bmonth = NULL)
-                      , female      = NULL
-                      , black       = NULL
-                      , educ        = NULL
-                      , relig       = list(oft = NULL, ever = NULL, more = NULL)
-                      , spanish     = NULL
+                    , id          = NULL
+                    , year        = NULL
+                    , weight      = NULL
+                    , ideol       = NULL
+                    , issues      = NULL
+                    , issue_aid   = NULL
+                    , issue_abort = NULL
+                    , issue_gay   = NULL
+                    , issue_women = NULL
+                    , pid         = NULL
+                    , polmedia    = NULL
+                    , polknow     = NULL
+                    , poldisc     = list(oft = NULL, ever = NULL, alternative = NULL)
+                    , trait       = list(moral = NULL, lead = NULL, care = NULL
+                                       , know = NULL, int = NULL, honst = NULL)
+                    , eval_cand   = NULL
+                    , eval_party  = NULL
+                    , pastvote    = NULL
+                    , vote        = NULL
+                    , vote_dem    = NULL
+                    , protest     = NULL
+                    , petition    = NULL
+                    , button      = NULL
+                    , age         = NULL
+                    , regdi_month = list(byear = NULL, bmonth = NULL)
+                    , female      = NULL
+                    , black       = NULL
+                    , educ        = NULL
+                    , relig       = list(oft = NULL, ever = NULL, more = NULL)
+                    , spanish     = NULL
                       ){
     ###############################################################
     # This function implements basic recoding for each of the
@@ -238,7 +254,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     options(stringsAsFactors = FALSE)
 
     ### recode independent variables
-    raw <- read.dta(dta_src, convert.factors = FALSE)
+    raw <- read.dta13(dta_src, convert.factors = FALSE)
     if(is.null(id)) stop("ID variable must be specified!")
     dat <- data.frame(id=raw[,id])
     
@@ -373,14 +389,66 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$poldisc_c <- dat$poldisc - mean(dat$poldisc, na.rm = T)
     }
 
+    if(class(trait)=="list"){
+        for(i in 1:length(trait)){
+            if(length(trait[[i]]) == 2){
+                dat$trait <- (zero_one(5 - recode(raw[,trait[[i]][1]], "lo:-1 = NA")) -
+                              zero_one(5 - recode(raw[,trait[[i]][2]], "lo:-1 = NA")))
+            } else {
+                tmp1 <- zero_one(5 - recode(raw[,trait[[i]][1]], "lo:-1 = NA"))
+                tmp1[is.na(tmp1)] <- zero_one(5 - recode(raw[,trait[[i]][2]]
+                                                          , "lo:-1 = NA"))[is.na(tmp1)]
+                tmp2 <- zero_one(5 - recode(raw[,trait[[i]][3]], "lo:-1 = NA"))
+                tmp2[is.na(tmp2)] <- zero_one(5 - recode(raw[,trait[[i]][4]]
+                                                          , "lo:-1 = NA"))[is.na(tmp2)]
+                dat$trait <- tmp1 - tmp2
+                rm(tmp1, tmp2)
+            }
+            colnames(dat)[ncol(dat)] <- paste0("trait_",names(trait)[i])
+        }
+    }
+
+    if(!is.null(eval_cand)){
+        ## candidate evaluation
+        dat$eval_cand <- (recode(raw[,eval_cand[1]], "lo:-1=NA; 101:hi=NA") -
+                          recode(raw[,eval_cand[2]], "lo:-1=NA; 101:hi=NA"))
+    }
+
+    if(!is.null(eval_party)){
+        ## party evaluation
+        dat$eval_party <- (recode(raw[,eval_party[1]], "lo:-1=NA; 101:hi=NA") -
+                           recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))        
+    }
+
     if(!is.null(pastvote)){
         ## voted in previous election
-        dat$pastvote <- recode(raw[,pastvote], "lo:0=NA; c(2,5)=0")
+        dat$pastvote <- recode(raw[,pastvote], "c(2,5)=0; lo:-1=NA")
+    }
+
+    if(!is.null(vote)){
+        ## voted in current election
+        dat$vote <- recode(raw[,vote], "2=0; lo:-1=NA")
     }
     
     if(!is.null(vote_dem)){
         ## intends to vote for democratic presidential candidate
         dat$vote_dem <- recode(raw[,vote_dem], "lo:0=NA; 2=0; c(5,7)=NA")
+    }
+
+    if(!is.null(protest)){
+        ## participated in protest march / rally
+        dat$protest <- recode(raw[,protest], "c(2,5)=0; lo:-1=NA")
+    }
+
+    if(!is.null(petition)){
+        ## signed a petition
+        dat$petition <- as.numeric((recode(raw[,petition[1]], "c(2,5)=0; lo:-1=NA") +
+                                    recode(raw[,petition[2]], "c(2,5)=0; lo:-1=NA")) > 0)
+    }
+
+    if(!is.null(button)){
+        ## wear a campaign button
+        dat$button <- recode(raw[,protest], "c(2,5)=0; lo:-1=NA")
     }
 
     if(!is.null(age)){
@@ -502,7 +570,6 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_all <- respAgg(resp,"ingr")
     mft$auth_all <- respAgg(resp,"auth")
     mft$puri_all <- respAgg(resp,"puri")
-    mft$general_all <- respAgg(resp,"general")
     mft$mft_all <- as.numeric(apply(mft[,grep("_all",colnames(mft))],1,sum) > 0)
 
     ## aggregating over party evaluations
@@ -511,7 +578,6 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_pa <- respAgg(resp,"ingr.*_pa")
     mft$auth_pa <- respAgg(resp,"auth.*_pa")
     mft$puri_pa <- respAgg(resp,"puri.*_pa")
-    mft$general_pa <- respAgg(resp,"general.*_pa")
     mft$mft_pa <- as.numeric(apply(mft[,grep("_pa",colnames(mft))],1,sum) > 0)
 
     ## aggregating over candidate evaluations
@@ -520,9 +586,40 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$ingr_ca <- respAgg(resp,"ingr.*_ca")
     mft$auth_ca <- respAgg(resp,"auth.*_ca")
     mft$puri_ca <- respAgg(resp,"puri.*_ca")
-    mft$general_ca <- respAgg(resp,"general.*_ca")
     mft$mft_ca <- as.numeric(apply(mft[,grep("_ca",colnames(mft))],1,sum) > 0)
-        
+
+    ## aggregating over democratic evaluations
+    mft$harm_dem <- respAgg(resp,"harm.*_dem")
+    mft$fair_dem <- respAgg(resp,"fair.*_dem")
+    mft$ingr_dem <- respAgg(resp,"ingr.*_dem")
+    mft$auth_dem <- respAgg(resp,"auth.*_dem")
+    mft$puri_dem <- respAgg(resp,"puri.*_dem")
+    mft$mft_dem <- as.numeric(apply(mft[,grep("_dem",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over republican evaluations
+    mft$harm_rep <- respAgg(resp,"harm.*_rep")
+    mft$fair_rep <- respAgg(resp,"fair.*_rep")
+    mft$ingr_rep <- respAgg(resp,"ingr.*_rep")
+    mft$auth_rep <- respAgg(resp,"auth.*_rep")
+    mft$puri_rep <- respAgg(resp,"puri.*_rep")
+    mft$mft_rep <- as.numeric(apply(mft[,grep("_rep",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over likes
+    mft$harm_li <- respAgg(resp,"harm.*_li")
+    mft$fair_li <- respAgg(resp,"fair.*_li")
+    mft$ingr_li <- respAgg(resp,"ingr.*_li")
+    mft$auth_li <- respAgg(resp,"auth.*_li")
+    mft$puri_li <- respAgg(resp,"puri.*_li")
+    mft$mft_li <- as.numeric(apply(mft[,grep("_li",colnames(mft))],1,sum) > 0)
+
+    ## aggregating over dislikes
+    mft$harm_di <- respAgg(resp,"harm.*_di")
+    mft$fair_di <- respAgg(resp,"fair.*_di")
+    mft$ingr_di <- respAgg(resp,"ingr.*_di")
+    mft$auth_di <- respAgg(resp,"auth.*_di")
+    mft$puri_di <- respAgg(resp,"puri.*_di")
+    mft$mft_di <- as.numeric(apply(mft[,grep("_di",colnames(mft))],1,sum) > 0)
+    
     if(valence == TRUE){
         ## aggregating over all items
         mft$harm_virtue_all <- respAgg(resp,"harm_virtue")
@@ -571,6 +668,70 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
                                                         ,colnames(mft))],1,sum) > 0)
         mft$mft_vice_ca    <- as.numeric(apply(mft[,grep("vice_ca"
                                                         ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over democratic evaluations
+        mft$harm_virtue_dem <- respAgg(resp,"harm_virtue.*_dem")
+        mft$harm_vice_dem   <- respAgg(resp,"harm_vice.*_dem")
+        mft$fair_virtue_dem <- respAgg(resp,"fair_virtue.*_dem")
+        mft$fair_vice_dem   <- respAgg(resp,"fair_vice.*_dem")
+        mft$ingr_virtue_dem <- respAgg(resp,"ingr_virtue.*_dem")
+        mft$ingr_vice_dem   <- respAgg(resp,"ingr_vice.*_dem")
+        mft$auth_virtue_dem <- respAgg(resp,"auth_virtue.*_dem")
+        mft$auth_vice_dem   <- respAgg(resp,"auth_vice.*_dem")
+        mft$puri_virtue_dem <- respAgg(resp,"puri_virtue.*_dem")
+        mft$puri_vice_dem   <- respAgg(resp,"puri_vice.*_dem")
+        mft$mft_virtue_dem  <- as.numeric(apply(mft[,grep("virtue.*_dem"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_dem    <- as.numeric(apply(mft[,grep("vice.*_dem"
+                                                         ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over republican evaluations
+        mft$harm_virtue_rep <- respAgg(resp,"harm_virtue.*_rep")
+        mft$harm_vice_rep   <- respAgg(resp,"harm_vice.*_rep")
+        mft$fair_virtue_rep <- respAgg(resp,"fair_virtue.*_rep")
+        mft$fair_vice_rep   <- respAgg(resp,"fair_vice.*_rep")
+        mft$ingr_virtue_rep <- respAgg(resp,"ingr_virtue.*_rep")
+        mft$ingr_vice_rep   <- respAgg(resp,"ingr_vice.*_rep")
+        mft$auth_virtue_rep <- respAgg(resp,"auth_virtue.*_rep")
+        mft$auth_vice_rep   <- respAgg(resp,"auth_vice.*_rep")
+        mft$puri_virtue_rep <- respAgg(resp,"puri_virtue.*_rep")
+        mft$puri_vice_rep   <- respAgg(resp,"puri_vice.*_rep")
+        mft$mft_virtue_rep  <- as.numeric(apply(mft[,grep("virtue.*_rep"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_rep    <- as.numeric(apply(mft[,grep("vice.*_rep"
+                                                         ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over likes
+        mft$harm_virtue_li <- respAgg(resp,"harm_virtue.*_li")
+        mft$harm_vice_li   <- respAgg(resp,"harm_vice.*_li")
+        mft$fair_virtue_li <- respAgg(resp,"fair_virtue.*_li")
+        mft$fair_vice_li   <- respAgg(resp,"fair_vice.*_li")
+        mft$ingr_virtue_li <- respAgg(resp,"ingr_virtue.*_li")
+        mft$ingr_vice_li   <- respAgg(resp,"ingr_vice.*_li")
+        mft$auth_virtue_li <- respAgg(resp,"auth_virtue.*_li")
+        mft$auth_vice_li   <- respAgg(resp,"auth_vice.*_li")
+        mft$puri_virtue_li <- respAgg(resp,"puri_virtue.*_li")
+        mft$puri_vice_li   <- respAgg(resp,"puri_vice.*_li")
+        mft$mft_virtue_li  <- as.numeric(apply(mft[,grep("virtue.*_li"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_li    <- as.numeric(apply(mft[,grep("vice.*_li"
+                                                        ,colnames(mft))],1,sum) > 0)
+
+        ## aggregating over dislikes
+        mft$harm_virtue_di <- respAgg(resp,"harm_virtue.*_di")
+        mft$harm_vice_di   <- respAgg(resp,"harm_vice.*_di")
+        mft$fair_virtue_di <- respAgg(resp,"fair_virtue.*_di")
+        mft$fair_vice_di   <- respAgg(resp,"fair_vice.*_di")
+        mft$ingr_virtue_di <- respAgg(resp,"ingr_virtue.*_di")
+        mft$ingr_vice_di   <- respAgg(resp,"ingr_vice.*_di")
+        mft$auth_virtue_di <- respAgg(resp,"auth_virtue.*_di")
+        mft$auth_vice_di   <- respAgg(resp,"auth_vice.*_di")
+        mft$puri_virtue_di <- respAgg(resp,"puri_virtue.*_di")
+        mft$puri_vice_di   <- respAgg(resp,"puri_vice.*_di")
+        mft$mft_virtue_di  <- as.numeric(apply(mft[,grep("virtue.*_di"
+                                                        ,colnames(mft))],1,sum) > 0)
+        mft$mft_vice_di    <- as.numeric(apply(mft[,grep("vice.*_di"
+                                                        ,colnames(mft))],1,sum) > 0)
     }
 
     ## include number of words in items
@@ -583,8 +744,7 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
                                                , grep("fair_", colnames(resp))
                                                , grep("ingr_", colnames(resp))
                                                , grep("auth_", colnames(resp))
-                                               , grep("puri_", colnames(resp))
-                                               , grep("general_", colnames(resp)))]
+                                               , grep("puri_", colnames(resp)))]
                                          , 1, sum,na.rm = TRUE))
     mft$num_moral[mft$num_total == 0] <- NA
     mft$num_prop <- mft$num_moral/mft$num_total
