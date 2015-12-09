@@ -461,7 +461,7 @@ ggplot(m1d_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color
   labs(y = "Dependent Variable: Moral Foundation"
        , x= "Conservatives more likey                                                       Liberals more likely") + 
   geom_vline(xintercept=0) + theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-  ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by in-part/out-party)") +
+  ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by in-party/out-party)") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
   theme(legend.position="bottom") + 
   scale_y_continuous(breaks=1:8, labels=c("Authority\n(out)","Authority\n(in)", "Ingroup\n(out)","Ingroup\n(in)", "Fairness\n(out)", "Fairness\n(in)", "Harm\n(out)", "Harm\n(in)"))
@@ -807,10 +807,10 @@ anes2008$part <- with(anes2008, protest + petition + button)
 anes2012$part <- with(anes2012, protest + petition + button)
 
 # model estimation
-m2e_2008_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
-m2e_2012_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
-m2e_2008_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
-m2e_2012_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+m2e_2008_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F, robust=T)
+m2e_2012_part1 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F, robust=T)
+m2e_2008_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F, robust=T)
+m2e_2012_part2 <- zelig(part ~ harm_all + fair_all + ingr_all + auth_all + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F, robust=T)
 
 # generate table
 stargazer(m2e_2008_part1,m2e_2008_part2,m2e_2012_part1,m2e_2012_part2
@@ -856,10 +856,10 @@ ggsave(filename = "fig/m2e_part.pdf")
 ### moral foundations X ideology -> protest behavior
 
 # model estimation
-m2e_2008_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
-m2e_2012_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
-m2e_2008_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F)
-m2e_2012_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F)
+m2e_2008_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F, robust=T)
+m2e_2012_part1 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F, robust=T)
+m2e_2008_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2008, model="ls",cite=F, robust=T)
+m2e_2012_part2 <- zelig(part ~ harm_all*ideol + fair_all*ideol + ingr_all*ideol + auth_all*ideol + pid_str + relig + educ + age + female + black + num_total, data=anes2012, model="ls",cite=F, robust=T)
 
 # generate table
 stargazer(m2e_2008_part1,m2e_2008_part2,m2e_2012_part1,m2e_2012_part2
@@ -875,10 +875,10 @@ stargazer(m2e_2008_part1,m2e_2008_part2,m2e_2012_part1,m2e_2012_part2
 ### models predicting party evaluations based on moral foundations
 
 # model estimation
-m2f_2008_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2f_2012_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
-m2f_2008_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2f_2012_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2f_2008_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2f_2012_vote1 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
+m2f_2008_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2f_2012_vote2 <- zelig(eval_party ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
 # generate table
 stargazer(m2f_2008_vote1,m2f_2008_vote2,m2f_2012_vote1,m2f_2012_vote2
@@ -924,10 +924,10 @@ ggsave(filename = "fig/m2f_vote.pdf")
 ### models predicting candidate evaluations based on moral foundations
 
 # model estimation
-m2g_2008_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2g_2012_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
-m2g_2008_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2g_2012_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2g_2008_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2g_2012_vote1 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
+m2g_2008_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2g_2012_vote2 <- zelig(eval_cand ~ harm_all + fair_all + ingr_all + auth_all + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
 # generate table
 stargazer(m2g_2008_vote1,m2g_2008_vote2,m2g_2012_vote1,m2g_2012_vote2
@@ -973,23 +973,23 @@ ggsave(filename = "fig/m2g_vote.pdf")
 ### models predicting candidate evaluations based on mftXtraits
 
 # model estimation
-m2h_2008a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012a <- zelig(eval_cand ~ harm_all*trait_moral + fair_all*trait_moral + ingr_all*trait_moral + auth_all*trait_moral + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
-m2h_2008b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012b <- zelig(eval_cand ~ harm_all*trait_lead + fair_all*trait_lead + ingr_all*trait_lead + auth_all*trait_lead + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
-m2h_2008c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012c <- zelig(eval_cand ~ harm_all*trait_care + fair_all*trait_care + ingr_all*trait_care + auth_all*trait_care + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
-m2h_2008d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012d <- zelig(eval_cand ~ harm_all*trait_know + fair_all*trait_know + ingr_all*trait_know + auth_all*trait_know + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
-m2h_2008e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012e <- zelig(eval_cand ~ harm_all*trait_int + fair_all*trait_int + ingr_all*trait_int + auth_all*trait_int + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
-m2h_2008f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2008, model="ls",cite=F)
-m2h_2012f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2012, model="ls",cite=F)
+m2h_2008f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2008, model="ls",cite=F, robust=T)
+m2h_2012f <- zelig(eval_cand ~ harm_all*trait_honst + fair_all*trait_honst + ingr_all*trait_honst + auth_all*trait_honst + relig + educ + age + female + black, data=anes2012, model="ls",cite=F, robust=T)
 
 # generate table
 stargazer(m2h_2008a,m2h_2012a,m2h_2008b,m2h_2012b,m2h_2008c,m2h_2012c,m2h_2008d,m2h_2012d,m2h_2008e,m2h_2012e,m2h_2008f,m2h_2012f
@@ -1117,26 +1117,102 @@ ggsave(filename = "fig/m3_learn.pdf")
 ### models predicting the reference to specific moral foundations based on the interaction of ideology and political knowledge
 
 # estimate models
-m3b_2008_harm       <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
-m3b_2012_harm       <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
-m3b_2008_fair       <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
-m3b_2012_fair       <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
-m3b_2008_ingr       <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
-m3b_2012_ingr       <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
-m3b_2008_auth       <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
-m3b_2012_auth       <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_harm_polknow <- zelig(harm_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm_polknow <- zelig(harm_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_fair_polknow <- zelig(fair_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_fair_polknow <- zelig(fair_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_ingr_polknow <- zelig(ingr_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_ingr_polknow <- zelig(ingr_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_auth_polknow <- zelig(auth_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_auth_polknow <- zelig(auth_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
 
-# generate table
-stargazer(m3b_2008_harm,m3b_2012_harm,m3b_2008_fair,m3b_2012_fair,m3b_2008_ingr,m3b_2012_ingr,m3b_2008_auth,m3b_2012_auth
+m3b_2008_harm_polmedia <- zelig(harm_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm_polmedia <- zelig(harm_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_fair_polmedia <- zelig(fair_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_fair_polmedia <- zelig(fair_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_ingr_polmedia <- zelig(ingr_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_ingr_polmedia <- zelig(ingr_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_auth_polmedia <- zelig(auth_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_auth_polmedia <- zelig(auth_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+m3b_2008_harm_poldisc <- zelig(harm_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm_poldisc <- zelig(harm_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_fair_poldisc <- zelig(fair_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_fair_poldisc <- zelig(fair_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_ingr_poldisc <- zelig(ingr_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_ingr_poldisc <- zelig(ingr_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_auth_poldisc <- zelig(auth_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_auth_poldisc <- zelig(auth_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+m3b_2008_harm_all <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_harm_all <- zelig(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_fair_all <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_fair_all <- zelig(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_ingr_all <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_ingr_all <- zelig(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+m3b_2008_auth_all <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2008, model="logit",cite=F)
+m3b_2012_auth_all <- zelig(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol + relig + educ + age + female + black + num_total, data=anes2012, model="logit",cite=F)
+
+# generate table (including all 3 vars)
+stargazer(m3b_2008_harm_all,m3b_2012_harm_all,m3b_2008_fair_all,m3b_2012_fair_all,m3b_2008_ingr_all,m3b_2012_ingr_all,m3b_2008_auth_all,m3b_2012_auth_all
           , type="text", out="tab/m3b_learn.tex"
           , title="Logit Models Predicting References to Specific Moral Foundations"
           , column.labels = rep(c("2008","2012"),4), model.numbers = TRUE
           , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-          , label="tab:m3_learn", no.space=T, table.placement="ht"
-)
+          , label="tab:m3b_learn", no.space=T, table.placement="ht"
+          )
+
+# plot the results (UPDATE CODE IN OTHER PLOTS ACCORDINGLY?)
+m3b_res <- data.frame()
+mlist <- list(m3b_2008_harm_polknow,m3b_2012_harm_polknow,m3b_2008_fair_polknow,m3b_2012_fair_polknow,m3b_2008_ingr_polknow,m3b_2012_ingr_polknow,m3b_2008_auth_polknow,m3b_2012_auth_polknow
+            , m3b_2008_harm_polmedia,m3b_2012_harm_polmedia,m3b_2008_fair_polmedia,m3b_2012_fair_polmedia,m3b_2008_ingr_polmedia,m3b_2012_ingr_polmedia,m3b_2008_auth_polmedia,m3b_2012_auth_polmedia
+            , m3b_2008_harm_poldisc,m3b_2012_harm_poldisc,m3b_2008_fair_poldisc,m3b_2012_fair_poldisc,m3b_2008_ingr_poldisc,m3b_2012_ingr_poldisc,m3b_2008_auth_poldisc,m3b_2012_auth_poldisc)
+for(i in 1:length(mlist)){
+    x <- setx(mlist[[i]]
+            , polknow_c  = rep(rev(range(mlist[[i]]$data[,"polknow_c"])), 2)
+            , polmedia_c = rep(rev(range(mlist[[i]]$data[,"polmedia_c"])), 2)
+            , poldisc_c  = rep(rev(range(mlist[[i]]$data[,"poldisc_c"])), 2)
+            , ideol = rep(c("Liberal","Conservative"), each = 2))
+    sim <- sim(mlist[[i]], x = x)
+    sim <- (sim$qi$ev[,1] - sim$qi$ev[,3]) - (sim$qi$ev[,2] - sim$qi$ev[,4])
+    new <- data.frame(mean = mean(sim), cilo = quantile(sim, 0.025)
+                    , cihi = quantile(sim, 0.975), dv = all.vars(mlist[[i]]$formula)[1]
+                     , iv = all.vars(mlist[[i]]$formula)[2]
+                              , year = mlist[[i]]$data[,"year"][1], cond = "No")
+    m3b_res <- rbind(m3b_res, new)
+}
+mlist <- list(m3b_2008_harm_all,m3b_2012_harm_all,m3b_2008_fair_all,m3b_2012_fair_all,m3b_2008_ingr_all,m3b_2012_ingr_all,m3b_2008_auth_all,m3b_2012_auth_all)
+for(i in 1:length(mlist)){
+    x <- setx(mlist[[i]]
+            , polknow_c  = c(rep(rev(range(mlist[[i]]$data[,"polknow_c"])), 2), rep(mean(mlist[[i]]$data[,"polknow_c"]), 8))
+            , polmedia_c = c(rep(mean(mlist[[i]]$data[,"polmedia_c"]), 4), rep(rev(range(mlist[[i]]$data[,"polmedia_c"])), 2), rep(mean(mlist[[i]]$data[,"polmedia_c"]), 4))
+            , poldisc_c  = c(rep(mean(mlist[[i]]$data[,"poldisc_c"]), 8), rep(rev(range(mlist[[i]]$data[,"poldisc_c"])), 2))
+            , ideol = rep(c("Liberal","Liberal","Conservative","Conservative"), 3))
+    sim <- sim(mlist[[i]], x = x)
+    sim <- cbind((sim$qi$ev[,1] - sim$qi$ev[,3]) - (sim$qi$ev[,2] - sim$qi$ev[,4])
+               , (sim$qi$ev[,5] - sim$qi$ev[,7]) - (sim$qi$ev[,6] - sim$qi$ev[,8])
+               , (sim$qi$ev[,9] - sim$qi$ev[,11]) - (sim$qi$ev[,10] - sim$qi$ev[,12]))
+    new <- data.frame(mean = apply(sim,2,mean), cilo = apply(sim, 2, quantile, 0.025)
+                    , cihi = apply(sim, 2, quantile, 0.975), dv = all.vars(mlist[[i]]$formula)[1]
+                     , iv = c("polknow_c", "polmedia_c", "poldisc_c")
+                    , year = mlist[[i]]$data[,"year"][1], cond = "Yes")
+    m3b_res <- rbind(m3b_res, new)
+}
+m3b_res$var <- - as.numeric(m3b_res$iv) + 4
+m3b_res$year <- as.character(m3b_res$year)
+levels(m3b_res$dv) <- c("Harm / Care", "Fairness / Reciprocity", "Ingroup / Loyalty", "Authority / Respect")
+ggplot(m3b_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shape=year, color = year, lty=cond)) +
+  geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+  labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") + geom_vline(xintercept=0) + 
+  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  ggtitle("Change in Effect of Ideology on the\nProbability to Reference each Moral Foundation") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for Both Remaining Variables")) +
+  theme(legend.position="bottom", legend.box="horizontal") + 
+  scale_y_continuous(breaks=3:1, labels=c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")) + facet_wrap(~dv)
+ggsave(filename = "fig/m3b_learn.pdf")
 
 
-### look relationship between moral foundations
+### look at relationship between moral foundations
 
 ## correlation matrix
 stargazer(cor(anes2008[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")]
@@ -1154,13 +1230,6 @@ print(fact2008, digits=2, cutoff=.2, sort=TRUE)
 fact2012 <- factanal(na.omit(anes2012[,c("harm_all","fair_all","ingr_all","auth_all","puri_all")])
                     , 2, rotation="varimax")
 print(fact2012, digits=2, cutoff=.2, sort=TRUE)
-
-
-# plot factor 1 by factor 2
-load <- fit$loadings[,1:2]
-plot(load,type="n") # set up plot
-text(load,labels=names(mydata),cex=.7) # add variable names 
-
 
 
 
