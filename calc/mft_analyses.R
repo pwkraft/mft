@@ -1107,7 +1107,7 @@ ggplot(m3_res, aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes"), shap
   geom_point(size=4) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable", x= "Change in Probability") + geom_vline(xintercept=0) + 
   theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-  ggtitle("Change in Predicted Probabilities to Reference any Moral Foundation") +
+  ggtitle("Change in Predicted Probabilities to Reference\nany Moral Foundation") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year"), lty=guide_legend(title="Control for Both Remaining Variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
   scale_y_continuous(breaks=3:1, labels=c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions"))
