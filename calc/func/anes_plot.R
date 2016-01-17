@@ -1,15 +1,15 @@
-##########################################################################################
-# Project:  Moral foundations of Political Reasoning
-# File:     anes_plot.R
-# Overview: this file contains several functions used in mft_analyses.R to plot the 
-#           dependent variables as well as the model results
-# Author:   Patrick Kraft
-# Date:     12/11/2014
-##########################################################################################
+###########################################################################################
+## Project:  Moral foundations of Political Reasoning
+## File:     anes_plot.R
+## Overview: functions used in mft_analyses.R to plot the 
+##           dependent variables as well as the model results
+## Author:   Patrick Kraft
+## Date:     12/11/2014
+###########################################################################################
 
 ### Load packages and data
 setwd("/data/Uni/projects/2014/mft/calc")
-pkg <- c("reshape2","ggplot2","Hmisc")
+pkg <- c("reshape2","ggplot2","Hmisc","MASS")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -104,3 +104,19 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
+
+### Function to calculate expected values/first differences (replaces Zelig call)
+
+simFD <- function(mfit, dv=NA, robust=F){
+  betas <- mvrnorm(10000, coef(mfit), vcov(mfit))
+  x <- cbind(c(1,0,0,0),c(1,1,0,0),c(1,0,1,0),c(1,0,0,1))
+  probs <- pnorm(betas%*%x)
+  fds <- probs[,-1]-probs[,1]
+  colnames(fds) <- names(coef(mfit))[-1]
+  out <- data.frame(cbind(apply(fds,2,mean),t(apply(fds,2,quantile,c(0.05,0.95)))))
+  colnames(out) <- c("mean","cilo","cihi")
+  rownames(out) <- NULL
+  out$iv <- names(coef(mfit))[-1]
+  out$dv <- dv
+  return(out)
+}

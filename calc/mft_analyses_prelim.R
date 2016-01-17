@@ -1,42 +1,34 @@
-###########################################################################################
-## Project:  Moral foundations of Political Reasoning
-## File:     mft_analyses.R
-## Overview: this file contains the main analyses and generates all plots and tables
-##           for the paper. Uses the datasets generated in mft_prep
-## Author:   Patrick Kraft
-## Date:     12/08/2014
-###########################################################################################
+##########################################################################################
+# Project:  Moral foundations of Political Reasoning
+# File:     mft_analyses.R
+# Overview: this file contains the main analyses and generates all plots and tables
+#           for the paper. Uses the datasets generated in mft_prep
+# Author:   Patrick Kraft
+# Date:     12/08/2014
+##########################################################################################
 
 
 rm(list=ls())
 setwd("/data/Uni/projects/2014/mft/calc")
 
-## load packages
-pkg <- c("reshape2","ggplot2","stargazer","xtable","MASS")
+# load packages
+pkg <- c("reshape2","ggplot2","stargazer","xtable")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(list=ls())
 
-## load additional functions
+# I had to install an old Zelig version because the new one still had bugs...
+# install.packages("func/Zelig_3.5.5.tar.gz",repos=NULL)
+library(Zelig)
+
+# load additional functions
 source("func/anes_plot.R")
 
-## load recoded dataset
+# load recoded dataset
 load("out/anes.RData")
 #load("out/anes_full.RData")
 
-
-
-###############################
-### Plots/Analyses in Paper ###
-###############################
-
-
-
-
-
-
-#####################################################
 
 #####################################
 # Data Overview: Dependent Variable #
