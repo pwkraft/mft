@@ -28,6 +28,8 @@ load("out/anes.RData")
 mftLabs <- c("Authority / \nRespect", "Ingroup / \nLoyalty"
            , "Fairness / \nReciprocity", "Harm / \nCare")
 polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
+covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female)"
+            ,"Race (African American)","Number of Words")
 
 
 
@@ -127,43 +129,43 @@ ggsave(filename = "fig/m3_learn.pdf", width = 6, height = 4)
 
 ## model estimation
 m3b_know <- NULL
-m3b_know[[1]] <- glm(harm_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_know[[1]] <- glm(harm_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_know[[2]] <- glm(fair_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_know[[2]] <- glm(fair_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_know[[3]] <- glm(ingr_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_know[[3]] <- glm(ingr_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_know[[4]] <- glm(auth_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_know[[4]] <- glm(auth_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
 m3b_media <- NULL
-m3b_media[[1]] <- glm(harm_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_media[[1]] <- glm(harm_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2012, family=binomial("logit"))
-m3b_media[[2]] <- glm(fair_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_media[[2]] <- glm(fair_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2012, family=binomial("logit"))
-m3b_media[[3]] <- glm(ingr_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_media[[3]] <- glm(ingr_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2012, family=binomial("logit"))
-m3b_media[[4]] <- glm(auth_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_media[[4]] <- glm(auth_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2012, family=binomial("logit"))
 m3b_disc <- NULL
-m3b_disc[[1]] <- glm(harm_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_disc[[1]] <- glm(harm_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_disc[[2]] <- glm(fair_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_disc[[2]] <- glm(fair_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_disc[[3]] <- glm(ingr_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_disc[[3]] <- glm(ingr_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
-m3b_disc[[4]] <- glm(auth_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_disc[[4]] <- glm(auth_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2012, family=binomial("logit"))
 m3b_all <- NULL
-m3b_all[[1]] <- glm(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_all[[1]] <- glm(harm_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2012, family=binomial("logit"))
-m3b_all[[2]] <- glm(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_all[[2]] <- glm(fair_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2012, family=binomial("logit"))
-m3b_all[[3]] <- glm(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_all[[3]] <- glm(ingr_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2012, family=binomial("logit"))
-m3b_all[[4]] <- glm(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_all[[4]] <- glm(auth_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2012, family=binomial("logit"))
 
@@ -536,43 +538,43 @@ ggsave(filename = "fig/appD2.pdf")
 
 ## model estimation
 m3b_2008_know <- NULL
-m3b_2008_know[[1]] <- glm(harm_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_know[[1]] <- glm(harm_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_know[[2]] <- glm(fair_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_know[[2]] <- glm(fair_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_know[[3]] <- glm(ingr_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_know[[3]] <- glm(ingr_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_know[[4]] <- glm(auth_all ~ polknow_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_know[[4]] <- glm(auth_all ~ ideol*polknow_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
 m3b_2008_media <- NULL
-m3b_2008_media[[1]] <- glm(harm_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_media[[1]] <- glm(harm_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2008, family=binomial("logit"))
-m3b_2008_media[[2]] <- glm(fair_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_media[[2]] <- glm(fair_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2008, family=binomial("logit"))
-m3b_2008_media[[3]] <- glm(ingr_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_media[[3]] <- glm(ingr_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2008, family=binomial("logit"))
-m3b_2008_media[[4]] <- glm(auth_all ~ polmedia_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_media[[4]] <- glm(auth_all ~ ideol*polmedia_c + relig + educ + age + female + black + num_total
                     , data=anes2008, family=binomial("logit"))
 m3b_2008_disc <- NULL
-m3b_2008_disc[[1]] <- glm(harm_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_disc[[1]] <- glm(harm_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_disc[[2]] <- glm(fair_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_disc[[2]] <- glm(fair_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_disc[[3]] <- glm(ingr_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_disc[[3]] <- glm(ingr_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
-m3b_2008_disc[[4]] <- glm(auth_all ~ poldisc_c*ideol + relig + educ + age + female + black + num_total
+m3b_2008_disc[[4]] <- glm(auth_all ~ ideol*poldisc_c + relig + educ + age + female + black + num_total
                    , data=anes2008, family=binomial("logit"))
 m3b_2008_all <- NULL
-m3b_2008_all[[1]] <- glm(harm_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_2008_all[[1]] <- glm(harm_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2008, family=binomial("logit"))
-m3b_2008_all[[2]] <- glm(fair_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_2008_all[[2]] <- glm(fair_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2008, family=binomial("logit"))
-m3b_2008_all[[3]] <- glm(ingr_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_2008_all[[3]] <- glm(ingr_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2008, family=binomial("logit"))
-m3b_2008_all[[4]] <- glm(auth_all ~ polknow_c*ideol + polmedia_c*ideol + poldisc_c*ideol
+m3b_2008_all[[4]] <- glm(auth_all ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c
                     + relig + educ + age + female + black + num_total
                   , data=anes2008, family=binomial("logit"))
 
@@ -764,7 +766,7 @@ ggplot(rbind(m2_res,m2_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
 ggsave(filename = "fig/appD7.pdf")
 
 
-### Figure D8: social/economic ideology -> mft
+### Figure D8: social/economic ideology -> mft (logit)
 
 ## combine issue positions to dimension (mean); high values -> more liberal position
 anes2008$ideol_econ <- with(anes2008, (issue_aid+issue_govspend-issue_medins+1)/3)
@@ -1082,7 +1084,152 @@ ggsave(filename = "fig/appD12.pdf")
 #########################################
 ### Appendix E: Tables of model estimates
 
-### remember to include robust standard errors if possible!
+
+### Table for figure 2 [+ 2008]: ideology -> mft (logit)
+
+stargazer(m1, m1_2008
+        , type="text", out="tab/m1_mft.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
+        , covariate.labels = c("Conservative", "Moderate", covLabs)
+        , column.labels = c("2012","2008"), column.separate = c(4,4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , dep.var.labels = rep(rev(gsub("\n","",mftLabs)),2)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1_mft", no.space=T, table.placement="ht"
+          )
 
 
+### Table for figure 3 [+ 2008]: engagement -> general mft reference (logit)
 
+stargazer(m3, m3_2008
+        , type="text", out="tab/m3_learn.tex"
+        , title="Logit Models Predicting Overall References to Moral Foundations"
+        , covariate.labels = c("Political Knowledge","Political Media Exposure"
+                              ,"Political Discussion",covLabs)
+        , column.labels = c("2012","2008"), column.separate = c(4,4)
+        , model.numbers = FALSE
+        , dep.var.labels="Reference to any Moral Foundation"
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m3_learn", no.space=T, table.placement="ht"
+          )
+
+
+### Table for figure 4 [+ 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
+
+## 2012
+stargazer(list(m3b_know[[1]],m3b_media[[1]],m3b_disc[[1]],m3b_all[[1]]
+             , m3b_know[[2]],m3b_media[[2]],m3b_disc[[2]],m3b_all[[2]]
+             , m3b_know[[3]],m3b_media[[3]],m3b_disc[[3]],m3b_all[[3]]
+             , m3b_know[[4]],m3b_media[[4]],m3b_disc[[4]],m3b_all[[4]])
+        , type="text", out="tab/m3b2012.tex"
+        , title="Logit Models Predicting References to Specific Moral Foundations (2012)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs)), model.numbers = FALSE
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m3b_learn", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , covariate.labels = c("Moderate","Conservative","Political Knowledge"
+                             , "Political Media Exposure","Political Discussion"
+                             , "Moderate X Knowledge","Conservative X Knowledge"
+                             , "Moderate X Media Exposure","Conservative X Media Exposure"
+                             , "Moderate X Discussion","Conservative X Discussion"
+                             , covLabs)
+          )
+
+## 2008
+stargazer(list(m3b_2008_know[[1]],m3b_2008_media[[1]],m3b_2008_disc[[1]],m3b_2008_all[[1]]
+             , m3b_2008_know[[2]],m3b_2008_media[[2]],m3b_2008_disc[[2]],m3b_2008_all[[2]]
+             , m3b_2008_know[[3]],m3b_2008_media[[3]],m3b_2008_disc[[3]],m3b_2008_all[[3]]
+             , m3b_2008_know[[4]],m3b_2008_media[[4]],m3b_2008_disc[[4]],m3b_2008_all[[4]])
+        , type="text", out="tab/m3b2008.tex"
+        , title="Logit Models Predicting References to Specific Moral Foundations (2008)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs)), model.numbers = FALSE
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m3b_learn", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , covariate.labels = c("Moderate","Conservative","Political Knowledge"
+                             , "Political Media Exposure","Political Discussion"
+                             , "Moderate X Knowledge","Conservative X Knowledge"
+                             , "Moderate X Media Exposure","Conservative X Media Exposure"
+                             , "Moderate X Discussion","Conservative X Discussion"
+                             , covLabs)
+          )
+
+
+### Figure 5 [+ 2008]: mft -> turnout (logit)
+
+stargazer(m2b,m2b_2008
+        , type="text", out="tab/m2b_vote.tex"
+        , title="Logit Models Predicting Turnout Based on Moral Foundations"
+        , covariate.labels=c(rev(gsub("\n","",mftLabs))
+                           , "Strength of Party Identification", covLabs)
+        , column.labels = c("2012","2008"), column.separate = c(2,2)
+        , model.numbers = TRUE, dep.var.labels="Turnout"
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2b_vote", no.space=T, table.placement="ht"
+          )
+
+
+### Figure 6: mft -> protest behavior index (ols)
+
+stargazer(m2e,m2e_2008
+        , type="text", out="tab/m2e.tex"
+        , title="Logit Models Predicting Wearing Button/Sign Based on Moral Foundations"
+        , covariate.labels=c(rev(gsub("\n","",mftLabs))
+                             , "Strength of Party Identification", covLabs)
+        , column.labels = c("2012","2008"), column.separate = c(2,2)
+        , model.numbers = TRUE, keep.stat = c("n","rsq")
+        , dep.var.labels="Vote for Democratic Presidential Candidate"
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2e", no.space=T, table.placement="ht"
+          )
+
+
+### Figure 7: mft -> feeling thermometer differentials (ols)
+
+stargazer(m2f[[1]],m2f[[2]],m2f_2008[[1]],m2f_2008[[2]]
+         ,m2f[[3]],m2f[[4]],m2f_2008[[3]],m2f_2008[[4]]
+        , type="text", out="tab/m2f.tex"
+        , title="Linear Model Predicting Feeling Thermometer Differential"
+        , dep.var.labels = c("Party Evaluations", "Candidate Evaluations")
+        , covariate.labels=c(rev(gsub("\n","",mftLabs))
+                           , "Party Identification (Democrats)"
+                           , "Party Identification (Republicans)", covLabs)
+        , column.labels = rep(c("2012","2008"),2), column.separate = c(2,2,2,2)
+        , model.numbers = TRUE, keep.stat = c("n","rsq")
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2f", no.space=T, table.placement="ht"
+          )
+
+
+### Figure 8: mft -> vote democratic (logit)
+
+## model estimation
+m2_2008 <- NULL
+
+
+### Figure D8: social/economic ideology -> mft (logit)
+
+## model estimation
+m1b <- NULL
+
+
+### Figure D9 [fig 2, no leader]: ideology -> mft (logit)
+
+## model estimation
+m1noleader <- NULL
+
+
+### Figure D10: ideology -> mft (virtues/vices)
+
+## model estimation
+m1c <- NULL
+
+
+### Figure D11: ideology -> mft (in-/out-party)
+
+## model estimation
+m1d <- NULL
+
+
+### Figure D12: ideology -> mft (likes/dislikes)
+
+## model estimation
+m1e <- NULL
