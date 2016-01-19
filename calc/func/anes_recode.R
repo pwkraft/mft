@@ -451,6 +451,11 @@ ts_recode <- function(dta_src, raw_out = FALSE
         dat$button <- recode(raw[,protest], "c(2,5)=0; lo:-1=NA")
     }
 
+    if(!is.null(protest) & !is.null(petition) & !is.null(button)){
+        ## additive index protest behavior
+        dat$part <- with(dat, protest + petition + button)
+    }
+
     if(!is.null(age)){
         ## age
         dat$age <- recode(raw[,age], "c(-2,-9,-8) = NA")
