@@ -1087,13 +1087,14 @@ ggsave(filename = "fig/appD12.pdf")
 
 ### Table for figure 2 [+ 2008]: ideology -> mft (logit)
 
-stargazer(m1, m1_2008
+stargazer(m1[[1]], m1_2008[[1]], m1[[2]], m1_2008[[2]]
+        , m1[[3]], m1_2008[[3]], m1[[4]], m1_2008[[4]]
         , type="text", out="tab/m1_mft.tex"
         , title="Logit Models Predicting References to four Moral Foundations using Ideology"
         , covariate.labels = c("Conservative", "Moderate", covLabs)
-        , column.labels = c("2012","2008"), column.separate = c(4,4)
+        , column.labels = rep(c("2012","2008"),4)
         , model.numbers = FALSE, order=c(2,1,3:8)
-        , dep.var.labels = rep(rev(gsub("\n","",mftLabs)),2)
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
         , label="tab:m1_mft", no.space=T, table.placement="ht"
           )
@@ -1201,35 +1202,125 @@ stargazer(m2f[[1]],m2f[[2]],m2f_2008[[1]],m2f_2008[[2]]
 
 ### Figure 8: mft -> vote democratic (logit)
 
-## model estimation
-m2_2008 <- NULL
+stargazer(m2,m2_2008
+        , type="text", out="tab/m2_vote.tex"
+        , title="Logit Models Predicting Democratic Vote Choice Based on Moral Foundations"
+        , covariate.labels=c(rev(gsub("\n","",mftLabs))
+                           , "Party Identification (Democrats)"
+                           , "Party Identification (Republicans)", covLabs)
+        , column.labels = c("2012","2008"), column.separate = c(2,2)
+        , model.numbers = FALSE
+        , dep.var.labels="Vote for Democratic Presidential Candidate"
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2_vote", no.space=T, table.placement="ht"
+          )
 
 
 ### Figure D8: social/economic ideology -> mft (logit)
 
-## model estimation
-m1b <- NULL
+stargazer(m1b[[1]], m1b[[5]], m1b[[2]], m1b[[6]], m1b[[3]], m1b[[7]], m1b[[4]], m1b[[8]]
+        , type="text", out="tab/m1b_mft.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Two-Dimensional Conceptualization of Ideology"
+        , covariate.labels = c("Economic Liberalism","Social Liberalism",covLabs)
+        , column.labels = rep(c("2012","2008"),4), model.numbers = FALSE
+        , dep.var.labels=rev(gsub("\n","",mftLabs))
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1b_mft", no.space=T, table.placement="ht"
+)
 
 
 ### Figure D9 [fig 2, no leader]: ideology -> mft (logit)
 
-## model estimation
-m1noleader <- NULL
+stargazer(m1noleader[[1]], m1noleader[[5]], m1noleader[[2]], m1noleader[[6]]
+        , m1noleader[[3]], m1noleader[[7]], m1noleader[[4]], m1noleader[[8]]
+        , type="text", out="tab/m1noleader.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
+        , covariate.labels = c("Conservative", "Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1noleader", no.space=T, table.placement="ht"
+          )
 
 
 ### Figure D10: ideology -> mft (virtues/vices)
 
-## model estimation
-m1c <- NULL
+## virtues
+stargazer(m1c[[1]], m1c[[9]], m1c[[3]], m1c[[11]], m1c[[5]], m1c[[13]], m1c[[7]], m1c[[15]]
+        , type="text", out="tab/m1c_virtue.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (virtues)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1_virtue", no.space=T, table.placement="ht"
+          )
+
+## vices
+stargazer(m1c[[2]], m1c[[10]], m1c[[4]], m1c[[12]], m1c[[6]], m1c[[14]], m1c[[8]], m1c[[16]]
+        , type="text", out="tab/m1c_vice.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (vices)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1_vice", no.space=T, table.placement="ht"
+          )
 
 
 ### Figure D11: ideology -> mft (in-/out-party)
 
-## model estimation
-m1d <- NULL
+## in-party
+stargazer(m1d[[1]], m1d[[9]], m1d[[3]], m1d[[11]], m1d[[5]], m1d[[13]], m1d[[7]], m1d[[15]]
+        , type="text", out="tab/m1d_inparty.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (in-party)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1d_inparty", no.space=T, table.placement="ht"
+          )
+
+## out-party
+stargazer(m1d[[2]], m1d[[10]], m1d[[4]], m1d[[12]], m1d[[6]], m1d[[14]], m1d[[8]], m1d[[16]]
+        , type="text", out="tab/m1d_outparty.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (out-party)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1d_outparty", no.space=T, table.placement="ht"
+)
 
 
 ### Figure D12: ideology -> mft (likes/dislikes)
 
-## model estimation
-m1e <- NULL
+## likes
+stargazer(m1e[[1]], m1e[[9]], m1e[[3]], m1e[[11]], m1e[[5]], m1e[[13]], m1e[[7]], m1e[[15]]
+        , type="text", out="tab/m1e_likes.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (likes)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate",covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1_likes", no.space=T, table.placement="ht"
+          )
+
+## dislikes
+stargazer(m1e[[2]], m1e[[10]], m1e[[4]], m1e[[12]], m1e[[6]], m1e[[14]], m1e[[8]], m1e[[16]]
+        , type="text", out="tab/m1e_dislikes.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (dislikes)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate",covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m1_dislikes", no.space=T, table.placement="ht"
+          )
+
