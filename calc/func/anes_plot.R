@@ -18,44 +18,49 @@ rm(pkg,inst)
 
 ### function to plot proportions
 
-prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file = NULL){
-  ## prepare dataset
-  ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/sum(!is.na(x)))}
+prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file = NULL
+                    , width = par("din")[1], height = par("din")[2]){
+    ## prepare dataset
+    ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/sum(!is.na(x)))}
   
-  prop_df <- NULL
-  for(i in 1:length(data)){
-    tmp <-  cbind(melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
-                                     ,by=list(groupvar = data[[i]][,groupvarname]),FUN=mean,na.rm=T))
-                      , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight,by=list(groupvar = data[[i]][,groupvarname])
-                                       ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
-                      , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight,by=list(groupvar = data[[i]][,groupvarname])
-                                       ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
-                  )
-    tmp$year <- unique(data[[i]]$year)[1]
-    prop_df <- rbind(prop_df, tmp)
-    rm(tmp)
-  }
-  colnames(prop_df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi","year")
-  
-  
-  ## create plot
-    out <- ggplot(prop_df, aes(x = Proportion, y = as.numeric(mft)+.30-.15*as.numeric(groupvar), shape=groupvar, color = groupvar)) +
-      geom_point(size=3) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) +
-      scale_color_manual(values=c("royalblue", "forestgreen", "firebrick")) +
-      labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-      ggtitle(title) + theme_bw() +
-      guides(color=guide_legend(title=legendname), shape=guide_legend(title=legendname)) +
-      scale_x_continuous(limits = c(0, 0.7)) + theme(legend.position="bottom") +
-      scale_y_continuous(breaks=1:5, labels=c("Purity / \nSanctity", "Authority / \nRespect", "Ingroup / \nLoyalty"
-                                                  , "Fairness / \nReciprocity", "Harm / \nCare"))
+    prop_df <- NULL
+    for(i in 1:length(data)){
+        tmp <-  cbind(melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+                                    ,by=list(groupvar = data[[i]][,groupvarname]),FUN=mean,na.rm=T))
+                    , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+                                    ,by=list(groupvar = data[[i]][,groupvarname])
+                                    ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
+                    , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+                                    ,by=list(groupvar = data[[i]][,groupvarname])
+                                    ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
+                      )
+        tmp$year <- unique(data[[i]]$year)[1]
+        prop_df <- rbind(prop_df, tmp)
+        rm(tmp)
+    }
+    colnames(prop_df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi","year")
+    
+    
+    ## create plot
+    out <- ggplot(prop_df, aes(x = Proportion, y = as.numeric(mft)+.5-.25*as.numeric(groupvar)
+                             , shape=groupvar, color = groupvar)) +
+        geom_point(size=3) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) +
+        scale_color_manual(values=c("royalblue", "forestgreen", "firebrick")) +
+        labs(y = "Moral Foundation", x = "Proportion of Respondents") +
+        ggtitle(title) + theme_bw() +
+        guides(color=guide_legend(title=legendname), shape=guide_legend(title=legendname)) +
+        scale_x_continuous(limits = c(0, 0.7)) + theme(legend.position="bottom") +
+        scale_y_continuous(breaks=1:5, labels=c("Purity / \nSanctity", "Authority / \nRespect"
+                                              , "Ingroup / \nLoyalty", "Fairness / \nReciprocity"
+                                              , "Harm / \nCare"))
     if(length(data)>1) out <- out + facet_grid(year ~ .)
-  
-  ## save plot
-  if(!is.null(file)){
-    ggsave(filename = file, plot = out)
-  }
-  
-  out
+    
+    ## save plot
+    if(!is.null(file)){
+        ggsave(filename = file, plot = out, width = width, height = height)
+    }
+    
+    out
 }
 
 # Multiple plot function
@@ -185,16 +190,3 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975)){
 }
 
 
-simFD <- function(mfit, dv=NA, robust=F){
-  betas <- mvrnorm(10000, coef(mfit), vcov(mfit))
-  x <- cbind(c(1,0,0,0),c(1,1,0,0),c(1,0,1,0),c(1,0,0,1))
-  probs <- pnorm(betas%*%x)
-  fds <- probs[,-1]-probs[,1]
-  colnames(fds) <- names(coef(mfit))[-1]
-  out <- data.frame(cbind(apply(fds,2,mean),t(apply(fds,2,quantile,c(0.05,0.95)))))
-  colnames(out) <- c("mean","cilo","cihi")
-  rownames(out) <- NULL
-  out$iv <- names(coef(mfit))[-1]
-  out$dv <- dv
-  return(out)
-}
