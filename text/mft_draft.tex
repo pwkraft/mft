@@ -134,7 +134,7 @@ All open-ended responses were pre-processed by correcting spelling errors using 
 
 After counting the occurrence of any of the signal words, the responses to the open-ended items (likes/dislikes for either parties and candidates) were collapsed since many of the respondents did not provide answers to every single one of them. Accordingly, the data used in the analyses described below consist of a matrix of dichotomous variables which indicate whether each respondent mentioned either of the five moral foundations in \textit{any} of the open-ended responses. Only if respondents failed to provide an answer in all of the items, the variable for each moral foundation is specified as missing.
 
-Table~\ref{tab:a1_mis} in the appendix provides an overview over the number of omitted cases due to respondents who did not provide responses to any of the items, or for which the interview language was Spanish. About 4\% of the interviews were held in Spanish in both surveys. Furthermore, about 7\% of the respondents in both data sets did not provide any open-ended responses. However, these proportions are much larger if we only take into account either open-ended candidate evaluations (13-14\%), or open-ended party evaluations (25\%). Furthermore, Figure~\ref{fig:a0_num} in the appendix displays histograms of the length of the respondents' answers to all open-ended items (i.e. summed over all responses), as well for candidate and party evaluations separately.
+Table~\ref{tab:appB1mis} in the appendix provides an overview over the number of omitted cases due to respondents who did not provide responses to any of the items, or for which the interview language was Spanish. About 4\% of the interviews were held in Spanish in both surveys. Furthermore, about 7\% of the respondents in both data sets did not provide any open-ended responses. However, these proportions are much larger if we only take into account either open-ended candidate evaluations (13-14\%), or open-ended party evaluations (25\%). Furthermore, Figure~\ref{fig:appB2num} in the appendix displays histograms of the length of the respondents' answers to all open-ended items (i.e. summed over all responses), as well for candidate and party evaluations separately.
 
 Individual response patterns are modeled as independent dichotomous outcomes via logistic regressions for each of the moral foundations under consideration \citep[c.f. for example][]{agresti1999modeling}.\footnote{The individual response patterns are non-exclusive in the sense that individuals can (and do) mention more than one of the moral foundations in their answers. Thus, it is not possible to model them in a multinomial logit or conditional logit framework. While such an approach would come with the benefit of estimating a unified model for the overall response pattern, this approach would not allow for instances where respondents reference multiple moral foundations \citep[but see][]{gilbert2007models}.}
 
@@ -149,14 +149,14 @@ In order to examine the relevance and consequences of moral reasoning, dummy ind
 
 \subsubsection{Ideological Differences in Moral Reasoning}
 
-Figure~\ref{fig:mft_ideol} provides an overview over the response patterns for individuals who identified as liberals, conservatives, or moderates. For each group, the Figure displays the (weighted) proportion of respondents who mentioned words that were included in the five different moral foundations dictionaries as well as their 95\% confidence intervals. In order to calculate these proportions, all responses to the eight open-ended like/dislike questions (evaluating both parties and both candidates) were aggregated for each individual. Therefore, each proportion indicates the percentage of individuals who mentioned a signal word belonging to the respective moral foundation in any of his or her open-ended responses evaluating the parties or candidates.
+Figure~\ref{fig:1prop} provides an overview over the response patterns for individuals who identified as liberals, conservatives, or moderates. For each group, the Figure displays the (weighted) proportion of respondents who mentioned words that were included in the five different moral foundations dictionaries as well as their 95\% confidence intervals. In order to calculate these proportions, all responses to the eight open-ended like/dislike questions (evaluating both parties and both candidates) were aggregated for each individual. Therefore, each proportion indicates the percentage of individuals who mentioned a signal word belonging to the respective moral foundation in any of his or her open-ended responses evaluating the parties or candidates.
 
 \begin{figure}[ht]\centering
-\includegraphics{../calc/fig/p1_mft_ideol.pdf}
-\caption{Moral foundations and ideology}\label{fig:mft_ideol}
+\includegraphics{../calc/fig/fig1prop.pdf}
+\caption{Moral foundations and ideology}\label{fig:1prop}
 \end{figure}
 
-Looking first at the result for 2012 (lower part of Figure~\ref{fig:mft_ideol}), the patterns are largely consistent with our theoretical expectations. Liberals were more likely than conservatives or moderates to mention the harm/care foundation. Almost half of the respondentes identifying as liberals mentioned words belonging to the harm/care category in their responses. Furthermore, they were more likely than conservatives to mention the fairness/reciprocity foundation. This pattern is consistent with Moral Foundations Theory, as is the tendency for more conservatives to reference the ingroup/loyalty foundation than liberals or moderates. There were some notable contradictions, however. Liberals used fewer fairness/reciprocity words than authority/respect words. Indeed, the proportion of liberal respondents referencing authority/respect is almost identical to the proportion of conservatives mentioning authority/respect. This result is inconsistent with previous research by moral foundations scholars.
+Looking first at the result for 2012, the patterns are largely consistent with our theoretical expectations. Liberals were more likely than conservatives or moderates to mention the harm/care foundation. Almost half of the respondentes identifying as liberals mentioned words belonging to the harm/care category in their responses. Furthermore, they were more likely than conservatives to mention the fairness/reciprocity foundation. This pattern is consistent with Moral Foundations Theory, as is the tendency for more conservatives to reference the ingroup/loyalty foundation than liberals or moderates. There were some notable contradictions, however. Liberals used fewer fairness/reciprocity words than authority/respect words. Indeed, the proportion of liberal respondents referencing authority/respect is almost identical to the proportion of conservatives mentioning authority/respect. This result is inconsistent with previous research by moral foundations scholars.
 
 The fact that the purity/sanctity foundation was almost never mentioned by any of the respondents is surprising, since other studies found that the purity/sanctity foundation plays a very important role when looking at ideological differences \citep{koleva2012tracing}. This result suggests that subsequent analyses of survey responses might necessitate a revision of the moral foundation dictionary, since the terms contained in the dictionary might not be relevant enough for political evaluations. Accordingly, some of the words (e.g. in the case of purity/sanctity) are just too uncommon in the political context. Due to the very rare mentioning of the purity/sanctity dimension, the subsequent analyses will only concentrate on the remaining four moral foundations.
 
@@ -164,16 +164,16 @@ Turning to the results for 2008, there are fewer patterns that are consistent wi
 
 Instead of looking at the aggregation of all survey items, we can also investigate the patterns in smaller subsets of responses (see Appendix~\ref{app:oview}). For example, taking into account only open-ended responses related to the evaluations of parties \textit{or} candidates shows the same basic patterns as in the pooled analysis. The results are also similar if respondents are differentiated by partisanship rather than political ideology. Overall, these results provide an inconclusive picture on the moral foundations of political reasoning. While some patterns are consistent with our theoretical expectations in 2012 (e.g. harm/care), they fail to be clearly replicated in 2008.
 
-In a subsequent step, I estimated logit models using ideology (and several control variables) to predict the individual probability of referring to each of the moral foundations (excluding purity/sanctity) in both surveys. Note that all models control for the total number of words used by each respondent for their open-ended responses.\footnote{The full logistic regression results are presented in the appendix, Table~\ref{tab:m1_mft}}. Figure~\ref{fig:m1_mft} displays the expected change in predicted probabilities to mention each moral foundation when comparing liberals and conservatives while holding all other variables constant at their respective means, along with 95\% confidence intervals. Again, equivalent to the discussion of Figure~\ref{fig:mft_ideol}, the responses for each individual were collapsed such that the dependent variables indicate whether any of their responses contained a reference to the moral foundations as identified by the dictionary. 
+In a subsequent step, I estimated logit models using ideology (and several control variables) to predict the individual probability of referring to each of the moral foundations (excluding purity/sanctity) in both surveys. Note that all models control for the total number of words used by each respondent for their open-ended responses.\footnote{The full logistic regression results are presented in the appendix, Table~\ref{tab:m2ideol}}. Figure~\ref{fig:2ideol} displays the expected change in predicted probabilities to mention each moral foundation when comparing liberals and conservatives while holding all other variables constant at their respective means, along with 95\% confidence intervals. Again, equivalent to the discussion of Figure~\ref{fig:2ideol}, the responses for each individual were collapsed such that the dependent variables indicate whether any of their responses contained a reference to the moral foundations as identified by the dictionary. 
 
 \begin{figure}\centering
-\includegraphics{../calc/fig/m1_mft.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives}\label{fig:m1_mft}
+\includegraphics{../calc/fig/fig2ideol.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives}\label{fig:2ideol}
 \end{figure}
 
 Positive values indicate a higher probability to mention the respective moral foundation in a response among respondents who identified as liberals, while negative values indicate a higher probability among conservatives. In 2012, the effects are consistent with the first hypothesis for three out of four moral foundations. Liberals are significantly more likely to mention harm/care and fairness/reciprocity when evaluating political parties and candidates than liberals. The probability of mentioning a word connected to the harm/care foundation is about 7.5 percentage points higher among liberals than conservatives. The effect is of similar size for the fairness/reciprocity dimension. Conversely, being conservative increases the likelihood of mentioning words that belong to the category of ingroup/loyalty by about 5 percentage points. However, liberals are significantly more likely to reference the moral foundation of authority/respect when evaluating political actors. This result is inconsistent with previous evidence regarding the endorsement of this foundation by conservatives. Furthermore, many of the effects from 2012 are not replicated when analyzing the 2008 ANES. Again, this may be due to the fact that the open-ended responses were recorded in a more indirect and summarized way than in 2012.
 
-I conducted auxiliary analyses to probe the robustness of the patterns in Figure~\ref{fig:mft_ideol} and \ref{fig:m1_mft} and especially to investigate alternative explanations for the inconsistent finding regarding the moral foundation of authority/respect (detailed results are included in Appendix~\ref{app:robust}). On the one hand, they could indicate that the unidimensional conceptualization of ideology, which has been used in most studies analyzing moral foundations theory, is too simplistic in order to describe systematic individual differences. I repeated the analyses using a two-dimensional conceptualization of ideology differentiating between a social as well as an economic dimension as proposed by \citet{feldman2014understanding}. While providing a more detailed picture for the dimensions of harm/care (driven especially by the economic dimension) and fairness/reciprocity (driven especialy by the social dimension), the results for authority/respect are similar to the first analysis. 
+I conducted auxiliary analyses to probe the robustness of the patterns in Figure~\ref{fig:1prop} and \ref{fig:2ideol} and especially to investigate alternative explanations for the inconsistent finding regarding the moral foundation of authority/respect (detailed results are included in Appendix~\ref{app:robust}). On the one hand, they could indicate that the unidimensional conceptualization of ideology, which has been used in most studies analyzing moral foundations theory, is too simplistic in order to describe systematic individual differences. I repeated the analyses using a two-dimensional conceptualization of ideology differentiating between a social as well as an economic dimension as proposed by \citet{feldman2014understanding}. While providing a more detailed picture for the dimensions of harm/care (driven especially by the economic dimension) and fairness/reciprocity (driven especialy by the social dimension), the results for authority/respect are similar to the first analysis. 
 
 The inconsistent results for the authority dimension might also be an artifact due to some peculiarity of the moral foundations dictionary. There might be signal words that are attributed to the authority/respect dimension and especially salient when talking about Barack Obama. For example, the moral foundations dictionary includes ``leader'' as a signal word for the authority/respet dimension. It could therefore be argued that the inconsistent finding is simply due to the fact that Obama is often considered as a ``good leader'' among his supporters. In order to examine this issue, I repeated the analyses after omitting ``leader'' from the moral foundations dictionary. The results do not change substantially.
 
@@ -184,11 +184,11 @@ The results discussed so far indicate that there are indeed important difference
 
 \subsubsection{Determinants of Moral Reasoning}
 
-Having shown that liberals and conservatives indeed differ with regard to the moral foundations they emphasize when evaluating political actors, I investigate whether the reliance on moral considerations is a product of exposure to political discourse. I predict the probability of mentioning any moral foundation with a series of logit models in which political sophistication, political media exposure, and frequency of political discussions are the key independent variables. Figure~\ref{fig:m3_learn} depicts the respective predicted probabilities when each independent variable (knowledge, media exposure, discussion) is increased from its empirical minimum value to its empirical maximum value, holding all other variables (including the number of words in each individual response) constant at their means.\footnote{Full model results are displayed in the appendix, Table~\ref{tab:m3_learn}.}
+Having shown that liberals and conservatives indeed differ with regard to the moral foundations they emphasize when evaluating political actors, I investigate whether the reliance on moral considerations is a product of exposure to political discourse. I predict the probability of mentioning any moral foundation with a series of logit models in which political sophistication, political media exposure, and frequency of political discussions are the key independent variables. Figure~\ref{fig:3learn} depicts the respective predicted probabilities when each independent variable (knowledge, media exposure, discussion) is increased from its empirical minimum value to its empirical maximum value, holding all other variables (including the number of words in each individual response) constant at their means.\footnote{Full model results are displayed in the appendix, Table~\ref{tab:m3learn}.}
 
 \begin{figure}\centering
-\includegraphics{../calc/fig/m3_learn.pdf}
-\caption{Change in predicted probabilities to reference any of the moral foundations depending on political knowledge, media exposure, and frequency of political discussions}\label{fig:m3_learn}
+\includegraphics{../calc/fig/fig3learn.pdf}
+\caption{Change in predicted probabilities to reference any of the moral foundations depending on political knowledge, media exposure, and frequency of political discussions}\label{fig:3learn}
 \end{figure}
 
 The results show, that most variables (except political discussions in 2008) have a positive effect on the individual probability to make use of moral foundations when evaluating political parties and candidates. Higher political sophistication, higher exposure to political media and news, as well as more frequent political discussions increase the probability that individuals rely on moral considerations. Thereby, citizens \textit{learn} to embed moral reasoning in their political evaluations. While moral intuitions themselves might well be innate, the extent to which individuals make use of these intuitions when thinking about politics and evaluating political actors may be more context-dependent and subject to individual heterogeneity.
@@ -196,13 +196,13 @@ The results show, that most variables (except political discussions in 2008) hav
 The significant positive effect of frequent political discussions in 2012 (even after controlling for the two remaining variables, political knowledge and media exposure), is especially interesting in this context. Citizens, who engage in frequent political arguments are more likely to use moral considerations when evaluating candidates and parties. This result could suggest that morality in politics plays an important role as a rhetorical tool utilized to convince others of certain political views. Overall, positive relationships between political knowledge, media exposure, and political discussions and moral reasoning are quite robust, even while controlling for individual response lengths. It is worth noting again that all analyses reported here include the length of individual responses as control variables, which should at least partly account for potential confounding factors such as general effects of increased political literacy on the complexity of open-ended responses.
 
 \begin{figure}\centering
-\includegraphics{../calc/fig/m3b_learn.pdf}
-\caption{Change in effect of ideology on predicted probabilities to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference)}\label{fig:m3b_learn}
+\includegraphics{../calc/fig/fig4ideolearn.pdf}
+\caption{Change in effect of ideology on predicted probabilities to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference)}\label{fig:4ideolearn}
 \end{figure}
 
-In addition to examining the reference to moral foundations \textit{in general}, we can also consider whether the effects of political discourse increase the differences in the emphasis on specific dimensions between liberals and conservatives. Figure~\ref{fig:m3b_learn} presents the change in the effect of ideology on the probability to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions. Thus, each point in the figure displays the interaction effect between knowledge, media exposure, and discussion, as well as ideology as a difference-in-difference in predicted probabilities while holding all other variables constant at their respective means. For example, the positive effect for political knowledge on the probability to reference the harm/care foundation in 2012 (top left part in the figure) indicates, that when political knowledge is increased from its empirical minimum to its maximum, the difference between liberals and conservatives is increased such that liberals are about 25 percentage points more likely to mention words belonging to the harm/care foundation than conservatives. In other words, positive effects imply that the gap between liberals and conservatives on the respective dimension is increased in favor of liberal respondents. Negative effects, on the other hand, indicate that the gap between liberals and conservatives is increased with conservatives becoming more likely to reference the respective moral dimension.
+In addition to examining the reference to moral foundations \textit{in general}, we can also consider whether the effects of political discourse increase the differences in the emphasis on specific dimensions between liberals and conservatives. Figure~\ref{fig:4ideolearn} presents the change in the effect of ideology on the probability to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions. Thus, each point in the figure displays the interaction effect between knowledge, media exposure, and discussion, as well as ideology as a difference-in-difference in predicted probabilities while holding all other variables constant at their respective means. For example, the positive effect for political knowledge on the probability to reference the harm/care foundation in 2012 (top left part in the figure) indicates, that when political knowledge is increased from its empirical minimum to its maximum, the difference between liberals and conservatives is increased such that liberals are about 25 percentage points more likely to mention words belonging to the harm/care foundation than conservatives. In other words, positive effects imply that the gap between liberals and conservatives on the respective dimension is increased in favor of liberal respondents. Negative effects, on the other hand, indicate that the gap between liberals and conservatives is increased with conservatives becoming more likely to reference the respective moral dimension.
 
-In order to interpret these difference-in-difference effects, consider again the basic findings reported in Figure~\ref{fig:m1_mft}. The estimates showed that on average, liberals were more likely to refernce the foundations of harm/care, fairness/reciprocity, and authority/respect, whereas conservatives were more likely to mention considerations related to the ingroup/loyalty dimension. Focusing on the effects in 2012 in Figure~\ref{fig:m3b_learn}, we see that for individuals with high political knowledge and media exposure, the difference between liberals and conservatives in terms of the harm/care foundation was more pronounced: the difference between liberals and conservatives is increased such that liberals are even more likely to reference this dimension compared to conservatives. While we do not observe any meaningful moderation effects for the fairness/reciprocity dimension, there is some evidence that the ideological gap in the ingroup/loyalty dimension is higher for respondents who discuss politics more frequently, as well as in the authority/respect dimension for respondents with high political knowledge. Again, these results are only apparent in 2012 and cannot be replicated in 2008.
+In order to interpret these difference-in-difference effects, consider again the basic findings reported in Figure~\ref{fig:2ideol}. The estimates showed that on average, liberals were more likely to refernce the foundations of harm/care, fairness/reciprocity, and authority/respect, whereas conservatives were more likely to mention considerations related to the ingroup/loyalty dimension. Focusing on the effects in 2012 in Figure~\ref{fig:4ideolearn}, we see that for individuals with high political knowledge and media exposure, the difference between liberals and conservatives in terms of the harm/care foundation was more pronounced: the difference between liberals and conservatives is increased such that liberals are even more likely to reference this dimension compared to conservatives. While we do not observe any meaningful moderation effects for the fairness/reciprocity dimension, there is some evidence that the ideological gap in the ingroup/loyalty dimension is higher for respondents who discuss politics more frequently, as well as in the authority/respect dimension for respondents with high political knowledge. Again, these results are only apparent in 2012 and cannot be replicated in 2008.
 
 Overall, political knowledge, media exposure, and political discussions do not only affect general levels of moral reasoning but also moderate the ideological gap between liberals and conservatives. This finding indicates that the effects of political discourse cannot be reduced to an artifact of differences in political literacy and more elaborate argumentation. Some portion of the ideological differences in emphasis on moral foundations can therfore be described as a product of learning in the political environment.
 
@@ -211,39 +211,39 @@ Overall, political knowledge, media exposure, and political discussions do not o
 
 Previous research relying on the MFQ linked moral foundations to a wide array of political outcomes, such as turnout \citep{johnson2014ideology}, candidate preferences \citep{iyer2010beyond}, and voting behavior \citep{franks2015using}. In the present study, it is argued that measures like the MFQ capture a latent predisposition for certain moral dimensions rather than directly assessing the actual reliance on moral considerations in political reasoning. In order to emphasize the importance of the distinction between moral foundations and explicit moral reasoning, it has to be examined whether the latter is indeed politically relevant. Thus, after showing similar ideological patterns in references to moral foundations based on open-ended survey responses and analyzing the extent to which moral reasoning (and the ideological gap therein) are contingent upon exposure to political discourse, we will now investigate whether the measure of moral reasoning employed here affects relevant political outcomes.
 
-As a first step, we will examine whether references to moral foundations affect political participation. Figure~\ref{fig:m2b_vote} displays the results of logit models predicting individual turnout as a function of individual references to moral foundations (as well as the regular set of control variables used in the previous analyses).
+As a first step, we will examine whether references to moral foundations affect political participation. Figure~\ref{fig:5turnout} displays the results of logit models predicting individual turnout as a function of individual references to moral foundations (as well as the regular set of control variables used in the previous analyses).
 
 \begin{figure}[ht]\centering
-\includegraphics{../calc/fig/m2b_vote.pdf}
-\caption{Change in predicted probabilities to participate in election depending on references to specific moral foundations}\label{fig:m2b_vote}
+\includegraphics{../calc/fig/fig5turnout.pdf}
+\caption{Change in predicted probabilities to participate in election depending on references to specific moral foundations}\label{fig:5turnout}
 \end{figure}
 
 Each of the moral foundations have a positive effect on the predicted probabilities of participating in the election. For example, if a respondent mentions considerations related to fairness/reciprocity when discussing his or her political preferences, the probability of turning out to vote is increased by amost 5 percentage points, holding all other variables constant at their respective means. While not all the effects are statistically significant, the overall pattern is clear. References to any moral foundation increase the probability of voting. Note that the estimates are based on models that already take into account the length of individual responses. Furthermore, most of the effects stay significant and are only reduced marginally after controlling for the strength of individual party identification.
 
 \begin{figure}[ht]\centering
-\includegraphics{../calc/fig/m2e_part.pdf}
-\caption{Change in protest behavior index depending on references to specific moral foundations}\label{fig:m2b_vote}
+\includegraphics{../calc/fig/fig6part.pdf}
+\caption{Change in protest behavior index depending on references to specific moral foundations}\label{fig:6part}
 \end{figure}
 
-The influence of moral reasoning extends to other forms of participation. Figure~\ref{fig:m2b_vote} displays estimates from a linear regression predicting protest behavior (participation in demonstration, displaying signs or campaign stickers, signing petitions) based on moral foundations. Again, references to moral foundations generally has positive effects on political engagement outside of the ballot box. Consider the effect of ingroup/loyalty in 2012 as an example. If respondents mentioned considerations related to this moral foundation, their additive protest index (ranging from 0 to 3) is increased by 0.1 points. This effect might not seem large, but bear in mind that the independent variable consists of a dichotomous indicator for references to any moral foundation in a set of open-ended questions. The fact that we can recover consistent and statistically significant effects on political participation in such a context (even after controlling for strength of party identification and the length of individual responses) is therefore quite meaningful.
+The influence of moral reasoning extends to other forms of participation. Figure~\ref{fig:6part} displays estimates from a linear regression predicting protest behavior (participation in demonstration, displaying signs or campaign stickers, signing petitions) based on moral foundations. Again, references to moral foundations generally has positive effects on political engagement outside of the ballot box. Consider the effect of ingroup/loyalty in 2012 as an example. If respondents mentioned considerations related to this moral foundation, their additive protest index (ranging from 0 to 3) is increased by 0.1 points. This effect might not seem large, but bear in mind that the independent variable consists of a dichotomous indicator for references to any moral foundation in a set of open-ended questions. The fact that we can recover consistent and statistically significant effects on political participation in such a context (even after controlling for strength of party identification and the length of individual responses) is therefore quite meaningful.
 
 Overall then, the analyses indicate that moral reasoning is positively associated with political engagement. That said, the analyses presented here are not sufficient to make a strong causal claim about the direction of this relationship. Yet, the results suggest that moral reasoning (as measured by open-ended survey responses) is powerfully related to different forms of political participation and engagement.
 
 \begin{figure}[ht]\centering
-\includegraphics{../calc/fig/m2f_vote.pdf}
-\caption{Effect of moral foundations on feeling thermometer differentials (candidates and parties)}\label{fig:m2f_vote}
+\includegraphics{../calc/fig/fig7feel.pdf}
+\caption{Effect of moral foundations on feeling thermometer differentials (candidates and parties)}\label{fig:7feel}
 \end{figure}
 
-In the next step, we turn to the relationship of moral reasoning and political preferences themselves. Figure~\ref{fig:m2f_vote} presents the results of linear regressions of moral foundations predicting the change in the feeling thermometer differential between the Republican and the Democratic Presidential candidate (top part of the figure) and the change in the feeling thermometer differential between the Republican and Democratic party. Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are largely consistent with the previous results on ideological differences. Individuals who mention considerations related to harm/care, fairness/reciprocity, and authority/respect evaluate the Democrative candidates on average 5 points higher than the Republican candidates (on a 100 point scale). On the other hand, if individuals emphasized the ingroup/loyalty dimension, they reported stronger preferences for the Republican candidates. These effects are robust after controlling for individual party identification. Thus, in both analyses in Figure~\ref{fig:m2f_vote}, we observed sizeable and significant effects for the influence of moral reasoning. This result is especially noteworthy given that respondents were not explicitly asked about morality. Furthermore, we do not distinguish between statements for either party or between positive and negative statements when constructing the indicators denoting moral references. Even though we are simply looking at the content of the collection of all positive and negative statements about both candidates and parties, we observe consistent and substantial effects on subsequent evaluations.
+In the next step, we turn to the relationship of moral reasoning and political preferences themselves. Figure~\ref{fig:7feel} presents the results of linear regressions of moral foundations predicting the change in the feeling thermometer differential between the Republican and the Democratic Presidential candidate (top part of the figure) and the change in the feeling thermometer differential between the Republican and Democratic party. Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are largely consistent with the previous results on ideological differences. Individuals who mention considerations related to harm/care, fairness/reciprocity, and authority/respect evaluate the Democrative candidates on average 5 points higher than the Republican candidates (on a 100 point scale). On the other hand, if individuals emphasized the ingroup/loyalty dimension, they reported stronger preferences for the Republican candidates. These effects are robust after controlling for individual party identification. Thus, in both analyses in Figure~\ref{fig:7feel}, we observed sizeable and significant effects for the influence of moral reasoning. This result is especially noteworthy given that respondents were not explicitly asked about morality. Furthermore, we do not distinguish between statements for either party or between positive and negative statements when constructing the indicators denoting moral references. Even though we are simply looking at the content of the collection of all positive and negative statements about both candidates and parties, we observe consistent and substantial effects on subsequent evaluations.
 
-Lastly, Figure~\ref{fig:m2_vote} finally presents the changes in expected probabilities of voting for the Democratic (vs. the Republican) presidential candidate in the 2008 and 2012 election for individuals mentioning the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including dummies for each moral foundation as independent variables as well as several sociodemographic control variables, which were held constant at their mean values when calculating expected values.\footnote{Full model results are displayed in the appendix, Table~\ref{tab:m2_vote}.}
+Lastly, Figure~\ref{fig:8vote} finally presents the changes in expected probabilities of voting for the Democratic (vs. the Republican) presidential candidate in the 2008 and 2012 election for individuals mentioning the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including dummies for each moral foundation as independent variables as well as several sociodemographic control variables, which were held constant at their mean values when calculating expected values.\footnote{Full model results are displayed in the appendix, Table~\ref{tab:m8vote}.}
 
 \begin{figure}[ht]\centering
-\includegraphics{../calc/fig/m2_vote.pdf}
-\caption{Change in predicted probabilities to vote for democratic candidate depending on references to specific moral foundations}\label{fig:m2_vote}
+\includegraphics{../calc/fig/fig8vote.pdf}
+\caption{Change in predicted probabilities to vote for democratic candidate depending on references to specific moral foundations}\label{fig:8vote}
 \end{figure}
 
-While not all effects displayed in Figure~\ref{fig:m2_vote} are statistically significant (especially in 2008), the patterns are similar to the results presented thus far. Individuals who mentioned moral considerations related to the harm/care foundation are (slightly) more likely to vote for the Democratic candidate. In 2012, the effect for the fairness/reciprocity foundation is also positive: respondents who mentioned this foundation were more likely to vote for Barack Obama than for Mitt Romney. In 2008, by contrast, the effects are negative and insignificant. Respondents who emphasized the ingroup/loyalty foundation, on the other hand, were less likely to vote for the Democratic candidate in both elections. While these results appear to be relatively consistent with Moral Foundations Theory, we see again that the effect for the authority/respect foundation deviates from our expectations: respondents mentioning this foundation were more likely to vote for the presidential candidate. Overall, Figure~\ref{fig:m2_vote} shows that it is possible to predict voting behavior simply by observing the moral dimensions of the respondents' political reasoning, without taking into account which candidate they described, and whether the description is framed positively or negatively. Moreover, most of these effects are even persistent when controlling for individual party identification.
+While not all effects displayed in Figure~\ref{fig:8vote} are statistically significant (especially in 2008), the patterns are similar to the results presented thus far. Individuals who mentioned moral considerations related to the harm/care foundation are (slightly) more likely to vote for the Democratic candidate. In 2012, the effect for the fairness/reciprocity foundation is also positive: respondents who mentioned this foundation were more likely to vote for Barack Obama than for Mitt Romney. In 2008, by contrast, the effects are negative and insignificant. Respondents who emphasized the ingroup/loyalty foundation, on the other hand, were less likely to vote for the Democratic candidate in both elections. While these results appear to be relatively consistent with Moral Foundations Theory, we see again that the effect for the authority/respect foundation deviates from our expectations: respondents mentioning this foundation were more likely to vote for the presidential candidate. Overall, Figure~\ref{fig:8vote} shows that it is possible to predict voting behavior simply by observing the moral dimensions of the respondents' political reasoning, without taking into account which candidate they described, and whether the description is framed positively or negatively. Moreover, most of these effects are even persistent when controlling for individual party identification.
 
 
 \section{Conclusion}
@@ -327,11 +327,11 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-\input{../calc/tab/appB_mis}
+\input{../calc/tab/appB1mis}
 
 \begin{figure}[ht]\centering
-\includegraphics[scale=.8]{../calc/fig/appB_num.pdf}
-\caption{Distribution of numbers of words in open-ended responses}\label{fig:a0_num}
+\includegraphics[scale=.8]{../calc/fig/appB2num.pdf}
+\caption{Distribution of numbers of words in open-ended responses}\label{fig:appB2num}
 \end{figure}
 
 \clearpage
@@ -342,8 +342,8 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \setcounter{table}{0}
 
 \begin{figure}[h]\centering
-\includegraphics[scale=.4]{../calc/fig/appC.pdf}
-\caption{Moral foundations and ideology (party evaluations)}\label{fig:appC}
+\includegraphics[scale=.4]{../calc/fig/appCprop.pdf}
+\caption{Moral foundations and ideology (party evaluations)}\label{fig:appCprop}
 \end{figure}
 
 \clearpage
@@ -353,43 +353,89 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-\begin{figure}[ht]
-%  \centering
-%  \caption{Some description}
-  \begin{subfigure}[b]{3in}
-    \includegraphics[scale=.4]{../calc/fig/m1b_mft.pdf}
- %   \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}
-  \end{subfigure}%
-  \begin{subfigure}[b]{3in}
-    \includegraphics[scale=.4]{../calc/fig/m1_mft_noleader.pdf}
-%    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting leader from the dictionary)}
-  \end{subfigure}
+% \begin{figure}[ht]
+% %  \centering
+% %  \caption{Some description}
+%   \begin{subfigure}[b]{3in}
+%     \includegraphics[scale=.4]{../calc/fig/m1b_mft.pdf}
+%  %   \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}
+%   \end{subfigure}%
+%   \begin{subfigure}[b]{3in}
+%     \includegraphics[scale=.4]{../calc/fig/m1_mft_noleader.pdf}
+% %    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting leader from the dictionary)}
+%   \end{subfigure}
+% \end{figure}
+
+
+\subsection{Ideological differences in moral reasoning including 2008}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD1ideol.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives}\label{fig:appD1ideol}
 \end{figure}
-      
+
 \begin{figure}[ht]\centering
-\includegraphics[scale=.4]{../calc/fig/m1b_mft.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}\label{fig:m1b_mft}
+\includegraphics[scale=.4]{../calc/fig/appD2soceco.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}\label{fig:appD2soceco}
 \end{figure}
 
 \begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/m1_mft_noleader.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting ``leader'' from the dictionary)}\label{fig:m1_mft_noleader}
+\includegraphics[scale=.4]{../calc/fig/appD3lead.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting ``leader'' from the dictionary)}\label{fig:appD3lead}
 \end{figure}
 
 \begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/m1c_mft.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating moral foundations by valence)}\label{fig:m1c_mft}
+\includegraphics[scale=.4]{../calc/fig/appD4val.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating moral foundations by valence)}\label{fig:appD4val}
 \end{figure}
 
 \begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/m1d_mft.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by in- and out-party)}\label{fig:m1d_mft}
+\includegraphics[scale=.4]{../calc/fig/appD5inout.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by in- and out-party)}\label{fig:appD5inout}
 \end{figure}
 
 \begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/m1e_mft.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by likes and dislikes)}\label{fig:m1e_mft}
+\includegraphics[scale=.4]{../calc/fig/appD6lidi.pdf}
+\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by likes and dislikes)}\label{fig:appD6lidi}
 \end{figure}
+
+
+\subsection{Determinants of moral reasoning including 2008}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD7learn.pdf}
+\caption{Change in predicted probabilities to reference any of the moral foundations depending on political knowledge, media exposure, and frequency of political discussions}\label{fig:appD7learn}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD8ideolearn.pdf}
+\caption{Change in effect of ideology on predicted probabilities to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference)}\label{fig:appD8ideolearn}
+\end{figure}
+
+
+\subsection{Investigating the political relevance of political reasoning including 2008}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
+\caption{Change in predicted probabilities to participate in election depending on references to specific moral foundations}\label{fig:appD9turnout}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD10part.pdf}
+\caption{Change in protest behavior index depending on references to specific moral foundations}\label{fig:appD10part}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD11feel.pdf}
+\caption{Effect of moral foundations on feeling thermometer differentials (candidates and parties)}\label{fig:appD11feel}
+\end{figure}
+
+\begin{figure}\centering
+\includegraphics[scale=.4]{../calc/fig/appD12vote.pdf}
+\caption{Change in predicted probabilities to vote for democratic candidate depending on references to specific moral foundations}\label{fig:appD12vote}
+\end{figure}
+
+
 
 \clearpage
 \section{Tables of Model Estimates}\label{app:tables}
@@ -398,9 +444,35 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-\input{../calc/tab/m1_mft}
-\input{../calc/tab/m2_vote}
-\input{../calc/tab/m3_learn}
+
+\subsection{Ideological differences in moral reasoning including 2008}
+
+\input{../calc/tab/m2ideol}
+\input{../calc/tab/m2soceco}
+\input{../calc/tab/m2lead}
+\input{../calc/tab/m2virtue}
+\input{../calc/tab/m2vice}
+\input{../calc/tab/m2inparty}
+\input{../calc/tab/m2outparty}
+\input{../calc/tab/m2likes}
+\input{../calc/tab/m2dislikes}
+
+
+\subsection{Determinants of moral reasoning including 2008}
+
+\input{../calc/tab/m3learn}
+\input{../calc/tab/m4ideolearn2012a}
+\input{../calc/tab/m4ideolearn2012b}
+\input{../calc/tab/m4ideolearn2008a}
+\input{../calc/tab/m4ideolearn2008b}
+
+
+\subsection{Investigating the political relevance of political reasoning including 2008}
+
+\input{../calc/tab/m5turnout}
+\input{../calc/tab/m6part}
+\input{../calc/tab/m7feel}
+\input{../calc/tab/m8vote}
 
 
 \end{document}

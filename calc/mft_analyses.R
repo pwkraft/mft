@@ -348,14 +348,9 @@ ggsave(filename = "fig/fig8vote.pdf", width = 6, height = 4)
 
 
 
-#############################
-### Material for Appendix ###
-#############################
-
-
-
-#############################
-### Appendix B: Data Overview
+#################################
+### Appendix B: Data Overview ###
+#################################
 
 
 ### table for missing cases
@@ -420,8 +415,10 @@ dev.off()
 
 
 
-############################################
-### Appendix C: Additional descriptive plots
+
+################################################
+### Appendix C: Additional descriptive plots ###
+################################################
 
 
 ### proportion of respondents mentioning each moral foundation
@@ -456,8 +453,15 @@ dev.off()
 
 
 
-######################################################################
-### Appendix D: Alternative model specifications and robustness checks
+
+##########################################################################
+### Appendix D: Alternative model specifications and robustness checks ###
+##########################################################################
+
+
+
+#####################################################################
+### Part 1: Ideological differences in moral reasoning including 2008
 
 
 ### Figure D1 [fig 2 + 2008]: ideology -> mft (logit)
@@ -492,7 +496,325 @@ ggplot(rbind(m2_res,m2_2008_res), aes(x = mean, y=var-.052+.11*(year=="2008")
 ggsave(filename = "fig/appD1ideol.pdf")
 
 
-### Figure D2 [fig 3 + 2008]: engagement -> general mft reference (logit)
+### Figure D2: social/economic ideology -> mft (logit)
+
+## combine issue positions to dimension (mean); high values -> more liberal position
+anes2008$ideol_econ <- with(anes2008, (issue_aid+issue_govspend-issue_medins+1)/3)
+anes2008$ideol_social <- anes2008$issue_gay
+anes2012$ideol_econ <- with(anes2012, (issue_aid+issue_govspend-issue_medins-issue_jobs+2)/4)
+anes2012$ideol_social <- with(anes2012, (issue_gay+issue_abort)/2)
+
+## check factor analysis for 2012
+factanal(na.omit(anes2012[,grep("issue",names(anes2012))]), 1, rotation="varimax")
+factanal(na.omit(anes2012[,grep("issue",names(anes2012))]), 2, rotation="varimax")
+
+## model estimation
+m2soceco <- NULL
+m2soceco[[1]] <- glm(harm_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2soceco[[2]] <- glm(fair_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2soceco[[3]] <- glm(ingr_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2soceco[[4]] <- glm(auth_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2soceco[[5]] <- glm(harm_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2soceco[[6]] <- glm(fair_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2soceco[[7]] <- glm(ingr_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2soceco[[8]] <- glm(auth_all ~ ideol_econ + ideol_social
+                + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+
+## simulation of predicted probabilities / first differences
+m2soceco_res <- rbind(sim(m2soceco, iv=data.frame(ideol_econ=c(0,1)))
+               , sim(m2soceco, iv=data.frame(ideol_social=c(0,1))))
+m2soceco_res$var <- rep(4:1,4)
+m2soceco_res$year <- rep(rep(c("2012","2008"),each = 4),2)
+m2soceco_res$Ideology <- rep(c("Economic Dimension","Social Dimension"),each = 8)
+
+## generate plot
+ggplot(m2soceco_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
+    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
+    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+    labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Conservatives more likey                             Liberals more likely") + 
+    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation") +
+    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+    theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+    facet_grid(Ideology ~ .)
+ggsave(filename = "fig/appD2soceco.pdf")
+
+
+### Figure D3 [fig 2, no leader]: ideology -> mft (logit)
+
+## model estimation
+m2lead <- NULL
+m2lead[[1]] <- glm(harm_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2012noleader, family=binomial("logit"))
+m2lead[[2]] <- glm(fair_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2012noleader, family=binomial("logit"))
+m2lead[[3]] <- glm(ingr_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2012noleader, family=binomial("logit"))
+m2lead[[4]] <- glm(auth_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2012noleader, family=binomial("logit"))
+m2lead[[5]] <- glm(harm_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2008noleader, family=binomial("logit"))
+m2lead[[6]] <- glm(fair_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2008noleader, family=binomial("logit"))
+m2lead[[7]] <- glm(ingr_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2008noleader, family=binomial("logit"))
+m2lead[[8]] <- glm(auth_all ~ ideol + relig + educ + age + female + black + num_total
+                     , data=anes2008noleader, family=binomial("logit"))
+
+## simulation of predicted probabilities / first differences
+m2lead_res <- sim(m2lead, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
+m2lead_res$var <- rep(4:1,2)
+m2lead_res$year <- rep(c("2012","2008"),each=4)
+
+## generate plot
+ggplot(m2lead_res, aes(x = mean, y=var-.052+.11*(year=="2008")
+                         , shape=year, color = year)) +
+    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
+    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+    labs(y = "Dependent Variable:\nMoral Foundation (no leader)"
+       , x = "Conservatives more likey                             Liberals more likely") + 
+    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+    ggtitle("Change in Predicted Probabilities to\nReference each Moral Foundation") +
+    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+    theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs)
+ggsave(filename = "fig/appD3lead.pdf")
+
+
+### Figure D4: ideology -> mft (virtues/vices)
+
+## model estimation
+m2val <- NULL
+m2val[[1]] <- glm(harm_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[2]] <- glm(harm_vice_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[3]] <- glm(fair_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[4]] <- glm(fair_vice_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[5]] <- glm(ingr_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[6]] <- glm(ingr_vice_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[7]] <- glm(auth_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[8]] <- glm(auth_vice_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2val[[9]] <- glm(harm_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2val[[10]] <- glm(harm_vice_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[11]] <- glm(fair_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[12]] <- glm(fair_vice_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[13]] <- glm(ingr_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[14]] <- glm(ingr_vice_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[15]] <- glm(auth_virtue_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2val[[16]] <- glm(auth_vice_all ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+
+## simulation of predicted probabilities / first differences
+m2val_res <- sim(m2val, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
+m2val_res$var <- rep(8:1,2)
+m2val_res$year <- rep(c("2012","2008"),each=8)
+
+## generate plot
+ggplot(m2val_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
+    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
+    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+    labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Conservatives more likey                             Liberals more likely") + 
+    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by valence)") +
+    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+    theme(legend.position="bottom") + 
+    scale_y_continuous(breaks=1:8, labels=c("Authority\n(vice)","Authority\n(virtue)"
+                                          , "Ingroup\n(vice)","Ingroup\n(virtue)"
+                                          , "Fairness\n(vice)", "Fairness\n(virtue)"
+                                          , "Harm\n(vice)", "Harm\n(virtue)"))
+ggsave(filename = "fig/appD4val.pdf")
+
+
+### Figure D5: ideology -> mft (in-/out-party)
+
+## in-party DV
+anes2012$harm_in <- anes2012$harm_dem
+anes2012$harm_in[which(anes2012$vote_dem==0)] <- anes2012$harm_rep[which(anes2012$vote_dem==0)]
+anes2012$fair_in <- anes2012$fair_dem
+anes2012$fair_in[which(anes2012$vote_dem==0)] <- anes2012$fair_rep[which(anes2012$vote_dem==0)]
+anes2012$ingr_in <- anes2012$ingr_dem
+anes2012$ingr_in[which(anes2012$vote_dem==0)] <- anes2012$ingr_rep[which(anes2012$vote_dem==0)]
+anes2012$auth_in <- anes2012$auth_dem
+anes2012$auth_in[which(anes2012$vote_dem==0)] <- anes2012$auth_rep[which(anes2012$vote_dem==0)]
+anes2008$harm_in <- anes2008$harm_dem
+anes2008$harm_in[which(anes2008$vote_dem==0)] <- anes2008$harm_rep[which(anes2008$vote_dem==0)]
+anes2008$fair_in <- anes2008$fair_dem
+anes2008$fair_in[which(anes2008$vote_dem==0)] <- anes2008$fair_rep[which(anes2008$vote_dem==0)]
+anes2008$ingr_in <- anes2008$ingr_dem
+anes2008$ingr_in[which(anes2008$vote_dem==0)] <- anes2008$ingr_rep[which(anes2008$vote_dem==0)]
+anes2008$auth_in <- anes2008$auth_dem
+anes2008$auth_in[which(anes2008$vote_dem==0)] <- anes2008$auth_rep[which(anes2008$vote_dem==0)]
+
+## out-party DV
+anes2012$harm_out <- anes2012$harm_dem
+anes2012$harm_out[which(anes2012$vote_dem==1)] <- anes2012$harm_rep[which(anes2012$vote_dem==1)]
+anes2012$fair_out <- anes2012$fair_dem
+anes2012$fair_out[which(anes2012$vote_dem==1)] <- anes2012$fair_rep[which(anes2012$vote_dem==1)]
+anes2012$ingr_out <- anes2012$ingr_dem
+anes2012$ingr_out[which(anes2012$vote_dem==1)] <- anes2012$ingr_rep[which(anes2012$vote_dem==1)]
+anes2012$auth_out <- anes2012$auth_dem
+anes2012$auth_out[which(anes2012$vote_dem==1)] <- anes2012$auth_rep[which(anes2012$vote_dem==1)]
+anes2008$harm_out <- anes2008$harm_dem
+anes2008$harm_out[which(anes2008$vote_dem==1)] <- anes2008$harm_rep[which(anes2008$vote_dem==1)]
+anes2008$fair_out <- anes2008$fair_dem
+anes2008$fair_out[which(anes2008$vote_dem==1)] <- anes2008$fair_rep[which(anes2008$vote_dem==1)]
+anes2008$ingr_out <- anes2008$ingr_dem
+anes2008$ingr_out[which(anes2008$vote_dem==1)] <- anes2008$ingr_rep[which(anes2008$vote_dem==1)]
+anes2008$auth_out <- anes2008$auth_dem
+anes2008$auth_out[which(anes2008$vote_dem==1)] <- anes2008$auth_rep[which(anes2008$vote_dem==1)]
+
+## model estimation
+m2inout <- NULL
+m2inout[[1]] <- glm(harm_in ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[2]] <- glm(harm_out ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[3]] <- glm(fair_in ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[4]] <- glm(fair_out ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[5]] <- glm(ingr_in ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[6]] <- glm(ingr_out ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[7]] <- glm(auth_in ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[8]] <- glm(auth_out ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2inout[[9]] <- glm(harm_in ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2inout[[10]] <- glm(harm_out ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[11]] <- glm(fair_in ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[12]] <- glm(fair_out ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[13]] <- glm(ingr_in ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[14]] <- glm(ingr_out ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[15]] <- glm(auth_in ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2inout[[16]] <- glm(auth_out ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+
+## simulation of predicted probabilities / first differences
+m2inout_res <- sim(m2inout, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
+m2inout_res$var <- rep(8:1,2)
+m2inout_res$year <- rep(c("2012","2008"),each=8)
+
+## generate plot
+ggplot(m2inout_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
+    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
+    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+    labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Conservatives more likey                             Liberals more likely") + 
+    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by in-party/out-party)") +
+    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+    theme(legend.position="bottom") + 
+    scale_y_continuous(breaks=1:8, labels=c("Authority\n(out)","Authority\n(in)"
+                                          , "Ingroup\n(out)","Ingroup\n(in)"
+                                          , "Fairness\n(out)", "Fairness\n(in)"
+                                          , "Harm\n(out)", "Harm\n(in)"))
+ggsave(filename = "fig/appD5inout.pdf")
+
+
+### Figure D7: ideology -> mft (likes/dislikes)
+
+## model estimation
+m2lidi <- NULL
+m2lidi[[1]] <- glm(harm_li ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[2]] <- glm(harm_di ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[3]] <- glm(fair_li ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[4]] <- glm(fair_di ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[5]] <- glm(ingr_li ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[6]] <- glm(ingr_di ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[7]] <- glm(auth_li ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[8]] <- glm(auth_di ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2012, family = binomial("logit"))
+m2lidi[[9]] <- glm(harm_li ~ ideol + relig + educ + age + female + black + num_total
+              , data=anes2008, family = binomial("logit"))
+m2lidi[[10]] <- glm(harm_di ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[11]] <- glm(fair_li ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[12]] <- glm(fair_di ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[13]] <- glm(ingr_li ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[14]] <- glm(ingr_di ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[15]] <- glm(auth_li ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+m2lidi[[16]] <- glm(auth_di ~ ideol + relig + educ + age + female + black + num_total
+               , data=anes2008, family = binomial("logit"))
+
+## simulation of predicted probabilities / first differences
+m2lidi_res <- sim(m2lidi, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
+m2lidi_res$var <- rep(8:1,2)
+m2lidi_res$year <- rep(c("2012","2008"),each=8)
+
+## generate plot
+ggplot(m2lidi_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
+    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
+    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
+    labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Conservatives more likey                             Liberals more likely") + 
+    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by like/dislike)") +
+    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
+    theme(legend.position="bottom") + 
+    scale_y_continuous(breaks=1:8, labels=c("Authority\n(di)","Authority\n(li)"
+                                          , "Ingroup\n(di)","Ingroup\n(li)"
+                                          , "Fairness\n(di)", "Fairness\n(li)"
+                                          , "Harm\n(di)", "Harm\n(li)"))
+ggsave(filename = "fig/appD6lidi.pdf")
+
+
+
+##########################################################
+### Part 2: Determinants of moral reasoning including 2008
+
+
+### Figure D7 [fig 3 + 2008]: engagement -> general mft reference (logit)
 
 ## model estimation
 m3_2008 <- NULL
@@ -529,11 +851,10 @@ ggplot(rbind(m3_res,m3_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for both remaining variables")) +
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=3:1, labels=polLabs)
-ggsave(filename = "fig/appD2learn.pdf")
+ggsave(filename = "fig/appD7learn.pdf")
 
 
-
-### Figure D3 [fig 4 + 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
+### Figure D8 [fig 4 + 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
 
 ## model estimation
 m4_2008_know <- NULL
@@ -620,10 +941,14 @@ ggplot(rbind(m4_res,m4_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for Both Remaining Variables")) +
     theme(legend.position="bottom", legend.box="horizontal") + facet_wrap(~dv) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD3ideolearn.pdf")
+ggsave(filename = "fig/appD8ideolearn.pdf")
 
 
-### Figure D4 [fig 5 + 2008]: mft -> turnout (logit)
+
+#######################################################################################
+### Part 3: Investigating the political relevance of political reasoning including 2008
+
+### Figure D9 [fig 5 + 2008]: mft -> turnout (logit)
 
 ## model estimation
 m5_2008 <- NULL
@@ -655,10 +980,10 @@ ggplot(rbind(m5_res,m5_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for PID Strength")) +
     theme(legend.position="bottom", legend.box="horizontal") +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD4turnout.pdf")
+ggsave(filename = "fig/appD9turnout.pdf")
 
 
-### Figure D5 [fig 6 + 2008]: mft -> protest behavior index (ols)
+### Figure D10 [fig 6 + 2008]: mft -> protest behavior index (ols)
 
 ## model estimation
 m6_2008 <- NULL
@@ -688,10 +1013,10 @@ ggplot(rbind(m6_res,m6_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=1:4, labels=mftLabs) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD5part.pdf")
+ggsave(filename = "fig/appD10part.pdf")
 
 
-### Figure D6 [fig 7 + 2008]: mft -> feeling thermometer differentials (ols)
+### Figure D11 [fig 7 + 2008]: mft -> feeling thermometer differentials (ols)
 
 ## model estimation
 m7_2008 <- NULL
@@ -727,10 +1052,10 @@ ggplot(rbind(m7_res, m7_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD6feel.pdf")
+ggsave(filename = "fig/appD11feel.pdf")
 
 
-### Figure 8: mft -> vote democratic (logit)
+### Figure D12 [fig 8 + 2008]: mft -> vote democratic (logit)
 
 ## model estimation
 m8_2008 <- NULL
@@ -762,329 +1087,22 @@ ggplot(rbind(m8_res,m8_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for Party Identification")) +
     theme(legend.position="bottom", legend.box="horizontal") +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD7vote.pdf")
-
-
-### Figure D8: social/economic ideology -> mft (logit)
-
-## combine issue positions to dimension (mean); high values -> more liberal position
-anes2008$ideol_econ <- with(anes2008, (issue_aid+issue_govspend-issue_medins+1)/3)
-anes2008$ideol_social <- anes2008$issue_gay
-anes2012$ideol_econ <- with(anes2012, (issue_aid+issue_govspend-issue_medins-issue_jobs+2)/4)
-anes2012$ideol_social <- with(anes2012, (issue_gay+issue_abort)/2)
-
-## check factor analysis for 2012
-factanal(na.omit(anes2012[,grep("issue",names(anes2012))]), 1, rotation="varimax")
-factanal(na.omit(anes2012[,grep("issue",names(anes2012))]), 2, rotation="varimax")
-
-## model estimation
-m9 <- NULL
-m9[[1]] <- glm(harm_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m9[[2]] <- glm(fair_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m9[[3]] <- glm(ingr_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m9[[4]] <- glm(auth_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m9[[5]] <- glm(harm_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m9[[6]] <- glm(fair_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m9[[7]] <- glm(ingr_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m9[[8]] <- glm(auth_all ~ ideol_econ + ideol_social
-                + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-
-## simulation of predicted probabilities / first differences
-m9_res <- rbind(sim(m9, iv=data.frame(ideol_econ=c(0,1)))
-               , sim(m9, iv=data.frame(ideol_social=c(0,1))))
-m9_res$var <- rep(4:1,4)
-m9_res$year <- rep(rep(c("2012","2008"),each = 4),2)
-m9_res$Ideology <- rep(c("Economic Dimension","Social Dimension"),each = 8)
-
-## generate plot
-ggplot(m9_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
-    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
-    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
-    labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Conservatives more likey                             Liberals more likely") + 
-    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation") +
-    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
-    theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs) +
-    facet_grid(Ideology ~ .)
-ggsave(filename = "fig/appD8soceco.pdf")
-
-
-### Figure D9 [fig 2, no leader]: ideology -> mft (logit)
-
-## model estimation
-m10 <- NULL
-m10[[1]] <- glm(harm_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2012noleader, family=binomial("logit"))
-m10[[2]] <- glm(fair_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2012noleader, family=binomial("logit"))
-m10[[3]] <- glm(ingr_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2012noleader, family=binomial("logit"))
-m10[[4]] <- glm(auth_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2012noleader, family=binomial("logit"))
-m10[[5]] <- glm(harm_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2008noleader, family=binomial("logit"))
-m10[[6]] <- glm(fair_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2008noleader, family=binomial("logit"))
-m10[[7]] <- glm(ingr_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2008noleader, family=binomial("logit"))
-m10[[8]] <- glm(auth_all ~ ideol + relig + educ + age + female + black + num_total
-                     , data=anes2008noleader, family=binomial("logit"))
-
-## simulation of predicted probabilities / first differences
-m10_res <- sim(m10, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
-m10_res$var <- rep(4:1,2)
-m10_res$year <- rep(c("2012","2008"),each=4)
-
-## generate plot
-ggplot(m10_res, aes(x = mean, y=var-.052+.11*(year=="2008")
-                         , shape=year, color = year)) +
-    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
-    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
-    labs(y = "Dependent Variable:\nMoral Foundation (no leader)"
-       , x = "Conservatives more likey                             Liberals more likely") + 
-    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-    ggtitle("Change in Predicted Probabilities to\nReference each Moral Foundation") +
-    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
-    theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs)
-ggsave(filename = "fig/appD9lead.pdf")
-
-
-### Figure D10: ideology -> mft (virtues/vices)
-
-## model estimation
-m11 <- NULL
-m11[[1]] <- glm(harm_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[2]] <- glm(harm_vice_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[3]] <- glm(fair_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[4]] <- glm(fair_vice_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[5]] <- glm(ingr_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[6]] <- glm(ingr_vice_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[7]] <- glm(auth_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[8]] <- glm(auth_vice_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m11[[9]] <- glm(harm_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m11[[10]] <- glm(harm_vice_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[11]] <- glm(fair_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[12]] <- glm(fair_vice_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[13]] <- glm(ingr_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[14]] <- glm(ingr_vice_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[15]] <- glm(auth_virtue_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m11[[16]] <- glm(auth_vice_all ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-
-## simulation of predicted probabilities / first differences
-m11_res <- sim(m11, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
-m11_res$var <- rep(8:1,2)
-m11_res$year <- rep(c("2012","2008"),each=8)
-
-## generate plot
-ggplot(m11_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
-    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
-    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
-    labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Conservatives more likey                             Liberals more likely") + 
-    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by valence)") +
-    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
-    theme(legend.position="bottom") + 
-    scale_y_continuous(breaks=1:8, labels=c("Authority\n(vice)","Authority\n(virtue)"
-                                          , "Ingroup\n(vice)","Ingroup\n(virtue)"
-                                          , "Fairness\n(vice)", "Fairness\n(virtue)"
-                                          , "Harm\n(vice)", "Harm\n(virtue)"))
-ggsave(filename = "fig/appD10val.pdf")
-
-
-### Figure D11: ideology -> mft (in-/out-party)
-
-## in-party DV
-anes2012$harm_in <- anes2012$harm_dem
-anes2012$harm_in[which(anes2012$vote_dem==0)] <- anes2012$harm_rep[which(anes2012$vote_dem==0)]
-anes2012$fair_in <- anes2012$fair_dem
-anes2012$fair_in[which(anes2012$vote_dem==0)] <- anes2012$fair_rep[which(anes2012$vote_dem==0)]
-anes2012$ingr_in <- anes2012$ingr_dem
-anes2012$ingr_in[which(anes2012$vote_dem==0)] <- anes2012$ingr_rep[which(anes2012$vote_dem==0)]
-anes2012$auth_in <- anes2012$auth_dem
-anes2012$auth_in[which(anes2012$vote_dem==0)] <- anes2012$auth_rep[which(anes2012$vote_dem==0)]
-anes2008$harm_in <- anes2008$harm_dem
-anes2008$harm_in[which(anes2008$vote_dem==0)] <- anes2008$harm_rep[which(anes2008$vote_dem==0)]
-anes2008$fair_in <- anes2008$fair_dem
-anes2008$fair_in[which(anes2008$vote_dem==0)] <- anes2008$fair_rep[which(anes2008$vote_dem==0)]
-anes2008$ingr_in <- anes2008$ingr_dem
-anes2008$ingr_in[which(anes2008$vote_dem==0)] <- anes2008$ingr_rep[which(anes2008$vote_dem==0)]
-anes2008$auth_in <- anes2008$auth_dem
-anes2008$auth_in[which(anes2008$vote_dem==0)] <- anes2008$auth_rep[which(anes2008$vote_dem==0)]
-
-## out-party DV
-anes2012$harm_out <- anes2012$harm_dem
-anes2012$harm_out[which(anes2012$vote_dem==1)] <- anes2012$harm_rep[which(anes2012$vote_dem==1)]
-anes2012$fair_out <- anes2012$fair_dem
-anes2012$fair_out[which(anes2012$vote_dem==1)] <- anes2012$fair_rep[which(anes2012$vote_dem==1)]
-anes2012$ingr_out <- anes2012$ingr_dem
-anes2012$ingr_out[which(anes2012$vote_dem==1)] <- anes2012$ingr_rep[which(anes2012$vote_dem==1)]
-anes2012$auth_out <- anes2012$auth_dem
-anes2012$auth_out[which(anes2012$vote_dem==1)] <- anes2012$auth_rep[which(anes2012$vote_dem==1)]
-anes2008$harm_out <- anes2008$harm_dem
-anes2008$harm_out[which(anes2008$vote_dem==1)] <- anes2008$harm_rep[which(anes2008$vote_dem==1)]
-anes2008$fair_out <- anes2008$fair_dem
-anes2008$fair_out[which(anes2008$vote_dem==1)] <- anes2008$fair_rep[which(anes2008$vote_dem==1)]
-anes2008$ingr_out <- anes2008$ingr_dem
-anes2008$ingr_out[which(anes2008$vote_dem==1)] <- anes2008$ingr_rep[which(anes2008$vote_dem==1)]
-anes2008$auth_out <- anes2008$auth_dem
-anes2008$auth_out[which(anes2008$vote_dem==1)] <- anes2008$auth_rep[which(anes2008$vote_dem==1)]
-
-## model estimation
-m12 <- NULL
-m12[[1]] <- glm(harm_in ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[2]] <- glm(harm_out ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[3]] <- glm(fair_in ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[4]] <- glm(fair_out ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[5]] <- glm(ingr_in ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[6]] <- glm(ingr_out ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[7]] <- glm(auth_in ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[8]] <- glm(auth_out ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m12[[9]] <- glm(harm_in ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m12[[10]] <- glm(harm_out ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[11]] <- glm(fair_in ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[12]] <- glm(fair_out ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[13]] <- glm(ingr_in ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[14]] <- glm(ingr_out ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[15]] <- glm(auth_in ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m12[[16]] <- glm(auth_out ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-
-## simulation of predicted probabilities / first differences
-m12_res <- sim(m12, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
-m12_res$var <- rep(8:1,2)
-m12_res$year <- rep(c("2012","2008"),each=8)
-
-## generate plot
-ggplot(m12_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
-    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
-    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
-    labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Conservatives more likey                             Liberals more likely") + 
-    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by in-party/out-party)") +
-    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
-    theme(legend.position="bottom") + 
-    scale_y_continuous(breaks=1:8, labels=c("Authority\n(out)","Authority\n(in)"
-                                          , "Ingroup\n(out)","Ingroup\n(in)"
-                                          , "Fairness\n(out)", "Fairness\n(in)"
-                                          , "Harm\n(out)", "Harm\n(in)"))
-ggsave(filename = "fig/appD11inout.pdf")
-
-
-### Figure D12: ideology -> mft (likes/dislikes)
-
-## model estimation
-m13 <- NULL
-m13[[1]] <- glm(harm_li ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[2]] <- glm(harm_di ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[3]] <- glm(fair_li ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[4]] <- glm(fair_di ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[5]] <- glm(ingr_li ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[6]] <- glm(ingr_di ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[7]] <- glm(auth_li ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[8]] <- glm(auth_di ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2012, family = binomial("logit"))
-m13[[9]] <- glm(harm_li ~ ideol + relig + educ + age + female + black + num_total
-              , data=anes2008, family = binomial("logit"))
-m13[[10]] <- glm(harm_di ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[11]] <- glm(fair_li ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[12]] <- glm(fair_di ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[13]] <- glm(ingr_li ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[14]] <- glm(ingr_di ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[15]] <- glm(auth_li ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-m13[[16]] <- glm(auth_di ~ ideol + relig + educ + age + female + black + num_total
-               , data=anes2008, family = binomial("logit"))
-
-## simulation of predicted probabilities / first differences
-m13_res <- sim(m13, iv=data.frame(ideolModerate=c(0,0), ideolConservative=c(1,0)))
-m13_res$var <- rep(8:1,2)
-m13_res$year <- rep(c("2012","2008"),each=8)
-
-## generate plot
-ggplot(m13_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, color = year)) +
-    geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
-    geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
-    labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Conservatives more likey                             Liberals more likely") + 
-    theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
-    ggtitle("Change in Predicted Probabilities to Reference each Moral Foundation\n(by like/dislike)") +
-    guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
-    theme(legend.position="bottom") + 
-    scale_y_continuous(breaks=1:8, labels=c("Authority\n(di)","Authority\n(li)"
-                                          , "Ingroup\n(di)","Ingroup\n(li)"
-                                          , "Fairness\n(di)", "Fairness\n(li)"
-                                          , "Harm\n(di)", "Harm\n(li)"))
-ggsave(filename = "fig/appD12lidi.pdf")
+ggsave(filename = "fig/appD12vote.pdf")
 
 
 
 
-#########################################
-### Appendix E: Tables of model estimates
+#############################################
+### Appendix E: Tables of model estimates ###
+#############################################
 
 
-### Table for figure 2 [+ 2008]: ideology -> mft (logit)
+
+#####################################################################
+### Part 1: Ideological differences in moral reasoning including 2008
+
+
+### Table for D1 [fig 2 + 2008]: ideology -> mft (logit)
 
 stargazer(m2[[1]], m2_2008[[1]], m2[[2]], m2_2008[[2]]
         , m2[[3]], m2_2008[[3]], m2[[4]], m2_2008[[4]]
@@ -1099,7 +1117,126 @@ stargazer(m2[[1]], m2_2008[[1]], m2[[2]], m2_2008[[2]]
           )
 
 
-### Table for figure 3 [+ 2008]: engagement -> general mft reference (logit)
+### Table for D2: social/economic ideology -> mft (logit)
+
+stargazer(m2soceco[[1]], m2soceco[[5]], m2soceco[[2]], m2soceco[[6]]
+        , m2soceco[[3]], m2soceco[[7]], m2soceco[[4]], m2soceco[[8]]
+        , type="text", out="tab/m2soceco.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Two-Dimensional Conceptualization of Ideology"
+        , covariate.labels = c("Economic Liberalism","Social Liberalism",covLabs)
+        , column.labels = rep(c("2012","2008"),4), model.numbers = FALSE
+        , dep.var.labels=rev(gsub("\n","",mftLabs))
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2soceco", no.space=T, table.placement="ht"
+)
+
+
+### Table for D3 [fig 2, no leader]: ideology -> mft (logit)
+
+stargazer(m2lead[[1]], m2lead[[5]], m2lead[[2]], m2lead[[6]]
+        , m2lead[[3]], m2lead[[7]], m2lead[[4]], m2lead[[8]]
+        , type="text", out="tab/m2lead.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
+        , covariate.labels = c("Conservative", "Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2lead", no.space=T, table.placement="ht"
+          )
+
+
+### Table for D4: ideology -> mft (virtues/vices)
+
+## virtues
+stargazer(m2val[[1]], m2val[[9]], m2val[[3]], m2val[[11]], m2val[[5]], m2val[[13]], m2val[[7]], m2val[[15]]
+        , type="text", out="tab/m2virtue.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (virtues)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2virtue", no.space=T, table.placement="ht"
+          )
+
+## vices
+stargazer(m2val[[2]], m2val[[10]], m2val[[4]], m2val[[12]], m2val[[6]], m2val[[14]], m2val[[8]], m2val[[16]]
+        , type="text", out="tab/m2vice.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (vices)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2vice", no.space=T, table.placement="ht"
+          )
+
+
+### Table for D5: ideology -> mft (in-/out-party)
+
+## in-party
+stargazer(m2inout[[1]], m2inout[[9]], m2inout[[3]], m2inout[[11]]
+        , m2inout[[5]], m2inout[[13]], m2inout[[7]], m2inout[[15]]
+        , type="text", out="tab/m2inparty.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (in-party)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2inparty", no.space=T, table.placement="ht"
+          )
+
+## out-party
+stargazer(m2inout[[2]], m2inout[[10]], m2inout[[4]], m2inout[[12]]
+        , m2inout[[6]], m2inout[[14]], m2inout[[8]], m2inout[[16]]
+        , type="text", out="tab/m2outparty.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (out-party)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate", covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2outparty", no.space=T, table.placement="ht"
+)
+
+
+### Table for D6: ideology -> mft (likes/dislikes)
+
+## likes
+stargazer(m2lidi[[1]], m2lidi[[9]], m2lidi[[3]], m2lidi[[11]]
+        , m2lidi[[5]], m2lidi[[13]], m2lidi[[7]], m2lidi[[15]]
+        , type="text", out="tab/m2likes.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (likes)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate",covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2likes", no.space=T, table.placement="ht"
+          )
+
+## dislikes
+stargazer(m2lidi[[2]], m2lidi[[10]], m2lidi[[4]], m2lidi[[12]], m2lidi[[6]]
+        , m2lidi[[14]], m2lidi[[8]], m2lidi[[16]]
+        , type="text", out="tab/m2likes.tex"
+        , title="Logit Models Predicting References to four Moral Foundations using Ideology (dislikes)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))
+        , covariate.labels = c("Conservative","Moderate",covLabs)
+        , column.labels = rep(c("2012","2008"),4)
+        , model.numbers = FALSE, order=c(2,1,3:8)
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m2likes", no.space=T, table.placement="ht"
+          )
+
+
+
+##########################################################
+### Part 2: Determinants of moral reasoning including 2008
+
+
+### Table for D7 [fig 3 + 2008]: engagement -> general mft reference (logit)
 
 stargazer(m3, m3_2008
         , type="text", out="tab/m3learn.tex"
@@ -1114,18 +1251,30 @@ stargazer(m3, m3_2008
           )
 
 
-### Table for figure 4 [+ 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
+### Table for D8 [fig 4 + 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
 
 ## 2012
 stargazer(list(m4_know[[1]],m4_media[[1]],m4_disc[[1]],m4_all[[1]]
-             , m4_know[[2]],m4_media[[2]],m4_disc[[2]],m4_all[[2]]
-             , m4_know[[3]],m4_media[[3]],m4_disc[[3]],m4_all[[3]]
-             , m4_know[[4]],m4_media[[4]],m4_disc[[4]],m4_all[[4]])
-        , type="text", out="tab/m4ideolearn2012.tex"
+             , m4_know[[2]],m4_media[[2]],m4_disc[[2]],m4_all[[2]])
+        , type="text", out="tab/m4ideolearn2012a.tex"
         , title="Logit Models Predicting References to Specific Moral Foundations (2012)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs)), model.numbers = FALSE
+        , dep.var.labels = rev(gsub("\n","",mftLabs))[1:2], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m4ideolearn2012", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , label="tab:m4ideolearn2012a", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , covariate.labels = c("Moderate","Conservative","Political Knowledge"
+                             , "Political Media Exposure","Political Discussion"
+                             , "Moderate X Knowledge","Conservative X Knowledge"
+                             , "Moderate X Media Exposure","Conservative X Media Exposure"
+                             , "Moderate X Discussion","Conservative X Discussion"
+                             , covLabs)
+          )
+stargazer(list(m4_know[[3]],m4_media[[3]],m4_disc[[3]],m4_all[[3]]
+             , m4_know[[4]],m4_media[[4]],m4_disc[[4]],m4_all[[4]])
+        , type="text", out="tab/m4ideolearn2012b.tex"
+        , title="Logit Models Predicting References to Specific Moral Foundations (2012)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))[3:4], model.numbers = FALSE
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m4ideolearn2012b", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
         , covariate.labels = c("Moderate","Conservative","Political Knowledge"
                              , "Political Media Exposure","Political Discussion"
                              , "Moderate X Knowledge","Conservative X Knowledge"
@@ -1136,14 +1285,26 @@ stargazer(list(m4_know[[1]],m4_media[[1]],m4_disc[[1]],m4_all[[1]]
 
 ## 2008
 stargazer(list(m4_2008_know[[1]],m4_2008_media[[1]],m4_2008_disc[[1]],m4_2008_all[[1]]
-             , m4_2008_know[[2]],m4_2008_media[[2]],m4_2008_disc[[2]],m4_2008_all[[2]]
-             , m4_2008_know[[3]],m4_2008_media[[3]],m4_2008_disc[[3]],m4_2008_all[[3]]
-             , m4_2008_know[[4]],m4_2008_media[[4]],m4_2008_disc[[4]],m4_2008_all[[4]])
-        , type="text", out="tab/m4ideolearn2008.tex"
+             , m4_2008_know[[2]],m4_2008_media[[2]],m4_2008_disc[[2]],m4_2008_all[[2]])
+        , type="text", out="tab/m4ideolearn2008a.tex"
         , title="Logit Models Predicting References to Specific Moral Foundations (2008)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs)), model.numbers = FALSE
+        , dep.var.labels = rev(gsub("\n","",mftLabs))[1:2], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m4ideolearn2008", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , label="tab:m4ideolearn2008a", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
+        , covariate.labels = c("Moderate","Conservative","Political Knowledge"
+                             , "Political Media Exposure","Political Discussion"
+                             , "Moderate X Knowledge","Conservative X Knowledge"
+                             , "Moderate X Media Exposure","Conservative X Media Exposure"
+                             , "Moderate X Discussion","Conservative X Discussion"
+                             , covLabs)
+          )
+stargazer(list(m4_2008_know[[3]],m4_2008_media[[3]],m4_2008_disc[[3]],m4_2008_all[[3]]
+             , m4_2008_know[[4]],m4_2008_media[[4]],m4_2008_disc[[4]],m4_2008_all[[4]])
+        , type="text", out="tab/m4ideolearn2008b.tex"
+        , title="Logit Models Predicting References to Specific Moral Foundations (2008)"
+        , dep.var.labels = rev(gsub("\n","",mftLabs))[3:4], model.numbers = FALSE
+        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
+        , label="tab:m4ideolearn2008b", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
         , covariate.labels = c("Moderate","Conservative","Political Knowledge"
                              , "Political Media Exposure","Political Discussion"
                              , "Moderate X Knowledge","Conservative X Knowledge"
@@ -1153,7 +1314,12 @@ stargazer(list(m4_2008_know[[1]],m4_2008_media[[1]],m4_2008_disc[[1]],m4_2008_al
           )
 
 
-### Figure 5 [+ 2008]: mft -> turnout (logit)
+
+#######################################################################################
+### Part 3: Investigating the political relevance of political reasoning including 2008
+
+
+### Table for D9 [fig 5 + 2008]: mft -> turnout (logit)
 
 stargazer(m5,m5_2008
         , type="text", out="tab/m5turnout.tex"
@@ -1167,7 +1333,7 @@ stargazer(m5,m5_2008
           )
 
 
-### Figure 6: mft -> protest behavior index (ols)
+### Table for D10 [fig 6 + 2008]: mft -> protest behavior index (ols)
 
 stargazer(m6,m6_2008
         , type="text", out="tab/m6part.tex"
@@ -1182,7 +1348,7 @@ stargazer(m6,m6_2008
           )
 
 
-### Figure 7: mft -> feeling thermometer differentials (ols)
+### Table for D11 [fig 7 + 2008]: mft -> feeling thermometer differentials (ols)
 
 stargazer(m7[[1]],m7[[2]],m7_2008[[1]],m7_2008[[2]]
          ,m7[[3]],m7[[4]],m7_2008[[3]],m7_2008[[4]]
@@ -1199,7 +1365,7 @@ stargazer(m7[[1]],m7[[2]],m7_2008[[1]],m7_2008[[2]]
           )
 
 
-### Figure 8: mft -> vote democratic (logit)
+### Table for D12 [fig 8 + 2008]: mft -> vote democratic (logit)
 
 stargazer(m8,m8_2008
         , type="text", out="tab/m8vote.tex"
@@ -1214,112 +1380,4 @@ stargazer(m8,m8_2008
         , label="tab:m8vote", no.space=T, table.placement="ht"
           )
 
-
-### Figure D8: social/economic ideology -> mft (logit)
-
-stargazer(m9[[1]], m9[[5]], m9[[2]], m9[[6]], m9[[3]], m9[[7]], m9[[4]], m9[[8]]
-        , type="text", out="tab/m9soceco.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Two-Dimensional Conceptualization of Ideology"
-        , covariate.labels = c("Economic Liberalism","Social Liberalism",covLabs)
-        , column.labels = rep(c("2012","2008"),4), model.numbers = FALSE
-        , dep.var.labels=rev(gsub("\n","",mftLabs))
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m9soceco", no.space=T, table.placement="ht"
-)
-
-
-### Figure D9 [fig 2, no leader]: ideology -> mft (logit)
-
-stargazer(m10[[1]], m10[[5]], m10[[2]], m10[[6]]
-        , m10[[3]], m10[[7]], m10[[4]], m10[[8]]
-        , type="text", out="tab/m10lead.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
-        , covariate.labels = c("Conservative", "Moderate", covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m10lead", no.space=T, table.placement="ht"
-          )
-
-
-### Figure D10: ideology -> mft (virtues/vices)
-
-## virtues
-stargazer(m11[[1]], m11[[9]], m11[[3]], m11[[11]], m11[[5]], m11[[13]], m11[[7]], m11[[15]]
-        , type="text", out="tab/m11virtue.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (virtues)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate", covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m11virtue", no.space=T, table.placement="ht"
-          )
-
-## vices
-stargazer(m11[[2]], m11[[10]], m11[[4]], m11[[12]], m11[[6]], m11[[14]], m11[[8]], m11[[16]]
-        , type="text", out="tab/m11vice.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (vices)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate", covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m11vice", no.space=T, table.placement="ht"
-          )
-
-
-### Figure D11: ideology -> mft (in-/out-party)
-
-## in-party
-stargazer(m12[[1]], m12[[9]], m12[[3]], m12[[11]], m12[[5]], m12[[13]], m12[[7]], m12[[15]]
-        , type="text", out="tab/m12inparty.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (in-party)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate", covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m12inparty", no.space=T, table.placement="ht"
-          )
-
-## out-party
-stargazer(m12[[2]], m12[[10]], m12[[4]], m12[[12]], m12[[6]], m12[[14]], m12[[8]], m12[[16]]
-        , type="text", out="tab/m12outparty.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (out-party)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate", covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m12outparty", no.space=T, table.placement="ht"
-)
-
-
-### Figure D12: ideology -> mft (likes/dislikes)
-
-## likes
-stargazer(m13[[1]], m13[[9]], m13[[3]], m13[[11]], m13[[5]], m13[[13]], m13[[7]], m13[[15]]
-        , type="text", out="tab/m13likes.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (likes)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate",covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m13likes", no.space=T, table.placement="ht"
-          )
-
-## dislikes
-stargazer(m13[[2]], m13[[10]], m13[[4]], m13[[12]], m13[[6]], m13[[14]], m13[[8]], m13[[16]]
-        , type="text", out="tab/m13dislikes.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (dislikes)"
-        , dep.var.labels = rev(gsub("\n","",mftLabs))
-        , covariate.labels = c("Conservative","Moderate",covLabs)
-        , column.labels = rep(c("2012","2008"),4)
-        , model.numbers = FALSE, order=c(2,1,3:8)
-        , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m13dislikes", no.space=T, table.placement="ht"
-          )
 
