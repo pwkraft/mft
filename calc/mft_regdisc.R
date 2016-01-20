@@ -1,10 +1,9 @@
-##########################################################################################
-# Project:  Moral foundations of Political Reasoning
-# File:     mft_regdisc.R
-# Overview: this file contains the supplementary regression discontinuity analyses
-# Author:   Patrick Kraft
-# Date:     09/16/2015
-##########################################################################################
+###########################################################################################
+## Project:  Moral foundations of Political Reasoning
+## File:     mft_regdisc.R
+## Overview: supplementary regression discontinuity analyses
+## Author:   Patrick Kraft
+###########################################################################################
 
 
 rm(list=ls())

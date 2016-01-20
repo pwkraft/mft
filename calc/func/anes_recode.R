@@ -1,12 +1,10 @@
-##########################################################################################
-# Project:  Moral foundations of Political Reasoning
-# File:     anes_recode.R
-# Overview: this file contains several functions used in mft_prep.R to preprocess
-#           the open-ended responses, recode each anes TS dataset,
-#           and merge both datasets.
-# Author:   Patrick Kraft
-# Date:     12/08/2014
-##########################################################################################
+###########################################################################################
+## Project:  Moral foundations of Political Reasoning
+## File:     anes_recode.R
+## Overview: functions used in mft_prep.R to preprocess open-ended responses,
+##           recode each ANES TS dataset, and merge both datasets.
+## Author:   Patrick Kraft
+###########################################################################################
 
 
 ###############################

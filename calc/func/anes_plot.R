@@ -1,10 +1,9 @@
 ###########################################################################################
 ## Project:  Moral foundations of Political Reasoning
 ## File:     anes_plot.R
-## Overview: functions used in mft_analyses.R to plot the 
+## Overview: functions used in mft_analyses.R and mft_analyses_prelim.R to plot the 
 ##           dependent variables as well as the model results
 ## Author:   Patrick Kraft
-## Date:     12/11/2014
 ###########################################################################################
 
 ### Load packages and data

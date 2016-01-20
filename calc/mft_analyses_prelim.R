@@ -1,10 +1,9 @@
 ##########################################################################################
-# Project:  Moral foundations of Political Reasoning
-# File:     mft_analyses.R
-# Overview: this file contains the main analyses and generates all plots and tables
-#           for the paper. Uses the datasets generated in mft_prep
-# Author:   Patrick Kraft
-# Date:     12/08/2014
+## Project:  Moral foundations of Political Reasoning
+## File:     mft_analyses_prelim.R
+## Overview: preliminary analyses, creates all plots and tables for previous version of
+##           paper + appendix; uses the datasets generated in mft_prep
+## Author:   Patrick Kraft
 ##########################################################################################
 
 
@@ -18,12 +17,12 @@ if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
 rm(list=ls())
 
+# load additional functions
+source("func/anes_plot.R")
+
 # I had to install an old Zelig version because the new one still had bugs...
 # install.packages("func/Zelig_3.5.5.tar.gz",repos=NULL)
 library(Zelig)
-
-# load additional functions
-source("func/anes_plot.R")
 
 # load recoded dataset
 load("out/anes.RData")
@@ -169,7 +168,7 @@ m1_res <- data.frame(NULL)
 mlist <- list(m1_2008_harm, m1_2012_harm, m1_2008_fair, m1_2012_fair, m1_2008_ingr, m1_2012_ingr, m1_2008_auth, m1_2012_auth)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol = c("Liberal", "Conservative"))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1_res <- rbind(m1_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -220,7 +219,7 @@ m1_res_noleader <- data.frame(NULL)
 mlist <- list(m1_2008_harm_noleader, m1_2012_harm_noleader, m1_2008_fair_noleader, m1_2012_fair_noleader, m1_2008_ingr_noleader, m1_2012_ingr_noleader, m1_2008_auth_noleader, m1_2012_auth_noleader)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol = c("Liberal", "Conservative"))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1_res_noleader <- rbind(m1_res_noleader,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -284,12 +283,12 @@ mlist <- list(m1b_2008_harm, m1b_2012_harm, m1b_2008_fair, m1b_2012_fair
             , m1b_2008_ingr, m1b_2012_ingr, m1b_2008_auth, m1b_2012_auth)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol_econ = c(1,0))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1b_res <- rbind(m1b_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
   x <- setx(mlist[[i]], ideol_social = c(1,0))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1b_res <- rbind(m1b_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                             , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -352,7 +351,7 @@ m1c_res <- data.frame(NULL)
 mlist <- list(m1c_2008_harm_virtue, m1c_2012_harm_virtue, m1c_2008_harm_vice, m1c_2012_harm_vice, m1c_2008_fair_virtue, m1c_2012_fair_virtue, m1c_2008_fair_vice, m1c_2012_fair_vice, m1c_2008_ingr_virtue, m1c_2012_ingr_virtue, m1c_2008_ingr_vice, m1c_2012_ingr_vice, m1c_2008_auth_virtue, m1c_2012_auth_virtue, m1c_2008_auth_vice, m1c_2012_auth_vice)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol = c("Liberal", "Conservative"))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1c_res <- rbind(m1c_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -448,7 +447,7 @@ m1d_res <- data.frame(NULL)
 mlist <- list(m1d_2008_harm_in, m1d_2012_harm_in, m1d_2008_harm_out, m1d_2012_harm_out, m1d_2008_fair_in, m1d_2012_fair_in, m1d_2008_fair_out, m1d_2012_fair_out, m1d_2008_ingr_in, m1d_2012_ingr_in, m1d_2008_ingr_out, m1d_2012_ingr_out, m1d_2008_auth_in, m1d_2012_auth_in, m1d_2008_auth_out, m1d_2012_auth_out)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol = c("Liberal", "Conservative"))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1d_res <- rbind(m1d_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -508,7 +507,7 @@ m1e_res <- data.frame(NULL)
 mlist <- list(m1e_2008_harm_li, m1e_2012_harm_li, m1e_2008_harm_di, m1e_2012_harm_di, m1e_2008_fair_li, m1e_2012_fair_li, m1e_2008_fair_di, m1e_2012_fair_di, m1e_2008_ingr_li, m1e_2012_ingr_li, m1e_2008_ingr_di, m1e_2012_ingr_di, m1e_2008_auth_li, m1e_2012_auth_li, m1e_2008_auth_di, m1e_2012_auth_di)
 for(i in 1:length(mlist)){
   x <- setx(mlist[[i]], ideol = c("Liberal", "Conservative"))
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m1e_res <- rbind(m1e_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -563,7 +562,7 @@ mlist <- list(m2_2008_vote1, m2_2012_vote1, m2_2008_vote2, m2_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2_res <- rbind(m2_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -612,7 +611,7 @@ mlist <- list(m2b_2008_vote1, m2b_2012_vote1, m2b_2008_vote2, m2b_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2b_res <- rbind(m2b_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -680,7 +679,7 @@ mlist <- list(m2c_2008_vote1, m2c_2012_vote1, m2c_2008_vote2, m2c_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2c_res <- rbind(m2c_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -729,7 +728,7 @@ mlist <- list(m2d_2008_vote1, m2d_2012_vote1, m2d_2008_vote2, m2d_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2d_res <- rbind(m2d_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -778,7 +777,7 @@ mlist <- list(m2e_2008_vote1, m2e_2012_vote1, m2e_2008_vote2, m2e_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2e_res <- rbind(m2e_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -831,7 +830,7 @@ mlist <- list(m2e_2008_part1, m2e_2012_part1, m2e_2008_part2, m2e_2012_part2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2e_res <- rbind(m2e_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -899,7 +898,7 @@ mlist <- list(m2f_2008_vote1, m2f_2012_vote1, m2f_2008_vote2, m2f_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2f_res <- rbind(m2f_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -939,7 +938,7 @@ mlist <- list(m2g_2008_vote1, m2g_2012_vote1, m2g_2008_vote2, m2g_2012_vote2)
 for(i in 1:length(mlist)){
   for(j in 1:4){
     x <- setx(mlist[[i]], harm_all = c(1,0)*(j==1), fair_all=c(1,0)*(j==2), ingr_all=c(1,0)*(j==3), auth_all=c(1,0)*(j==4))
-    sim <- sim(mlist[[i]], x=x)
+    sim <- Zelig::sim(mlist[[i]], x=x)
     m2g_res <- rbind(m2g_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                              , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
     )
@@ -1062,7 +1061,7 @@ for(i in 1:length(mlist)){
             , polmedia=c(max(anes2008$polmedia, na.rm=T),min(anes2008$polmedia, na.rm=T))
             , poldisc=c(max(anes2008$poldisc, na.rm=T),min(anes2008$poldisc, na.rm=T))
             )
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m3_res <- rbind(m3_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975))))
 }
@@ -1072,7 +1071,7 @@ for(i in 1:length(mlist)){
             , polmedia=c(max(anes2012$polmedia, na.rm=T),min(anes2012$polmedia, na.rm=T))
             , poldisc=c(max(anes2012$poldisc, na.rm=T),min(anes2012$poldisc, na.rm=T))
   )
-  sim <- sim(mlist[[i]], x=x)
+  sim <- Zelig::sim(mlist[[i]], x=x)
   m3_res <- rbind(m3_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975))))
 }
@@ -1080,7 +1079,7 @@ for(j in 1:3){
   x <- setx(m3_2008_all, polknow=c(max(anes2008$polknow, na.rm=T),min(anes2008$polknow, na.rm=T))*(j==1)
             , polmedia=c(max(anes2008$polmedia, na.rm=T),min(anes2008$polmedia, na.rm=T))*(j==2)
             , poldisc=c(max(anes2008$poldisc, na.rm=T),min(anes2008$poldisc, na.rm=T))*(j==3))
-  sim <- sim(m3_2008_all, x=x)
+  sim <- Zelig::sim(m3_2008_all, x=x)
   m3_res <- rbind(m3_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
                   )
@@ -1089,7 +1088,7 @@ for(j in 1:3){
   x <- setx(m3_2012_all, polknow=c(max(anes2012$polknow, na.rm=T),min(anes2012$polknow, na.rm=T))*(j==1)
             , polmedia=c(max(anes2012$polmedia, na.rm=T),min(anes2012$polmedia, na.rm=T))*(j==2)
             , poldisc=c(max(anes2012$poldisc, na.rm=T),min(anes2012$poldisc, na.rm=T))*(j==3))
-  sim <- sim(m3_2012_all, x=x)
+  sim <- Zelig::sim(m3_2012_all, x=x)
   m3_res <- rbind(m3_res,c(mean(sim$qi$ev[,1] - sim$qi$ev[,2])
                            , quantile(sim$qi$ev[,1] - sim$qi$ev[,2], probs=c(0.025,0.975)))
   )
@@ -1168,7 +1167,7 @@ for(i in 1:length(mlist)){
             , polmedia_c = rep(rev(range(mlist[[i]]$data[,"polmedia_c"])), 2)
             , poldisc_c  = rep(rev(range(mlist[[i]]$data[,"poldisc_c"])), 2)
             , ideol = rep(c("Liberal","Conservative"), each = 2))
-    sim <- sim(mlist[[i]], x = x)
+    sim <- Zelig::sim(mlist[[i]], x = x)
     sim <- (sim$qi$ev[,1] - sim$qi$ev[,3]) - (sim$qi$ev[,2] - sim$qi$ev[,4])
     new <- data.frame(mean = mean(sim), cilo = quantile(sim, 0.025)
                     , cihi = quantile(sim, 0.975), dv = all.vars(mlist[[i]]$formula)[1]
@@ -1183,7 +1182,7 @@ for(i in 1:length(mlist)){
             , polmedia_c = c(rep(mean(mlist[[i]]$data[,"polmedia_c"]), 4), rep(rev(range(mlist[[i]]$data[,"polmedia_c"])), 2), rep(mean(mlist[[i]]$data[,"polmedia_c"]), 4))
             , poldisc_c  = c(rep(mean(mlist[[i]]$data[,"poldisc_c"]), 8), rep(rev(range(mlist[[i]]$data[,"poldisc_c"])), 2))
             , ideol = rep(c("Liberal","Liberal","Conservative","Conservative"), 3))
-    sim <- sim(mlist[[i]], x = x)
+    sim <- Zelig::sim(mlist[[i]], x = x)
     sim <- cbind((sim$qi$ev[,1] - sim$qi$ev[,3]) - (sim$qi$ev[,2] - sim$qi$ev[,4])
                , (sim$qi$ev[,5] - sim$qi$ev[,7]) - (sim$qi$ev[,6] - sim$qi$ev[,8])
                , (sim$qi$ev[,9] - sim$qi$ev[,11]) - (sim$qi$ev[,10] - sim$qi$ev[,12]))

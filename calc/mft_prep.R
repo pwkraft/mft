@@ -1,11 +1,10 @@
-##########################################################################################
-# Project:  Moral foundations of Political Reasoning
-# File:     mft_prep.R
-# Overview: this file prepares the open ended survey responses in the anes as well as the
-#           original anes time series datasets for the subsequent analyses in mft_analyses
-# Author:   Patrick Kraft
-# Date:     12/08/2014
-##########################################################################################
+###########################################################################################
+## Project:  Moral foundations of Political Reasoning
+## File:     mft_prep.R
+## Overview: prepares the open ended survey responses in the ANES as well as the
+##           original ANES time series datasets for the subsequent analyses in mft_analyses
+## Author:   Patrick Kraft
+###########################################################################################
 
 
 rm(list=ls())
@@ -16,6 +15,7 @@ if(sessionInfo()$platform == "x86_64-apple-darwin10.8.0 (64-bit)"){
 }
 source("func/anes_recode.R")
 # load("out/anes_full.RData")
+
 
 ### spell checking and preprocessing of open survey responses
 
@@ -45,6 +45,7 @@ anes2012opend <- opend_prep(csv_src = "/data/Copy/1-src/data/anes2012/anes2012TS
 
 
 ### mft dictionary and word count
+
 anes2008opend_noleader <- anes2008opend
 anes2012opend_noleader <- anes2012opend
 anes2008opend$resp <- opend_mft(data = anes2008opend$spell, use_dict = "new")
