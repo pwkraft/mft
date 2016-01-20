@@ -1220,14 +1220,14 @@ stargazer(m2lidi[[1]], m2lidi[[9]], m2lidi[[3]], m2lidi[[11]]
 ## dislikes
 stargazer(m2lidi[[2]], m2lidi[[10]], m2lidi[[4]], m2lidi[[12]], m2lidi[[6]]
         , m2lidi[[14]], m2lidi[[8]], m2lidi[[16]]
-        , type="text", out="tab/m2likes.tex"
+        , type="text", out="tab/m2dislikes.tex"
         , title="Logit Models Predicting References to four Moral Foundations using Ideology (dislikes)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate",covLabs)
         , column.labels = rep(c("2012","2008"),4)
         , model.numbers = FALSE, order=c(2,1,3:8)
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
-        , label="tab:m2likes", no.space=T, table.placement="ht"
+        , label="tab:m2dislikes", no.space=T, table.placement="ht"
           )
 
 

@@ -3,7 +3,7 @@
 \usepackage[USenglish]{babel}
 \usepackage{natbib}
 \usepackage{multirow}
-\usepackage{graphicx, subfigure}
+\usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{verbatim}
@@ -11,7 +11,7 @@
 \usepackage{amsmath}
 \usepackage{lscape}
 \usepackage{dcolumn}
-\usepackage{floatrow}
+\usepackage{subcaption}
 \usepackage[title]{appendix}
 \usepackage{xcolor}
 \usepackage{todonotes}
@@ -270,12 +270,14 @@ Irrespective of these reservations, the analyses of open-ended survey responses 
 
 
 \clearpage
+\footnotesize\singlespacing
 \bibliographystyle{/data/Copy/1-src/lit/apsr2006}
 \bibliography{/data/Copy/1-src/lit/Literature}
 
-\clearpage\flushleft\footnotesize\singlespacing
+\clearpage\flushleft
 \appendices
 \appendixpage
+\renewcommand\thesubsection{\Roman{subsection}}
 Kraft, Patrick W. 2016.\\``Moral Foundations of Political Reasoning. Investigating the Moral Underpinnings of Political Judgment.''
 
 \startcontents[sections]
@@ -353,88 +355,84 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-% \begin{figure}[ht]
-% %  \centering
-% %  \caption{Some description}
-%   \begin{subfigure}[b]{3in}
-%     \includegraphics[scale=.4]{../calc/fig/m1b_mft.pdf}
-%  %   \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}
-%   \end{subfigure}%
-%   \begin{subfigure}[b]{3in}
-%     \includegraphics[scale=.4]{../calc/fig/m1_mft_noleader.pdf}
-% %    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting leader from the dictionary)}
-%   \end{subfigure}
-% \end{figure}
-
 
 \subsection{Ideological differences in moral reasoning including 2008}
 
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD1ideol.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives}\label{fig:appD1ideol}
+\begin{figure}[ht]
+  \centering
+  \caption{INSERT DESCRIPTION}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD1ideol.pdf}
+    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives}\label{fig:appD1ideol}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD2soceco.pdf}
+    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}\label{fig:appD2soceco}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD3lead.pdf}
+    \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting ``leader'' from the dictionary)}\label{fig:appD3lead}
+  \end{subfigure}
 \end{figure}
 
-\begin{figure}[ht]\centering
-\includegraphics[scale=.4]{../calc/fig/appD2soceco.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives on economic and social dimension}\label{fig:appD2soceco}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD3lead.pdf}
-\caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (omitting ``leader'' from the dictionary)}\label{fig:appD3lead}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD4val.pdf}
+\begin{figure}[ht]
+  \centering
+  \caption{INSERT DESCRIPTION}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD4val.pdf}
 \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating moral foundations by valence)}\label{fig:appD4val}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD5inout.pdf}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD5inout.pdf}
 \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by in- and out-party)}\label{fig:appD5inout}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD6lidi.pdf}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD6lidi.pdf}
 \caption{Difference in predicted probabilities to reference each moral foundation between liberals and conservatives (dis-aggregating statements by likes and dislikes)}\label{fig:appD6lidi}
+  \end{subfigure}
 \end{figure}
 
 
+\clearpage
 \subsection{Determinants of moral reasoning including 2008}
 
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD7learn.pdf}
-\caption{Change in predicted probabilities to reference any of the moral foundations depending on political knowledge, media exposure, and frequency of political discussions}\label{fig:appD7learn}
+\begin{figure}[ht]
+  \centering
+  \caption{INSERT DESCRIPTION}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD7learn.pdf}
+    \caption{Change in predicted probabilities to reference any of the moral foundations depending on political knowledge, media exposure, and frequency of political discussions}\label{fig:appD7learn}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD8ideolearn.pdf}
+    \caption{Change in effect of ideology on predicted probabilities to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference)}\label{fig:appD8ideolearn}
+  \end{subfigure}
 \end{figure}
 
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD8ideolearn.pdf}
-\caption{Change in effect of ideology on predicted probabilities to reference each of the moral foundations moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference)}\label{fig:appD8ideolearn}
-\end{figure}
 
-
+\clearpage
 \subsection{Investigating the political relevance of political reasoning including 2008}
 
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
-\caption{Change in predicted probabilities to participate in election depending on references to specific moral foundations}\label{fig:appD9turnout}
+\begin{figure}[ht]
+  \centering
+  \caption{INSERT DESCRIPTION}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD9turnout.pdf}
+    \caption{Change in predicted probabilities to participate in election depending on references to specific moral foundations}\label{fig:appD9turnout}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD10part.pdf}
+    \caption{Change in protest behavior index depending on references to specific moral foundations}\label{fig:appD10part}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD11feel.pdf}
+    \caption{Effect of moral foundations on feeling thermometer differentials (candidates and parties)}\label{fig:appD11feel}
+  \end{subfigure}
+  \begin{subfigure}[t]{0.49\textwidth}
+    \includegraphics[scale=.35]{../calc/fig/appD12vote.pdf}
+    \caption{Change in predicted probabilities to vote for democratic candidate depending on references to specific moral foundations}\label{fig:appD12vote}
+  \end{subfigure}
 \end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD10part.pdf}
-\caption{Change in protest behavior index depending on references to specific moral foundations}\label{fig:appD10part}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD11feel.pdf}
-\caption{Effect of moral foundations on feeling thermometer differentials (candidates and parties)}\label{fig:appD11feel}
-\end{figure}
-
-\begin{figure}\centering
-\includegraphics[scale=.4]{../calc/fig/appD12vote.pdf}
-\caption{Change in predicted probabilities to vote for democratic candidate depending on references to specific moral foundations}\label{fig:appD12vote}
-\end{figure}
-
 
 
 \clearpage
@@ -457,7 +455,7 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \input{../calc/tab/m2likes}
 \input{../calc/tab/m2dislikes}
 
-
+\clearpage
 \subsection{Determinants of moral reasoning including 2008}
 
 \input{../calc/tab/m3learn}
@@ -466,7 +464,7 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \input{../calc/tab/m4ideolearn2008a}
 \input{../calc/tab/m4ideolearn2008b}
 
-
+\clearpage
 \subsection{Investigating the political relevance of political reasoning including 2008}
 
 \input{../calc/tab/m5turnout}
