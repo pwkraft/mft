@@ -332,7 +332,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(!is.null(pid)){
         ## party identification
         tmp <- raw[,pid] + ifelse(max(raw[,pid])==6, 1, 0)
-        dat$pid <- factor(recode(raw[,pid]
+        dat$pid <- factor(recode(tmp
                           , "1:2=1; c(3,4,5)=2; 6:7=3; else=NA")
                    , labels = c("Democrat","Independent","Republican"))
         dat$pid_dem <- as.numeric(dat$pid=="Democrat")

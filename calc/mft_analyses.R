@@ -426,30 +426,16 @@ dev.off()
 ## generate individual plots
 appC1 <- prop_plot(data=list(anes2008,anes2012), groupvarname="ideol", legendname = "Ideology"
               , mftvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all")
-              , title = "Moral Foundation and Ideology:\nAll Evaluations")
+              , title = "Moral Foundation and Ideology:\nAll Evaluations"
+              , file = "fig/appC1prop.pdf")
 appC2 <- prop_plot(data=list(anes2008,anes2012), groupvarname="ideol", legendname = "Ideology"
               , mftvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca")
-              , title = "Moral Foundation and Ideology:\nCandidate Evaluations")
+              , title = "Moral Foundation and Ideology:\nCandidate Evaluations"
+              , file = "fig/appC2cand.pdf")
 appC3 <- prop_plot(data=list(anes2008,anes2012), groupvarname="ideol", legendname = "Ideology"
               , mftvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa")
-              , title = "Moral Foundation and Ideology:\nParty Evaluations")
-appC4 <- prop_plot(data=list(anes2008,anes2012)
-              , groupvarname="pid", legendname = "Party Identification"
-              , mftvarnames=c("puri_all", "auth_all", "ingr_all", "fair_all", "harm_all")
-              , title = "Moral Foundation and Party Identification:\nAll Evaluations")
-appC5 <- prop_plot(data=list(anes2008,anes2012)
-              , groupvarname="pid", legendname = "Party Identification"
-              , mftvarnames=c("puri_ca", "auth_ca", "ingr_ca", "fair_ca", "harm_ca")
-              , title = "Moral Foundation and Party Identification:\nCandidate Evaluations")
-appC6 <- prop_plot(data=list(anes2008,anes2012)
-              , groupvarname="pid", legendname = "Party Identification"
-              , mftvarnames=c("puri_pa", "auth_pa", "ingr_pa", "fair_pa", "harm_pa")
-              , title = "Moral Foundation and Party Identification:\nParty Evaluations")
-
-## save multiplot
-pdf("fig/appCprop.pdf", width = 12, height = 16)
-multiplot(appC1, appC2, appC3, appC4, appC5, appC6, cols=2)
-dev.off()
+              , title = "Moral Foundation and Ideology:\nParty Evaluations"
+              , file = "fig/appC3party.pdf")
 
 
 
