@@ -389,24 +389,25 @@ print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
 ### plot number of words (note that some max values are omitted)
 
 ## create individual plots
-appB2a <- qplot(num_total, data=anes2008[anes2008$num_total>0, ], geom="bar", binwidth = 1
-              , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)")
-appB2b <- qplot(num_total, data=anes2012[anes2012$num_total>0, ], geom="bar", binwidth = 1
+appB2a <- qplot(num_total, data=anes2012[anes2012$num_total>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
     theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2012)")
-appB2c <- qplot(num_ca, data=anes2008[anes2008$num_ca>0, ], geom="bar", binwidth = 1
-              , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)")
-appB2d <- qplot(num_ca, data=anes2012[anes2012$num_ca>0, ], geom="bar", binwidth = 1
+appB2b <- qplot(num_ca, data=anes2012[anes2012$num_ca>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
     theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2012)")
-appB2e <- qplot(num_pa, data=anes2008[anes2008$num_pa>0, ], geom="bar", binwidth = 1
-              , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)")
-appB2f <- qplot(num_pa, data=anes2012[anes2012$num_pa>0, ], geom="bar", binwidth = 1
+appB2c <- qplot(num_pa, data=anes2012[anes2012$num_pa>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
     theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2012)")
+appB2d <- qplot(num_total, data=anes2008[anes2008$num_total>0, ], geom="bar", binwidth = 1
+              , ylab = "Frequency", xlab = "Number of Words") +
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)")
+appB2e <- qplot(num_ca, data=anes2008[anes2008$num_ca>0, ], geom="bar", binwidth = 1
+              , ylab = "Frequency", xlab = "Number of Words") +
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)")
+appB2f <- qplot(num_pa, data=anes2008[anes2008$num_pa>0, ], geom="bar", binwidth = 1
+              , ylab = "Frequency", xlab = "Number of Words") +
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)")
+
 
 ## save multiplot
 pdf("fig/appB2num.pdf", width = 7, height = 5)
@@ -479,7 +480,7 @@ ggplot(rbind(m2_res,m2_2008_res), aes(x = mean, y=var-.052+.11*(year=="2008")
     ggtitle("Change in Predicted Probabilities to\nReference each Moral Foundation") +
     guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
     theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs)
-ggsave(filename = "fig/appD1ideol.pdf")
+ggsave(filename = "fig/appD1ideol.pdf", height = 5)
 
 
 ### Figure D2: social/economic ideology -> mft (logit)
@@ -539,7 +540,7 @@ ggplot(m2soceco_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, 
     guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
     theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs) +
     facet_grid(Ideology ~ .)
-ggsave(filename = "fig/appD2soceco.pdf")
+ggsave(filename = "fig/appD2soceco.pdf", height = 5)
 
 
 ### Figure D3 [fig 2, no leader]: ideology -> mft (logit)
@@ -579,7 +580,7 @@ ggplot(m2lead_res, aes(x = mean, y=var-.052+.11*(year=="2008")
     ggtitle("Change in Predicted Probabilities to\nReference each Moral Foundation") +
     guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
     theme(legend.position="bottom") + scale_y_continuous(breaks=1:4, labels=mftLabs)
-ggsave(filename = "fig/appD3lead.pdf")
+ggsave(filename = "fig/appD3lead.pdf", height = 5)
 
 
 ### Figure D4: ideology -> mft (virtues/vices)
@@ -638,7 +639,7 @@ ggplot(m2val_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, col
                                           , "Ingroup\n(vice)","Ingroup\n(virtue)"
                                           , "Fairness\n(vice)", "Fairness\n(virtue)"
                                           , "Harm\n(vice)", "Harm\n(virtue)"))
-ggsave(filename = "fig/appD4val.pdf")
+ggsave(filename = "fig/appD4val.pdf", height = 6)
 
 
 ### Figure D5: ideology -> mft (in-/out-party)
@@ -733,7 +734,7 @@ ggplot(m2inout_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, c
                                           , "Ingroup\n(out)","Ingroup\n(in)"
                                           , "Fairness\n(out)", "Fairness\n(in)"
                                           , "Harm\n(out)", "Harm\n(in)"))
-ggsave(filename = "fig/appD5inout.pdf")
+ggsave(filename = "fig/appD5inout.pdf", height = 6)
 
 
 ### Figure D7: ideology -> mft (likes/dislikes)
@@ -792,7 +793,7 @@ ggplot(m2lidi_res, aes(x = mean, y = var-.052+.11*(year=="2008"), shape=year, co
                                           , "Ingroup\n(di)","Ingroup\n(li)"
                                           , "Fairness\n(di)", "Fairness\n(li)"
                                           , "Harm\n(di)", "Harm\n(li)"))
-ggsave(filename = "fig/appD6lidi.pdf")
+ggsave(filename = "fig/appD6lidi.pdf", height = 6)
 
 
 
@@ -837,7 +838,7 @@ ggplot(rbind(m3_res,m3_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for both remaining variables")) +
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=3:1, labels=polLabs)
-ggsave(filename = "fig/appD7learn.pdf")
+ggsave(filename = "fig/appD7learn.pdf", height = 6)
 
 
 ### Figure D8 [fig 4 + 2008]: engagement/sophistication X ideology -> specific mft reference (logit)
@@ -927,7 +928,7 @@ ggplot(rbind(m4_res,m4_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for Both Remaining Variables")) +
     theme(legend.position="bottom", legend.box="horizontal") + facet_wrap(~dv) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD8ideolearn.pdf")
+ggsave(filename = "fig/appD8ideolearn.pdf", height = 6)
 
 
 
@@ -966,7 +967,7 @@ ggplot(rbind(m5_res,m5_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for PID Strength")) +
     theme(legend.position="bottom", legend.box="horizontal") +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD9turnout.pdf")
+ggsave(filename = "fig/appD9turnout.pdf", height = 6)
 
 
 ### Figure D10 [fig 6 + 2008]: mft -> protest behavior index (ols)
@@ -999,7 +1000,7 @@ ggplot(rbind(m6_res,m6_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=1:4, labels=mftLabs) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD10part.pdf")
+ggsave(filename = "fig/appD10part.pdf", height = 6)
 
 
 ### Figure D11 [fig 7 + 2008]: mft -> feeling thermometer differentials (ols)
@@ -1038,7 +1039,7 @@ ggplot(rbind(m7_res, m7_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1
     theme(legend.position="bottom", legend.box="horizontal") + 
     scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.) +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD11feel.pdf")
+ggsave(filename = "fig/appD11feel.pdf", height = 6)
 
 
 ### Figure D12 [fig 8 + 2008]: mft -> vote democratic (logit)
@@ -1073,7 +1074,7 @@ ggplot(rbind(m8_res,m8_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
          , lty=guide_legend(title="Control for Party Identification")) +
     theme(legend.position="bottom", legend.box="horizontal") +
     scale_color_manual(values=c("royalblue", "firebrick"))
-ggsave(filename = "fig/appD12vote.pdf")
+ggsave(filename = "fig/appD12vote.pdf", height = 6)
 
 
 
@@ -1093,7 +1094,7 @@ ggsave(filename = "fig/appD12vote.pdf")
 stargazer(m2[[1]], m2_2008[[1]], m2[[2]], m2_2008[[2]]
         , m2[[3]], m2_2008[[3]], m2[[4]], m2_2008[[4]]
         , type="text", out="tab/m2ideol.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
+        , title="Logit models predicting references to four moral foundations using ideology"
         , covariate.labels = c("Conservative", "Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
         , model.numbers = FALSE, order=c(2,1,3:8)
@@ -1108,7 +1109,7 @@ stargazer(m2[[1]], m2_2008[[1]], m2[[2]], m2_2008[[2]]
 stargazer(m2soceco[[1]], m2soceco[[5]], m2soceco[[2]], m2soceco[[6]]
         , m2soceco[[3]], m2soceco[[7]], m2soceco[[4]], m2soceco[[8]]
         , type="text", out="tab/m2soceco.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Two-Dimensional Conceptualization of Ideology"
+        , title="Logit models predicting references to four moral foundations using two-dimensional conceptualization of ideology"
         , covariate.labels = c("Economic Liberalism","Social Liberalism",covLabs)
         , column.labels = rep(c("2012","2008"),4), model.numbers = FALSE
         , dep.var.labels=rev(gsub("\n","",mftLabs))
@@ -1122,7 +1123,7 @@ stargazer(m2soceco[[1]], m2soceco[[5]], m2soceco[[2]], m2soceco[[6]]
 stargazer(m2lead[[1]], m2lead[[5]], m2lead[[2]], m2lead[[6]]
         , m2lead[[3]], m2lead[[7]], m2lead[[4]], m2lead[[8]]
         , type="text", out="tab/m2lead.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology"
+        , title="Logit models predicting references to four moral foundations using ideology (omitting leader from moral dictionary)"
         , covariate.labels = c("Conservative", "Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
         , model.numbers = FALSE, order=c(2,1,3:8)
@@ -1137,7 +1138,7 @@ stargazer(m2lead[[1]], m2lead[[5]], m2lead[[2]], m2lead[[6]]
 ## virtues
 stargazer(m2val[[1]], m2val[[9]], m2val[[3]], m2val[[11]], m2val[[5]], m2val[[13]], m2val[[7]], m2val[[15]]
         , type="text", out="tab/m2virtue.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (virtues)"
+        , title="Logit models predicting references to four moral foundations described as virtues using ideology"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1149,7 +1150,7 @@ stargazer(m2val[[1]], m2val[[9]], m2val[[3]], m2val[[11]], m2val[[5]], m2val[[13
 ## vices
 stargazer(m2val[[2]], m2val[[10]], m2val[[4]], m2val[[12]], m2val[[6]], m2val[[14]], m2val[[8]], m2val[[16]]
         , type="text", out="tab/m2vice.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (vices)"
+        , title="Logit models predicting references to four moral foundations described as vices using ideology"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1165,7 +1166,7 @@ stargazer(m2val[[2]], m2val[[10]], m2val[[4]], m2val[[12]], m2val[[6]], m2val[[1
 stargazer(m2inout[[1]], m2inout[[9]], m2inout[[3]], m2inout[[11]]
         , m2inout[[5]], m2inout[[13]], m2inout[[7]], m2inout[[15]]
         , type="text", out="tab/m2inparty.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (in-party)"
+        , title="Logit models predicting references to four moral foundations describing in-party using ideology"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1178,7 +1179,7 @@ stargazer(m2inout[[1]], m2inout[[9]], m2inout[[3]], m2inout[[11]]
 stargazer(m2inout[[2]], m2inout[[10]], m2inout[[4]], m2inout[[12]]
         , m2inout[[6]], m2inout[[14]], m2inout[[8]], m2inout[[16]]
         , type="text", out="tab/m2outparty.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (out-party)"
+        , title="Logit models predicting references to four moral foundations describing out-party using ideology"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate", covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1194,7 +1195,7 @@ stargazer(m2inout[[2]], m2inout[[10]], m2inout[[4]], m2inout[[12]]
 stargazer(m2lidi[[1]], m2lidi[[9]], m2lidi[[3]], m2lidi[[11]]
         , m2lidi[[5]], m2lidi[[13]], m2lidi[[7]], m2lidi[[15]]
         , type="text", out="tab/m2likes.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (likes)"
+        , title="Logit models predicting references to four moral foundations using ideology (likes)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate",covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1207,7 +1208,7 @@ stargazer(m2lidi[[1]], m2lidi[[9]], m2lidi[[3]], m2lidi[[11]]
 stargazer(m2lidi[[2]], m2lidi[[10]], m2lidi[[4]], m2lidi[[12]], m2lidi[[6]]
         , m2lidi[[14]], m2lidi[[8]], m2lidi[[16]]
         , type="text", out="tab/m2dislikes.tex"
-        , title="Logit Models Predicting References to four Moral Foundations using Ideology (dislikes)"
+        , title="Logit models predicting references to four moral foundations using ideology (dislikes)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))
         , covariate.labels = c("Conservative","Moderate",covLabs)
         , column.labels = rep(c("2012","2008"),4)
@@ -1226,7 +1227,7 @@ stargazer(m2lidi[[2]], m2lidi[[10]], m2lidi[[4]], m2lidi[[12]], m2lidi[[6]]
 
 stargazer(m3, m3_2008
         , type="text", out="tab/m3learn.tex"
-        , title="Logit Models Predicting Overall References to Moral Foundations"
+        , title="Logit models predicting overall references to any moral foundation"
         , covariate.labels = c("Political Knowledge","Political Media Exposure"
                               ,"Political Discussion",covLabs)
         , column.labels = c("2012","2008"), column.separate = c(4,4)
@@ -1243,7 +1244,7 @@ stargazer(m3, m3_2008
 stargazer(list(m4_know[[1]],m4_media[[1]],m4_disc[[1]],m4_all[[1]]
              , m4_know[[2]],m4_media[[2]],m4_disc[[2]],m4_all[[2]])
         , type="text", out="tab/m4ideolearn2012a.tex"
-        , title="Logit Models Predicting References to Specific Moral Foundations (2012)"
+        , title="Logit models predicting references to specific moral foundations (2012)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))[1:2], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
         , label="tab:m4ideolearn2012a", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
@@ -1257,7 +1258,7 @@ stargazer(list(m4_know[[1]],m4_media[[1]],m4_disc[[1]],m4_all[[1]]
 stargazer(list(m4_know[[3]],m4_media[[3]],m4_disc[[3]],m4_all[[3]]
              , m4_know[[4]],m4_media[[4]],m4_disc[[4]],m4_all[[4]])
         , type="text", out="tab/m4ideolearn2012b.tex"
-        , title="Logit Models Predicting References to Specific Moral Foundations (2012)"
+        , title="Logit models predicting references to specific moral foundations (2012)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))[3:4], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
         , label="tab:m4ideolearn2012b", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
@@ -1273,7 +1274,7 @@ stargazer(list(m4_know[[3]],m4_media[[3]],m4_disc[[3]],m4_all[[3]]
 stargazer(list(m4_2008_know[[1]],m4_2008_media[[1]],m4_2008_disc[[1]],m4_2008_all[[1]]
              , m4_2008_know[[2]],m4_2008_media[[2]],m4_2008_disc[[2]],m4_2008_all[[2]])
         , type="text", out="tab/m4ideolearn2008a.tex"
-        , title="Logit Models Predicting References to Specific Moral Foundations (2008)"
+        , title="Logit models predicting references to specific moral foundations (2008)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))[1:2], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
         , label="tab:m4ideolearn2008a", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
@@ -1287,7 +1288,7 @@ stargazer(list(m4_2008_know[[1]],m4_2008_media[[1]],m4_2008_disc[[1]],m4_2008_al
 stargazer(list(m4_2008_know[[3]],m4_2008_media[[3]],m4_2008_disc[[3]],m4_2008_all[[3]]
              , m4_2008_know[[4]],m4_2008_media[[4]],m4_2008_disc[[4]],m4_2008_all[[4]])
         , type="text", out="tab/m4ideolearn2008b.tex"
-        , title="Logit Models Predicting References to Specific Moral Foundations (2008)"
+        , title="Logit models predicting references to specific moral foundations (2008)"
         , dep.var.labels = rev(gsub("\n","",mftLabs))[3:4], model.numbers = FALSE
         , align=T, column.sep.width="-15pt", digits=3, digits.extra=1, font.size="tiny"
         , label="tab:m4ideolearn2008b", no.space=T, table.placement="ht", order=c(1:5,12:17,6:11)
@@ -1309,7 +1310,7 @@ stargazer(list(m4_2008_know[[3]],m4_2008_media[[3]],m4_2008_disc[[3]],m4_2008_al
 
 stargazer(m5,m5_2008
         , type="text", out="tab/m5turnout.tex"
-        , title="Logit Models Predicting Turnout Based on Moral Foundations"
+        , title="Logit models predicting turnout based on moral foundations"
         , covariate.labels=c(rev(gsub("\n","",mftLabs))
                            , "Strength of Party Identification", covLabs)
         , column.labels = c("2012","2008"), column.separate = c(2,2)
@@ -1323,7 +1324,7 @@ stargazer(m5,m5_2008
 
 stargazer(m6,m6_2008
         , type="text", out="tab/m6part.tex"
-        , title="Logit Models Predicting Wearing Button/Sign Based on Moral Foundations"
+        , title="OLS models predicting protest behavior based on moral foundations"
         , covariate.labels=c(rev(gsub("\n","",mftLabs))
                              , "Strength of Party Identification", covLabs)
         , column.labels = c("2012","2008"), column.separate = c(2,2)
@@ -1339,7 +1340,7 @@ stargazer(m6,m6_2008
 stargazer(m7[[1]],m7[[2]],m7_2008[[1]],m7_2008[[2]]
          ,m7[[3]],m7[[4]],m7_2008[[3]],m7_2008[[4]]
         , type="text", out="tab/m7feel.tex"
-        , title="Linear Model Predicting Feeling Thermometer Differential"
+        , title="OLS models predicting feeling thermometer differentials"
         , dep.var.labels = c("Party Evaluations", "Candidate Evaluations")
         , covariate.labels=c(rev(gsub("\n","",mftLabs))
                            , "Party Identification (Democrats)"
@@ -1355,7 +1356,7 @@ stargazer(m7[[1]],m7[[2]],m7_2008[[1]],m7_2008[[2]]
 
 stargazer(m8,m8_2008
         , type="text", out="tab/m8vote.tex"
-        , title="Logit Models Predicting Democratic Vote Choice Based on Moral Foundations"
+        , title="Logit models predicting Democratic vote choice based on moral foundations"
         , covariate.labels=c(rev(gsub("\n","",mftLabs))
                            , "Party Identification (Democrats)"
                            , "Party Identification (Republicans)", covLabs)
