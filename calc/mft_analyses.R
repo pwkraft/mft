@@ -391,22 +391,28 @@ print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
 ## create individual plots
 appB2a <- qplot(num_total, data=anes2012[anes2012$num_total>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2012)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2012)") +
+    geom_vline(aes(xintercept = mean(num_total, na.rm=T)), linetype="dotted", size=1)
 appB2b <- qplot(num_ca, data=anes2012[anes2012$num_ca>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2012)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2012)") +
+    geom_vline(aes(xintercept = mean(num_ca, na.rm=T)), linetype="dotted", size=1)
 appB2c <- qplot(num_pa, data=anes2012[anes2012$num_pa>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2012)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2012)") +
+    geom_vline(aes(xintercept = mean(num_pa, na.rm=T)), linetype="dotted", size=1)
 appB2d <- qplot(num_total, data=anes2008[anes2008$num_total>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)") +
+    geom_vline(aes(xintercept = mean(num_total, na.rm=T)), linetype="dotted", size=1)
 appB2e <- qplot(num_ca, data=anes2008[anes2008$num_ca>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)") +
+    geom_vline(aes(xintercept = mean(num_ca, na.rm=T)), linetype="dotted", size=1)
 appB2f <- qplot(num_pa, data=anes2008[anes2008$num_pa>0, ], geom="bar", binwidth = 1
               , ylab = "Frequency", xlab = "Number of Words") +
-    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)")
+    theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)") +
+    geom_vline(aes(xintercept = mean(num_pa, na.rm=T)), linetype="dotted", size=1)
 
 
 ## save multiplot
