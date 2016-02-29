@@ -21,4 +21,6 @@ memo
 *.docx
 *.DS_store
 *.ptc
+\#*\#
+.#*
 

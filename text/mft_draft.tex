@@ -19,7 +19,7 @@
 \usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
 
 \author{Patrick W. Kraft\footnote{Ph.D. Student, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}.
-%I thank Jennifer Jerit, Jason Barabas, Stanley Feldman, Scott Clifford, Peter DeScioli, and participants of the Political Science Graduate Student Colloquium at Stony Brook University as well as participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier versions of this manuscript.
+%I thank Jennifer Jerit, Jason Barabas, Stanley Feldman, Fridolin Linder, Scott Clifford, Peter DeScioli, and participants of the Political Science Graduate Student Colloquium at Stony Brook University as well as participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier versions of this manuscript.
 }}
 \date{today}
 
@@ -33,7 +33,8 @@
 \onehalfspacing
 
 \begin{abstract}
-This paper investigates how differences in moral judgments between liberals and conservatives shape and structure political reasoning. Using open-ended survey responses in the 2012 American National Election Study, I utilize a moral dictionary proposed in the literature on Moral Foundations Theory to identify references to basic moral intuitions when individuals report their attitudes towards political parties and candidates. The results show that liberals and conservatives rely on different sets of moral foundations when evaluating political actors. However, the ideological differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory. Furthermore, moral reasoning predicts political participation, attitudes towards parties and candidates, as well as voting behavior, even after controlling for party identification.
+This paper investigates how differences in moral judgments between liberals and conservatives shape and structure political reasoning. Using open-ended survey responses in the 2012 American National Election Study, I utilize a moral dictionary proposed in the literature on Moral Foundations Theory to identify references to basic moral intuitions when individuals report their attitudes towards political parties and candidates. The results show that liberals and conservatives rely on different sets of moral foundations when evaluating political actors. However, the ideological differences appear to be context-specific and are not always consistent with theoretical expectations of Moral Foundations Theory. Furthermore, moral reasoning predicts attitudes towards parties and candidates, vote choice, as well as turnout, even after controlling for party identification.
+% change sentence: The results show...
 
 %\vspace{\baselineskip}
 %\noindent \textbf{Keywords:} Moral Foundations Theory, Political Reasoning, Ideology, Political Behavior, Open-ended Survey Responses
@@ -95,7 +96,7 @@ Conditional on political engagement, I therefore expect moral reasoning to be mo
 
 \vspace{0.3cm}
 \begin{tabular}{lp{12cm}}
-\textsl{Hypothesis 3:} & References to moral foundations predict turnout, political participation, candidate and party preferences, as well as vote choice, even after controlling for (strength of) party identification.
+\textsl{Hypothesis 3:} & References to moral foundations predict candidate and party preferences, vote choice, as well as turnout, even after controlling for (strength of) party identification.
 \end{tabular}
 \vspace{0.5cm}
 
@@ -116,7 +117,7 @@ Individual response patterns are modeled as independent dichotomous outcomes via
 
 Other factors that are expected to be related to references to moral foundations include \textit{political sophistication}, which was measured as the sum of correct answers to objective knowledge questions. The analysis also investigates the effect of \textit{political media exposure} as well as the frequency of \textit{political discussions} with friends and family members. Additional control variables included in the analyses are \textit{church attendance}, \textit{education} (college degree), \textit{age}, \textit{sex}, \textit{race} (African American), as well as the overall length of the individual responses in the open-ended questions (\textit{number of words}). The inclusion of the length of individual responses as control variables should account for potential confounding factors such as general effects of increased political literacy on the complexity of open-ended responses.
 
-In order to examine the relevance and consequences of moral reasoning, dummy indicators denoting references to each of the moral foundations are used as independent variables to predict political outcomes. The dependent variables considered here are retrospective \textit{turnout}, an additive index of \textit{protest behavior} (consisting of dichotomous indicators for participation in demonstrations, wearing campaign buttons, and signing petitions), \textit{candidate} and \textit{party evaluations} (measured as the respective feeling thermometer differentials) as well as actual \textit{voting behavior} (measured as a dichotomous indicator of vote choice for the Democratic rather than the Republican Presidential candidate). Finally, in addition to the controls discussed previously, the analyses include measures of \textit{party identification} (or the strength of party identification when appropriate).
+In order to examine the relevance and consequences of moral reasoning, dummy indicators denoting references to each of the moral foundations are used as independent variables to predict political outcomes. The dependent variables considered here are \textit{candidate} and \textit{party evaluations} (measured as the respective feeling thermometer differentials), \textit{voting behavior} (measured as a dichotomous indicator of vote choice for the Democratic rather than the Republican Presidential candidate), as well as retrospective \textit{turnout}. Finally, in addition to the controls discussed previously, the analyses include measures of \textit{party identification} (or the strength of party identification when appropriate).
 
 
 \subsection{Results}
@@ -185,23 +186,7 @@ Overall, political knowledge, media exposure, and political discussions do not o
 
 \subsubsection{Consequences and Political Relevance of Moral Reasoning}
 
-Previous research relying on the MFQ has linked moral foundations to an array of political outcomes, such as turnout \citep{johnson2014ideology}, candidate preferences \citep{iyer2010beyond}, and voting behavior \citep{franks2015using}. But do we see the same patterns for explicit moral reasoning as compared to latent moral foundations? As a first step, we will examine whether references to moral foundations affect political participation. Figure~\ref{fig:5turnout} displays the results of logit models predicting individual turnout as a function of individual references to moral foundations (as well as the regular set of control variables used in the previous analyses).
-
-\begin{figure}[h]\centering
-\includegraphics[scale=.9]{../calc/fig/fig5turnout.pdf}
-\caption{Difference in predicted probabilities to participate in election between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate in the election, and vice versa. Estimates are based on a single logit model including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Additional plot including 2008 data is shown in the appendix, Figure~\ref{fig:appD9turnout}, and full model results are displayed in Table~\ref{tab:m5turnout}.}\label{fig:5turnout}
-\end{figure}
-
-Each of the moral foundations have a positive effect on the predicted probabilities of participating in the election (with the exception that the effect of harm/care is not statistically significant). For example, if a respondent mentions considerations related to fairness/reciprocity when discussing his or her political preferences, the probability of turning out to vote is increased by almost 5 percentage points, holding all other variables constant at their respective means. Note that the estimates are based on models that already take into account the length of individual responses. Furthermore, most of the effects stay significant and are only reduced marginally after controlling for the strength of individual party identification.
-
-\begin{figure}[h]\centering
-\includegraphics[scale=.9]{../calc/fig/fig6part.pdf}
-\caption{Difference in predicted protest behavior index between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation scored higher on an additive protest behavior index ranging from 0 to 3, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Additional plot including 2008 data is shown in the appendix, Figure~\ref{fig:appD10part}, and full model results are displayed in Table~\ref{tab:m6part}.}\label{fig:6part}
-\end{figure}
-
-The influence of moral reasoning extends to other forms of participation. Figure~\ref{fig:6part} displays estimates from a linear regression predicting protest behavior (participation in demonstration, displaying signs or campaign stickers, signing petitions) based on moral foundations. Again, references to moral foundations generally has positive effects on political engagement outside of the ballot box. Consider the effect of ingroup/loyalty as an example. If respondents mentioned considerations related to this moral foundation, their additive protest index (ranging from 0 to 3) is increased by 0.1 points. This effect might not seem large, but bear in mind that the independent variable consists of a dichotomous indicator for references to any moral foundation in a set of open-ended questions. The fact that we can recover consistent and statistically significant effects on political participation in such a context (even after controlling for strength of party identification and the length of individual responses) is therefore quite meaningful.
-
-Overall then, the analyses indicate that moral reasoning is positively associated with political engagement. That said, the analyses presented here are not sufficient to make a strong causal claim about the direction of this relationship. Yet, the results suggest that moral reasoning (as measured by open-ended survey responses) is powerfully related to different forms of political participation and engagement.
+Previous research relying on the MFQ has linked moral foundations to an array of political outcomes, such as turnout \citep{johnson2014ideology}, candidate preferences \citep{iyer2010beyond}, and voting behavior \citep{franks2015using}. But do we see the same patterns for explicit moral reasoning as compared to latent moral foundations? As a first step, we will examine whether references to moral foundations affect political participation.
 
 \begin{figure}[h]\centering
 \includegraphics[scale=.9]{../calc/fig/fig7feel.pdf}
@@ -219,6 +204,19 @@ Lastly, Figure~\ref{fig:8vote} finally presents the changes in expected probabil
 
 Again, the patterns are strikingly similar to the results presented thus far. Individuals who mentioned moral considerations related to the harm/care foundation are (slightly) more likely to vote for the Democratic candidate. The effect for the fairness/reciprocity foundation is also positive: respondents who mentioned this foundation were more likely to vote for Barack Obama than for Mitt Romney. Respondents who emphasized the ingroup/loyalty foundation, on the other hand, were less likely to vote for the Democratic candidate. While these results appear to be relatively consistent with Moral Foundations Theory, we see again that the effect for the authority/respect foundation deviates from our expectations: respondents mentioning this foundation were more likely to vote for the Democratic candidate. Overall, Figure~\ref{fig:8vote} shows that it is possible to predict voting behavior simply by observing the moral dimensions of the respondents' political reasoning, without taking into account which candidate they described, and whether the description is framed positively or negatively. Moreover, these effects persist after controlling for individual party identification.
 
+Figure~\ref{fig:5turnout} displays the results of logit models predicting individual turnout as a function of individual references to moral foundations (as well as the regular set of control variables used in the previous analyses).
+
+\begin{figure}[h]\centering
+\includegraphics[scale=.9]{../calc/fig/fig5turnout.pdf}
+\caption{Difference in predicted probabilities to participate in election between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate in the election, and vice versa. Estimates are based on a single logit model including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Additional plot including 2008 data is shown in the appendix, Figure~\ref{fig:appD9turnout}, and full model results are displayed in Table~\ref{tab:m5turnout}.}\label{fig:5turnout}
+\end{figure}
+
+Each of the moral foundations have a positive effect on the predicted probabilities of participating in the election (with the exception that the effect of harm/care is not statistically significant). For example, if a respondent mentions considerations related to fairness/reciprocity when discussing his or her political preferences, the probability of turning out to vote is increased by almost 5 percentage points, holding all other variables constant at their respective means. Note that the estimates are based on models that already take into account the length of individual responses. Furthermore, most of the effects stay significant and are only reduced marginally after controlling for the strength of individual party identification.
+
+This effect might not seem large, but bear in mind that the independent variable consists of a dichotomous indicator for references to any moral foundation in a set of open-ended questions. The fact that we can recover consistent and statistically significant effects on political participation in such a context (even after controlling for strength of party identification and the length of individual responses) is therefore quite meaningful.
+
+Overall then, the analyses indicate that moral reasoning is positively associated with political engagement. That said, the analyses presented here are not sufficient to make a strong causal claim about the direction of this relationship. Yet, the results suggest that moral reasoning (as measured by open-ended survey responses) is powerfully related to different forms of political participation and engagement.
+
 
 \section{Conclusion}
 
@@ -228,7 +226,7 @@ The empirical evidence discussed in this paper is only partly consistent with pr
 
 According to the second hypothesis, it was expected that individuals show heterogeneity in terms of their tendency to rely on moral reasoning. The results indicated that political knowledge, discussions, as well as media consumption increase the reliance on moral considerations. Thus, the evidence suggests that moral reasoning is part of a broader political learning process. At least in some cases, this learning process appears to imply an increased differentiation between liberals and conservatives in terms of the focus on specific foundations as described by Moral Foundations Theory.
 
-The last part of the analyses focused on the political relevance of moral reasoning as conceptualized by open-ended survey responses. The results here revealed consistent relationships between individual moral foundations and different forms of political participation, candidate evaluation, and voting behavior. As such, moral reasoning measured using open-ended survey responses is a politically meaningful and influential concept.
+The last part of the analyses focused on the political relevance of moral reasoning as conceptualized by open-ended survey responses. The results here revealed consistent relationships between individual moral foundations and political preferences and voting behavior. As such, moral reasoning measured using open-ended survey responses is a politically meaningful and influential concept.
 
 The contributions of this paper are therefore twofold. This study adds to the existing literature on moral foundations by providing new insights into the mechanisms underlying its relationship with ideology. From a general methodological perspective, the paper emphasizes the potential benefits of incorporating open-ended survey responses in research focusing on the determinants and structure of ideology and political reasoning. The paper shows that one can directly assess moral reasoning in surveys that do not contain the MFQ or related measures, simply by relying on open-ended survey responses.
 
@@ -402,18 +400,6 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 
 \begin{figure}[h]
   \centering
-  \caption{Models predicting turnout and protest behavior based on moral reasoning including 2008 ANES data.}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
-    \caption{Difference in predicted probabilities to participate in election between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate in the election, and vice versa. Estimates are based on a single logit model including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Full model results are reported in Table \ref{tab:m5turnout}}\label{fig:appD9turnout}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD10part.pdf}
-    \caption{Difference in predicted protest behavior index between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation scored higher on an additive protest behavior index ranging from 0 to 3, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Full model results are reported in Table \ref{tab:m6part}.}\label{fig:appD10part}
-  \end{subfigure}
-\end{figure}
-\begin{figure}[h]
-  \centering
   \caption{Models predicting feeling thermometer differentials and vote choice based on moral reasoning including 2008 ANES data.}
   \begin{subfigure}[t]{0.49\textwidth}
     \includegraphics[scale=.4]{../calc/fig/appD11feel.pdf}
@@ -423,6 +409,12 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
     \includegraphics[scale=.4]{../calc/fig/appD12vote.pdf}
     \caption{Difference in predicted probabilities to vote for Democratic candidate between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to vote for the Democratic candidate, and vice versa. Estimates are based on a single logit model including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for party identification. Full model results are reported in Table \ref{tab:m8vote}.}\label{fig:appD12vote}
   \end{subfigure}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+    \includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
+    \caption{Models predicting turnout based on moral reasoning including 2008 ANES data. Difference in predicted probabilities to participate in election between respondents who mentioned each moral foundation or not, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate in the election, and vice versa. Estimates are based on a single logit model including dichotomous indicators for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Full model results are reported in Table \ref{tab:m5turnout}}\label{fig:appD9turnout}
 \end{figure}
 
 
@@ -458,10 +450,9 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 \clearpage
 \subsection{Consequences and political relevance of moral reasoning including 2008 ANES data}
 
-\input{../calc/tab/m5turnout}
-\input{../calc/tab/m6part}
 \input{../calc/tab/m7feel}
 \input{../calc/tab/m8vote}
+\input{../calc/tab/m5turnout}
 
 
 \end{document}
