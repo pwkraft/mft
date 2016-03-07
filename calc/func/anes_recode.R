@@ -66,7 +66,7 @@ opend_prep <- function(csv_src, varlist, raw_out = FALSE
     raw <- data.frame(mapply(function(x){sub("7 refused",NA,x,fixed=T)},raw))
 
     # get rid of punctuation
-    raw <- data.frame(mapply(function(x){gsub("[[:punct:]+]"," ",x)},raw))
+    raw <- data.frame(mapply(function(x){gsub("[[:punct:]]+"," ",x)},raw))
 
     # remove white spaces
     raw <- data.frame(mapply(function(x){gsub("[[:space:]]+"," ",x)},raw))
@@ -157,7 +157,7 @@ opend_mft <- function(data, use_dict = "new", leader = TRUE) {
             dict$auth <- dict$auth[-grep("leader",dict$auth)]
         }
     } else {stop("Argument 'dict' must be either 'new' or 'old'")}
-    
+
     # check responses for dictionary entries
     resp <- data.frame(data[,1])
     for(v in 2:ncol(data)){
@@ -247,7 +247,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         x <- (x-min(x, na.rm = T))/(max(x, na.rm = T)-min(x, na.rm = T))
         return(x)
     }
-    
+
     ### set option for data.frame and read.csv!
     options(stringsAsFactors = FALSE)
 
@@ -255,9 +255,9 @@ ts_recode <- function(dta_src, raw_out = FALSE
     raw <- read.dta13(dta_src, convert.factors = FALSE)
     if(is.null(id)) stop("ID variable must be specified!")
     dat <- data.frame(id=raw[,id])
-    
+
     if(!is.null(year)) {
-      ## survey year  
+      ## survey year
       dat$year = year
     }
 
@@ -273,7 +273,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
                      , labels = c("Liberal","Moderate","Conservative"))
         dat$ideol_lib <- as.numeric(dat$ideol=="Liberal")
         dat$ideol_con <- as.numeric(dat$ideol=="Conservative")
-        
+
         ## ideology as a continuoum
         dat$ideol_ct <- recode(raw[,ideol], "lo:0=NA")
         dat$ideol_ct <- zero_one(dat$ideol_ct)
@@ -299,7 +299,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
                 dat$issue[is.na(dat$issue)] <- zero_one(tmp[is.na(dat$issue)])
                 rm(tmp)
             }
-            
+
             colnames(dat)[ncol(dat)] <- paste0("issue_",names(issues)[i])
         }
     }
@@ -337,7 +337,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
                    , labels = c("Democrat","Independent","Republican"))
         dat$pid_dem <- as.numeric(dat$pid=="Democrat")
         dat$pid_rep <- as.numeric(dat$pid=="Republican")
-        
+
         ## pid continuous
         dat$pid_cont <- recode(raw[,pid], "lo:0=NA")
 
@@ -415,7 +415,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(!is.null(eval_party)){
         ## party evaluation
         dat$eval_party <- (recode(raw[,eval_party[1]], "lo:-1=NA; 101:hi=NA") -
-                           recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))        
+                           recode(raw[,eval_party[2]], "lo:-1=NA; 101:hi=NA"))
     }
 
     if(!is.null(pastvote)){
@@ -427,7 +427,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         ## voted in current election
         dat$vote <- recode(raw[,vote], "2=0; lo:-1=NA")
     }
-    
+
     if(!is.null(vote_dem)){
         ## intends to vote for democratic presidential candidate
         dat$vote_dem <- recode(raw[,vote_dem], "lo:0=NA; 2=0; c(5,7)=NA")
@@ -457,11 +457,11 @@ ts_recode <- function(dta_src, raw_out = FALSE
     if(!is.null(age)){
         ## age
         dat$age <- recode(raw[,age], "c(-2,-9,-8) = NA")
-        
+
         ## regression discontinuity based on eligibility in last election (based on age)
         dat$regdi_year <- dat$age - 4
     }
-    
+
     if(!is.null(regdi_month$byear)&!is.null(regdi_month$bmonth)){
       ## regression discontinuity based on year and month of birth
       if(class(regdi_month)!="list") stop("'regdi_month' argument must be a list")
@@ -504,7 +504,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
             dat$spanish[raw[,names(spanish)[i]]==spanish[[i]]] <- 1
         }
     }
-        
+
     if(raw_out==TRUE){
         out <- list(data = dat, raw = raw, call = match.call())
     } else {
@@ -523,7 +523,7 @@ respAgg <- function(data, mftdim){
     # dummy indicating whether the respective moral foundation
     # dimension was mentioned in any of the items
     # arguments:
-    # - data: matrix of response 
+    # - data: matrix of response
     # - mftdim: character string indicating the respective
     #           mft dimension
     # output:
@@ -556,7 +556,7 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     # - check: complete dataset to check all recodings
     # - call: original function call
     ###############################################################
-    
+
     ## extract relevant objects from ts and opend
     dat <- ts$data
     resp <- opend$resp
@@ -622,7 +622,7 @@ anes_merge <- function(ts, opend, valence = FALSE, check = TRUE){
     mft$auth_di <- respAgg(resp,"auth.*_di")
     mft$puri_di <- respAgg(resp,"puri.*_di")
     mft$mft_di <- as.numeric(apply(mft[,grep("_di",colnames(mft))],1,sum) > 0)
-    
+
     if(valence == TRUE){
         ## aggregating over all items
         mft$harm_virtue_all <- respAgg(resp,"harm_virtue")

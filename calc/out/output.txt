@@ -1,0 +1,990 @@
+
+systemfit results 
+method: SUR 
+
+           N    DF     SSR detRCov   OLS-R2 McElroy-R2
+system 18764 18728 2.66942       0 0.017036   0.017682
+
+             N   DF      SSR      MSE     RMSE       R2   Adj R2
+harm      4691 4682 0.964219 0.000206 0.014351 0.013135 0.011449
+fairness  4691 4682 0.666874 0.000142 0.011935 0.014648 0.012965
+authority 4691 4682 0.505140 0.000108 0.010387 0.013945 0.012261
+ingroup   4691 4682 0.533191 0.000114 0.010672 0.029795 0.028137
+
+The covariance matrix of the residuals used for estimation
+                 harm    fairness   authority     ingroup
+harm      2.05942e-04 2.13975e-06 4.50382e-06 1.14965e-05
+fairness  2.13975e-06 1.42434e-04 8.92351e-07 3.48080e-06
+authority 4.50382e-06 8.92351e-07 1.07890e-04 6.85590e-06
+ingroup   1.14965e-05 3.48080e-06 6.85590e-06 1.13881e-04
+
+The covariance matrix of the residuals
+                 harm    fairness   authority     ingroup
+harm      2.05942e-04 2.13975e-06 4.50382e-06 1.14965e-05
+fairness  2.13975e-06 1.42434e-04 8.92351e-07 3.48080e-06
+authority 4.50382e-06 8.92351e-07 1.07890e-04 6.85590e-06
+ingroup   1.14965e-05 3.48080e-06 6.85590e-06 1.13881e-04
+
+The correlations of the residuals
+               harm   fairness  authority   ingroup
+harm      1.0000000 0.01249350 0.03021476 0.0750703
+fairness  0.0124935 1.00000000 0.00719845 0.0273304
+authority 0.0302148 0.00719845 1.00000000 0.0618512
+ingroup   0.0750703 0.02733043 0.06185124 1.0000000
+
+
+SUR estimates for 'harm' (equation 1)
+Model Formula: harm ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        1.05888e-02  8.11196e-04 13.05331 < 2.22e-16 ***
+ideolModerate     -2.09554e-03  5.46962e-04 -3.83123 0.00012918 ***
+ideolConservative -2.51545e-03  5.42959e-04 -4.63284 3.7046e-06 ***
+relig             -8.90965e-05  1.23649e-04 -0.72056 0.47121741    
+educ               4.90383e-04  4.50072e-04  1.08957 0.27596004    
+age               -2.63846e-05  1.27762e-05 -2.06514 0.03896459 *  
+female             1.51764e-03  4.24493e-04  3.57520 0.00035350 ***
+black             -2.79446e-05  5.89833e-04 -0.04738 0.96221469    
+num_total          7.65344e-06  2.78261e-06  2.75046 0.00597403 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.014351 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.964219 MSE: 0.000206 Root MSE: 0.014351 
+Multiple R-Squared: 0.013135 Adjusted R-Squared: 0.011449 
+
+
+SUR estimates for 'fairness' (equation 2)
+Model Formula: fairness ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        6.34282e-03  6.74621e-04  9.40205 < 2.22e-16 ***
+ideolModerate     -2.25546e-03  4.54874e-04 -4.95843 7.3577e-07 ***
+ideolConservative -2.76106e-03  4.51545e-04 -6.11468 1.0462e-09 ***
+relig             -5.23662e-05  1.02831e-04 -0.50924 0.61060537    
+educ               1.24592e-03  3.74297e-04  3.32871 0.00087924 ***
+age               -3.96460e-06  1.06251e-05 -0.37313 0.70906562    
+female             4.22155e-04  3.53024e-04  1.19582 0.23182574    
+black             -1.09720e-03  4.90527e-04 -2.23678 0.02534790 *  
+num_total          1.42542e-06  2.31412e-06  0.61597 0.53794719    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.011935 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.666874 MSE: 0.000142 Root MSE: 0.011935 
+Multiple R-Squared: 0.014648 Adjusted R-Squared: 0.012965 
+
+
+SUR estimates for 'authority' (equation 3)
+Model Formula: authority ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        4.58439e-03  5.87143e-04  7.80795 7.1054e-15 ***
+ideolModerate     -6.07676e-04  3.95891e-04 -1.53496 0.12486122    
+ideolConservative -1.21122e-03  3.92993e-04 -3.08204 0.00206781 ** 
+relig             -8.69220e-05  8.94972e-05 -0.97123 0.33148605    
+educ               8.48436e-04  3.25762e-04  2.60447 0.00923073 ** 
+age                2.92225e-05  9.24738e-06  3.16009 0.00158728 ** 
+female            -4.96692e-04  3.07247e-04 -1.61659 0.10603524    
+black              1.51784e-03  4.26920e-04  3.55533 0.00038124 ***
+num_total          8.60218e-06  2.01405e-06  4.27109 1.9837e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.010387 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.50514 MSE: 0.000108 Root MSE: 0.010387 
+Multiple R-Squared: 0.013945 Adjusted R-Squared: 0.012261 
+
+
+SUR estimates for 'ingroup' (equation 4)
+Model Formula: ingroup ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        4.13894e-03  6.03225e-04  6.86135 7.7105e-12 ***
+ideolModerate      2.29766e-04  4.06735e-04  0.56490   0.572165    
+ideolConservative  1.59787e-03  4.03758e-04  3.95749 7.6862e-05 ***
+relig              1.51862e-04  9.19486e-05  1.65160   0.098683 .  
+educ               1.92791e-03  3.34685e-04  5.76039 8.9286e-09 ***
+age               -1.54705e-05  9.50068e-06 -1.62836   0.103517    
+female            -7.27566e-04  3.15663e-04 -2.30488   0.021217 *  
+black             -1.12321e-03  4.38614e-04 -2.56082   0.010474 *  
+num_total          1.33588e-05  2.06921e-06  6.45597 1.1843e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.010672 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.533191 MSE: 0.000114 Root MSE: 0.010672 
+Multiple R-Squared: 0.029795 Adjusted R-Squared: 0.028137 
+
+
+systemfit results 
+method: SUR 
+
+           N    DF     SSR detRCov   OLS-R2 McElroy-R2
+system 18764 18728 1.10053       0 0.036882   0.034335
+
+             N   DF      SSR     MSE     RMSE       R2   Adj R2
+harm      4691 4682 0.393226 8.4e-05 0.009164 0.040043 0.038402
+fairness  4691 4682 0.264928 5.7e-05 0.007522 0.020909 0.019237
+authority 4691 4682 0.199124 4.3e-05 0.006521 0.041514 0.039876
+ingroup   4691 4682 0.243250 5.2e-05 0.007208 0.044987 0.043355
+
+The covariance matrix of the residuals used for estimation
+                 harm    fairness   authority     ingroup
+harm      8.39867e-05 2.82252e-07 1.53905e-06 3.72086e-06
+fairness  2.82252e-07 5.65844e-05 4.98341e-07 4.68694e-07
+authority 1.53905e-06 4.98341e-07 4.25298e-05 3.08918e-06
+ingroup   3.72086e-06 4.68694e-07 3.08918e-06 5.19543e-05
+
+The covariance matrix of the residuals
+                 harm    fairness   authority     ingroup
+harm      8.39867e-05 2.82252e-07 1.53905e-06 3.72086e-06
+fairness  2.82252e-07 5.65844e-05 4.98341e-07 4.68694e-07
+authority 1.53905e-06 4.98341e-07 4.25298e-05 3.08918e-06
+ingroup   3.72086e-06 4.68694e-07 3.08918e-06 5.19543e-05
+
+The correlations of the residuals
+                harm   fairness authority   ingroup
+harm      1.00000000 0.00409433 0.0257514 0.0563284
+fairness  0.00409433 1.00000000 0.0101586 0.0086443
+authority 0.02575137 0.01015855 1.0000000 0.0657183
+ingroup   0.05632839 0.00864430 0.0657183 1.0000000
+
+
+SUR estimates for 'harm' (equation 1)
+Model Formula: harm ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        2.85567e-03  5.18035e-04  5.51250 3.7276e-08 ***
+ideolModerate     -9.61787e-04  3.49293e-04 -2.75352 0.00591851 ** 
+ideolConservative -1.33999e-03  3.46737e-04 -3.86457 0.00011279 ***
+relig              8.08433e-06  7.89632e-05  0.10238 0.91845865    
+educ              -3.19758e-05  2.87419e-04 -0.11125 0.91142158    
+age                1.68200e-05  8.15894e-06  2.06154 0.03930650 *  
+female             1.73958e-04  2.71084e-04  0.64171 0.52109109    
+black             -1.44740e-04  3.76671e-04 -0.38426 0.70080142    
+num_total          2.24442e-05  1.77699e-06 12.63046 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.009164 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.393226 MSE: 8.4e-05 Root MSE: 0.009164 
+Multiple R-Squared: 0.040043 Adjusted R-Squared: 0.038402 
+
+
+SUR estimates for 'fairness' (equation 2)
+Model Formula: fairness ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        2.64084e-03  4.25209e-04  6.21070 5.7318e-10 ***
+ideolModerate     -1.34868e-03  2.86704e-04 -4.70410 2.6233e-06 ***
+ideolConservative -1.82950e-03  2.84606e-04 -6.42821 1.4198e-10 ***
+relig              4.32383e-05  6.48138e-05  0.66712 0.50473130    
+educ               8.20082e-04  2.35916e-04  3.47616 0.00051327 ***
+age                1.18954e-05  6.69695e-06  1.77624 0.07575864 .  
+female             1.55708e-04  2.22508e-04  0.69978 0.48409713    
+black             -3.53405e-04  3.09175e-04 -1.14306 0.25307322    
+num_total          7.11413e-06  1.45857e-06  4.87746 1.1102e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.007522 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.264928 MSE: 5.7e-05 Root MSE: 0.007522 
+Multiple R-Squared: 0.020909 Adjusted R-Squared: 0.019237 
+
+
+SUR estimates for 'authority' (equation 3)
+Model Formula: authority ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        1.27959e-03  3.68638e-04  3.47112 0.00052298 ***
+ideolModerate     -2.49439e-04  2.48560e-04 -1.00353 0.31565506    
+ideolConservative  3.87811e-04  2.46741e-04  1.57173 0.11608051    
+relig             -2.62249e-05  5.61909e-05 -0.46671 0.64072800    
+educ               5.67906e-04  2.04530e-04  2.77664 0.00551418 ** 
+age                1.07735e-05  5.80598e-06  1.85559 0.06357535 .  
+female            -1.64854e-04  1.92905e-04 -0.85458 0.39282629    
+black              2.18497e-04  2.68042e-04  0.81516 0.41502244    
+num_total          1.56312e-05  1.26452e-06 12.36134 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.006521 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.199124 MSE: 4.3e-05 Root MSE: 0.006521 
+Multiple R-Squared: 0.041514 Adjusted R-Squared: 0.039876 
+
+
+SUR estimates for 'ingroup' (equation 4)
+Model Formula: ingroup ~ ideol + relig + educ + age + female + black + num_total
+
+                      Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)        2.06118e-03  4.07441e-04  5.05885 4.3792e-07 ***
+ideolModerate      9.81429e-05  2.74724e-04  0.35724  0.7209264    
+ideolConservative  8.74216e-04  2.72713e-04  3.20563  0.0013567 ** 
+relig              6.78932e-05  6.21055e-05  1.09319  0.2743661    
+educ               6.00686e-04  2.26058e-04  2.65722  0.0079056 ** 
+age               -6.81757e-06  6.41711e-06 -1.06241  0.2881065    
+female            -3.24172e-04  2.13211e-04 -1.52043  0.1284698    
+black             -3.26132e-04  2.96256e-04 -1.10084  0.2710214    
+num_total          1.79915e-05  1.39762e-06 12.87296 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.007208 on 4682 degrees of freedom
+Number of observations: 4691 Degrees of Freedom: 4682 
+SSR: 0.24325 MSE: 5.2e-05 Root MSE: 0.007208 
+Multiple R-Squared: 0.044987 Adjusted R-Squared: 0.043355 
+
+
+systemfit results 
+method: OLS 
+
+           N    DF     SSR detRCov   OLS-R2 McElroy-R2
+system 15166 15142 9.41943       0 0.031502   -10.5038
+
+            N   DF     SSR      MSE     RMSE       R2   Adj R2
+polknow  5147 5139 3.18133 0.000619 0.024881 0.035714 0.034400
+polmedia 5177 5169 3.23136 0.000625 0.025003 0.028329 0.027013
+poldisc  4842 4834 3.00674 0.000622 0.024940 0.030425 0.029021
+
+The covariance matrix of the residuals
+             polknow    polmedia     poldisc
+polknow  0.000617214 0.000615581 0.000613922
+polmedia 0.000615581 0.000621776 0.000618697
+poldisc  0.000613922 0.000618697 0.000620255
+
+The correlations of the residuals
+          polknow polmedia  poldisc
+polknow  1.000000 0.993689 0.992229
+polmedia 0.993689 1.000000 0.996270
+poldisc  0.992229 0.996270 1.000000
+
+
+OLS estimates for 'polknow' (equation 1)
+Model Formula: general ~ polknow + relig + educ + age + female + black + num_total
+
+                Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)  1.58250e-02  1.48587e-03 10.65035 < 2.22e-16 ***
+polknow      2.53759e-03  3.43946e-04  7.37787 1.8652e-13 ***
+relig       -2.47161e-04  1.98926e-04 -1.24248  0.2141165    
+educ         3.81216e-03  7.82635e-04  4.87092 1.1441e-06 ***
+age         -6.23151e-05  2.14388e-05 -2.90666  0.0036687 ** 
+female       1.63283e-03  7.07352e-04  2.30837  0.0210181 *  
+black        2.10790e-03  9.32186e-04  2.26125  0.0237856 *  
+num_total    3.19662e-05  4.66948e-06  6.84578 8.4968e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.024881 on 5139 degrees of freedom
+Number of observations: 5147 Degrees of Freedom: 5139 
+SSR: 3.181334 MSE: 0.000619 Root MSE: 0.024881 
+Multiple R-Squared: 0.035714 Adjusted R-Squared: 0.0344 
+
+
+OLS estimates for 'polmedia' (equation 2)
+Model Formula: general ~ polmedia + relig + educ + age + female + black + num_total
+
+                Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)  2.08995e-02  1.26189e-03 16.56206 < 2.22e-16 ***
+polmedia     2.55319e-04  5.90023e-05  4.32727 1.5382e-05 ***
+relig       -2.86703e-04  1.98823e-04 -1.44200  0.1493616    
+educ         4.95251e-03  7.59822e-04  6.51799 7.8037e-11 ***
+age         -5.99320e-05  2.21221e-05 -2.70915  0.0067679 ** 
+female       1.04552e-03  7.02116e-04  1.48910  0.1365227    
+black        8.57814e-04  9.12749e-04  0.93981  0.3473570    
+num_total    3.35922e-05  4.66167e-06  7.20605 6.5903e-13 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.025003 on 5169 degrees of freedom
+Number of observations: 5177 Degrees of Freedom: 5169 
+SSR: 3.231355 MSE: 0.000625 Root MSE: 0.025003 
+Multiple R-Squared: 0.028329 Adjusted R-Squared: 0.027013 
+
+
+OLS estimates for 'poldisc' (equation 3)
+Model Formula: general ~ poldisc + relig + educ + age + female + black + num_total
+
+                Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)  2.12443e-02  1.26495e-03 16.79457 < 2.22e-16 ***
+poldisc      9.81792e-04  1.82024e-04  5.39375 7.2290e-08 ***
+relig       -2.43224e-04  2.05593e-04 -1.18304    0.23685    
+educ         5.11079e-03  7.79978e-04  6.55248 6.2490e-11 ***
+age         -2.90980e-05  2.17715e-05 -1.33652    0.18144    
+female       9.87541e-04  7.22985e-04  1.36592    0.17203    
+black        5.11345e-04  9.39221e-04  0.54444    0.58617    
+num_total    2.80673e-05  4.89837e-06  5.72992 1.0657e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.02494 on 4834 degrees of freedom
+Number of observations: 4842 Degrees of Freedom: 4834 
+SSR: 3.006741 MSE: 0.000622 Root MSE: 0.02494 
+Multiple R-Squared: 0.030425 Adjusted R-Squared: 0.029021 
+
+
+systemfit results 
+method: OLS 
+
+           N    DF    SSR detRCov   OLS-R2 McElroy-R2
+system 15166 15142 3.9513       0 0.111623   -9.65031
+
+            N   DF     SSR      MSE     RMSE       R2   Adj R2
+polknow  5147 5139 1.34232 0.000261 0.016162 0.112131 0.110922
+polmedia 5177 5169 1.35451 0.000262 0.016188 0.108393 0.107185
+poldisc  4842 4834 1.25447 0.000260 0.016109 0.114544 0.113262
+
+The covariance matrix of the residuals
+             polknow    polmedia     poldisc
+polknow  0.000259212 0.000258431 0.000257615
+polmedia 0.000258431 0.000260114 0.000258610
+poldisc  0.000257615 0.000258610 0.000259271
+
+The correlations of the residuals
+          polknow polmedia  poldisc
+polknow  1.000000 0.995257 0.993725
+polmedia 0.995257 1.000000 0.995834
+poldisc  0.993725 0.995834 1.000000
+
+
+OLS estimates for 'polknow' (equation 1)
+Model Formula: general ~ polknow + relig + educ + age + female + black + num_total
+
+               Estimate  Std. Error  t value   Pr(>|t|)    
+(Intercept) 3.99988e-03 9.62918e-04  4.15392 3.3214e-05 ***
+polknow     1.30935e-03 2.22895e-04  5.87431 4.5130e-09 ***
+relig       7.06727e-05 1.28914e-04  0.54821  0.5835684    
+educ        1.60004e-03 5.07188e-04  3.15472  0.0016158 ** 
+age         1.14091e-05 1.38934e-05  0.82119  0.4115787    
+female      1.57117e-04 4.58401e-04  0.34275  0.7318002    
+black       5.36648e-04 6.04105e-04  0.88834  0.3744016    
+num_total   6.64762e-05 3.02606e-06 21.96788 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.016162 on 5139 degrees of freedom
+Number of observations: 5147 Degrees of Freedom: 5139 
+SSR: 1.342323 MSE: 0.000261 Root MSE: 0.016162 
+Multiple R-Squared: 0.112131 Adjusted R-Squared: 0.110922 
+
+
+OLS estimates for 'polmedia' (equation 2)
+Model Formula: general ~ polmedia + relig + educ + age + female + black + num_total
+
+                Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)  6.36911e-03  8.16183e-04  7.80353 7.1054e-15 ***
+polmedia     1.74999e-04  3.81623e-05  4.58565 4.6325e-06 ***
+relig        5.58518e-05  1.28597e-04  0.43432    0.66408    
+educ         2.12906e-03  4.91447e-04  4.33223 1.5040e-05 ***
+age          6.76251e-06  1.43084e-05  0.47263    0.63650    
+female      -1.01214e-04  4.54123e-04 -0.22288    0.82364    
+black       -1.85585e-04  5.90359e-04 -0.31436    0.75326    
+num_total    6.69686e-05  3.01514e-06 22.21080 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.016188 on 5169 degrees of freedom
+Number of observations: 5177 Degrees of Freedom: 5169 
+SSR: 1.35451 MSE: 0.000262 Root MSE: 0.016188 
+Multiple R-Squared: 0.108393 Adjusted R-Squared: 0.107185 
+
+
+OLS estimates for 'poldisc' (equation 3)
+Model Formula: general ~ poldisc + relig + educ + age + female + black + num_total
+
+                Estimate   Std. Error  t value   Pr(>|t|)    
+(Intercept)  6.31331e-03  8.17836e-04  7.71953 1.4211e-14 ***
+poldisc      6.61912e-04  1.17685e-04  5.62445 1.9657e-08 ***
+relig        1.13242e-04  1.32923e-04  0.85194   0.394290    
+educ         2.28678e-03  5.04283e-04  4.53471 5.9079e-06 ***
+age          3.07745e-05  1.40760e-05  2.18630   0.028841 *  
+female      -2.48373e-05  4.67435e-04 -0.05314   0.957626    
+black       -4.37919e-04  6.07239e-04 -0.72116   0.470844    
+num_total    6.37579e-05  3.16697e-06 20.13216 < 2.22e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.016109 on 4834 degrees of freedom
+Number of observations: 4842 Degrees of Freedom: 4834 
+SSR: 1.254466 MSE: 0.00026 Root MSE: 0.016109 
+Multiple R-Squared: 0.114544 Adjusted R-Squared: 0.113262 
+
+[[1]]
+
+Call:
+lm(formula = eval_party ~ harm + fairness + authority + ingroup + 
+    relig + educ + age + female + black + num_total, data = data_dfm)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-157.989  -30.820   -0.746   32.116  118.603 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  8.700e+00  2.273e+00   3.827 0.000131 ***
+harm         2.147e+02  4.317e+01   4.973 6.80e-07 ***
+fairness     2.350e+02  5.396e+01   4.355 1.36e-05 ***
+authority    5.146e+02  6.016e+01   8.553  < 2e-16 ***
+ingroup     -3.965e+02  6.005e+01  -6.604 4.41e-11 ***
+relig       -5.268e+00  3.604e-01 -14.615  < 2e-16 ***
+educ        -4.898e-01  1.370e+00  -0.358 0.720682    
+age         -1.318e-01  3.795e-02  -3.473 0.000520 ***
+female       7.593e+00  1.268e+00   5.987 2.28e-09 ***
+black        5.273e+01  1.663e+00  31.711  < 2e-16 ***
+num_total    2.295e-02  8.452e-03   2.715 0.006644 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 44.99 on 5133 degrees of freedom
+  (359 observations deleted due to missingness)
+Multiple R-squared:  0.2233,	Adjusted R-squared:  0.2218 
+F-statistic: 147.6 on 10 and 5133 DF,  p-value: < 2.2e-16
+
+
+[[2]]
+
+Call:
+lm(formula = eval_party ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_dfm)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-143.75  -19.89   -0.39   21.62  143.10 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  7.021e+00  1.668e+00   4.210 2.59e-05 ***
+harm         1.108e+02  3.034e+01   3.653 0.000262 ***
+fairness     8.510e+01  3.792e+01   2.244 0.024864 *  
+authority    1.418e+02  4.254e+01   3.333 0.000866 ***
+ingroup     -1.146e+02  4.234e+01  -2.706 0.006828 ** 
+pid_dem      4.415e+01  1.073e+00  41.132  < 2e-16 ***
+pid_rep     -4.460e+01  1.183e+00 -37.693  < 2e-16 ***
+relig       -2.228e+00  2.576e-01  -8.648  < 2e-16 ***
+educ         1.489e+00  9.620e-01   1.547 0.121836    
+age         -1.168e-01  2.668e-02  -4.380 1.21e-05 ***
+female       2.942e+00  8.942e-01   3.290 0.001009 ** 
+black        2.078e+01  1.252e+00  16.599  < 2e-16 ***
+num_total    1.076e-02  5.933e-03   1.814 0.069749 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 31.55 on 5119 degrees of freedom
+  (371 observations deleted due to missingness)
+Multiple R-squared:  0.6187,	Adjusted R-squared:  0.6178 
+F-statistic: 692.3 on 12 and 5119 DF,  p-value: < 2.2e-16
+
+
+[[3]]
+
+Call:
+lm(formula = eval_cand ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_dfm)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-139.770  -27.143    0.737   26.817  153.828 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.921e+01  2.141e+00   8.973  < 2e-16 ***
+harm         9.897e+01  3.896e+01   2.540 0.011115 *  
+fairness     1.583e+02  4.884e+01   3.240 0.001203 ** 
+authority    1.850e+02  5.467e+01   3.384 0.000720 ***
+ingroup     -2.326e+02  5.459e+01  -4.261 2.08e-05 ***
+pid_dem      4.637e+01  1.377e+00  33.678  < 2e-16 ***
+pid_rep     -5.222e+01  1.520e+00 -34.345  < 2e-16 ***
+relig       -3.420e+00  3.315e-01 -10.318  < 2e-16 ***
+educ         2.456e+00  1.239e+00   1.982 0.047525 *  
+age         -3.278e-01  3.427e-02  -9.564  < 2e-16 ***
+female       4.455e+00  1.150e+00   3.875 0.000108 ***
+black        2.812e+01  1.605e+00  17.520  < 2e-16 ***
+num_total    8.103e-03  7.639e-03   1.061 0.288827    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 40.64 on 5135 degrees of freedom
+  (355 observations deleted due to missingness)
+Multiple R-squared:  0.5668,	Adjusted R-squared:  0.5658 
+F-statistic: 559.8 on 12 and 5135 DF,  p-value: < 2.2e-16
+
+
+[[4]]
+
+Call:
+lm(formula = eval_cand ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_dfm)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-139.770  -27.143    0.737   26.817  153.828 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  1.921e+01  2.141e+00   8.973  < 2e-16 ***
+harm         9.897e+01  3.896e+01   2.540 0.011115 *  
+fairness     1.583e+02  4.884e+01   3.240 0.001203 ** 
+authority    1.850e+02  5.467e+01   3.384 0.000720 ***
+ingroup     -2.326e+02  5.459e+01  -4.261 2.08e-05 ***
+pid_dem      4.637e+01  1.377e+00  33.678  < 2e-16 ***
+pid_rep     -5.222e+01  1.520e+00 -34.345  < 2e-16 ***
+relig       -3.420e+00  3.315e-01 -10.318  < 2e-16 ***
+educ         2.456e+00  1.239e+00   1.982 0.047525 *  
+age         -3.278e-01  3.427e-02  -9.564  < 2e-16 ***
+female       4.455e+00  1.150e+00   3.875 0.000108 ***
+black        2.812e+01  1.605e+00  17.520  < 2e-16 ***
+num_total    8.103e-03  7.639e-03   1.061 0.288827    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 40.64 on 5135 degrees of freedom
+  (355 observations deleted due to missingness)
+Multiple R-squared:  0.5668,	Adjusted R-squared:  0.5658 
+F-statistic: 559.8 on 12 and 5135 DF,  p-value: < 2.2e-16
+
+
+[[1]]
+
+Call:
+lm(formula = eval_party ~ harm + fairness + authority + ingroup + 
+    relig + educ + age + female + black + num_total, data = data_tfidf)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-163.175  -31.213   -0.842   32.945  119.456 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   12.12790    2.24418   5.404 6.81e-08 ***
+harm         240.11333   68.73844   3.493 0.000481 ***
+fairness     362.30650   86.29114   4.199 2.73e-05 ***
+authority    -53.55147   98.72016  -0.542 0.587527    
+ingroup     -408.88431   88.69692  -4.610 4.13e-06 ***
+relig         -5.44066    0.36353 -14.966  < 2e-16 ***
+educ          -0.32921    1.37969  -0.239 0.811417    
+age           -0.13513    0.03831  -3.528 0.000423 ***
+female         7.93316    1.27806   6.207 5.82e-10 ***
+black         54.12200    1.67240  32.362  < 2e-16 ***
+num_total      0.02456    0.00889   2.763 0.005747 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 45.43 on 5133 degrees of freedom
+  (359 observations deleted due to missingness)
+Multiple R-squared:  0.2079,	Adjusted R-squared:  0.2063 
+F-statistic: 134.7 on 10 and 5133 DF,  p-value: < 2.2e-16
+
+
+[[2]]
+
+Call:
+lm(formula = eval_party ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_tfidf)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-142.434  -19.996   -0.609   21.667  145.294 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  8.388e+00  1.640e+00   5.113 3.28e-07 ***
+harm         8.394e+01  4.800e+01   1.749 0.080408 .  
+fairness     1.389e+02  6.018e+01   2.309 0.020994 *  
+authority   -1.429e+01  6.884e+01  -0.208 0.835532    
+ingroup     -1.556e+02  6.186e+01  -2.515 0.011921 *  
+pid_dem      4.465e+01  1.070e+00  41.722  < 2e-16 ***
+pid_rep     -4.476e+01  1.184e+00 -37.811  < 2e-16 ***
+relig       -2.264e+00  2.580e-01  -8.777  < 2e-16 ***
+educ         1.590e+00  9.613e-01   1.655 0.098081 .  
+age         -1.204e-01  2.671e-02  -4.505 6.77e-06 ***
+female       3.054e+00  8.942e-01   3.415 0.000643 ***
+black        2.093e+01  1.253e+00  16.705  < 2e-16 ***
+num_total    1.163e-02  6.193e-03   1.878 0.060391 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 31.61 on 5119 degrees of freedom
+  (371 observations deleted due to missingness)
+Multiple R-squared:  0.6172,	Adjusted R-squared:  0.6163 
+F-statistic: 687.8 on 12 and 5119 DF,  p-value: < 2.2e-16
+
+
+[[3]]
+
+Call:
+lm(formula = eval_cand ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_tfidf)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-138.83  -27.12    0.94   26.97  155.39 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.068e+01  2.104e+00   9.829  < 2e-16 ***
+harm         1.267e+02  6.175e+01   2.052  0.04025 *  
+fairness     2.471e+02  7.745e+01   3.190  0.00143 ** 
+authority   -1.033e+02  8.832e+01  -1.169  0.24232    
+ingroup     -3.152e+02  7.989e+01  -3.946 8.06e-05 ***
+pid_dem      4.695e+01  1.371e+00  34.236  < 2e-16 ***
+pid_rep     -5.248e+01  1.520e+00 -34.527  < 2e-16 ***
+relig       -3.465e+00  3.317e-01 -10.448  < 2e-16 ***
+educ         2.538e+00  1.237e+00   2.051  0.04030 *  
+age         -3.310e-01  3.429e-02  -9.652  < 2e-16 ***
+female       4.549e+00  1.149e+00   3.960 7.60e-05 ***
+black        2.832e+01  1.605e+00  17.643  < 2e-16 ***
+num_total    1.021e-02  7.967e-03   1.282  0.19991    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 40.69 on 5135 degrees of freedom
+  (355 observations deleted due to missingness)
+Multiple R-squared:  0.5657,	Adjusted R-squared:  0.5647 
+F-statistic: 557.4 on 12 and 5135 DF,  p-value: < 2.2e-16
+
+
+[[4]]
+
+Call:
+lm(formula = eval_cand ~ harm + fairness + authority + ingroup + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    num_total, data = data_tfidf)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-138.83  -27.12    0.94   26.97  155.39 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.068e+01  2.104e+00   9.829  < 2e-16 ***
+harm         1.267e+02  6.175e+01   2.052  0.04025 *  
+fairness     2.471e+02  7.745e+01   3.190  0.00143 ** 
+authority   -1.033e+02  8.832e+01  -1.169  0.24232    
+ingroup     -3.152e+02  7.989e+01  -3.946 8.06e-05 ***
+pid_dem      4.695e+01  1.371e+00  34.236  < 2e-16 ***
+pid_rep     -5.248e+01  1.520e+00 -34.527  < 2e-16 ***
+relig       -3.465e+00  3.317e-01 -10.448  < 2e-16 ***
+educ         2.538e+00  1.237e+00   2.051  0.04030 *  
+age         -3.310e-01  3.429e-02  -9.652  < 2e-16 ***
+female       4.549e+00  1.149e+00   3.960 7.60e-05 ***
+black        2.832e+01  1.605e+00  17.643  < 2e-16 ***
+num_total    1.021e-02  7.967e-03   1.282  0.19991    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 40.69 on 5135 degrees of freedom
+  (355 observations deleted due to missingness)
+Multiple R-squared:  0.5657,	Adjusted R-squared:  0.5647 
+F-statistic: 557.4 on 12 and 5135 DF,  p-value: < 2.2e-16
+
+
+[[1]]
+
+Call:
+glm(formula = vote_dem ~ harm + fairness + authority + ingroup + 
+    +relig + educ + age + female + black, family = binomial("logit"), 
+    data = data_dfm)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.0186  -1.0154   0.2061   0.9739   2.0084  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   0.884031   0.133576   6.618 3.64e-11 ***
+harm          6.792112   2.629007   2.584  0.00978 ** 
+fairness     16.715330   3.362464   4.971 6.66e-07 ***
+authority    19.914637   3.635815   5.477 4.32e-08 ***
+ingroup     -19.169898   3.433687  -5.583 2.37e-08 ***
+relig        -0.281811   0.020944 -13.455  < 2e-16 ***
+educ          0.009970   0.075963   0.131  0.89558    
+age          -0.013716   0.002222  -6.172 6.75e-10 ***
+female        0.343228   0.073091   4.696 2.65e-06 ***
+black         3.825697   0.228004  16.779  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5547.0  on 4118  degrees of freedom
+Residual deviance: 4424.5  on 4109  degrees of freedom
+  (1384 observations deleted due to missingness)
+AIC: 4444.5
+
+Number of Fisher Scoring iterations: 6
+
+
+[[2]]
+
+Call:
+glm(formula = vote_dem ~ harm + fairness + authority + ingroup + 
+    +pid_dem + pid_rep + relig + educ + age + female + black, 
+    family = binomial("logit"), data = data_dfm)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.4925  -0.3666   0.1045   0.3883   2.8345  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept)   1.133315   0.188712   6.006 1.91e-09 ***
+harm          6.564579   3.825140   1.716  0.08613 .  
+fairness     18.608296   4.775439   3.897 9.75e-05 ***
+authority     7.559218   5.077251   1.489  0.13653    
+ingroup     -11.435175   4.687218  -2.440  0.01470 *  
+pid_dem       2.657656   0.129881  20.462  < 2e-16 ***
+pid_rep      -2.589434   0.140701 -18.404  < 2e-16 ***
+relig        -0.252070   0.029495  -8.546  < 2e-16 ***
+educ          0.171763   0.106063   1.619  0.10535    
+age          -0.022441   0.003147  -7.130 1.00e-12 ***
+female        0.305529   0.101189   3.019  0.00253 ** 
+black         2.978689   0.255197  11.672  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5534.4  on 4108  degrees of freedom
+Residual deviance: 2563.2  on 4097  degrees of freedom
+  (1394 observations deleted due to missingness)
+AIC: 2587.2
+
+Number of Fisher Scoring iterations: 6
+
+
+[[1]]
+
+Call:
+glm(formula = vote_dem ~ harm + fairness + authority + ingroup + 
+    +relig + educ + age + female + black, family = binomial("logit"), 
+    data = data_tfidf)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.0667  -1.0280   0.2051   0.9899   1.9648  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  9.789e-01  1.307e-01   7.489 6.97e-14 ***
+harm         1.408e+01  4.066e+00   3.463 0.000534 ***
+fairness     2.939e+01  5.206e+00   5.645 1.65e-08 ***
+authority   -8.782e+00  5.296e+00  -1.658 0.097296 .  
+ingroup     -1.671e+01  4.851e+00  -3.445 0.000571 ***
+relig       -2.884e-01  2.086e-02 -13.826  < 2e-16 ***
+educ        -4.424e-05  7.553e-02  -0.001 0.999533    
+age         -1.370e-02  2.212e-03  -6.192 5.96e-10 ***
+female       3.500e-01  7.258e-02   4.822 1.42e-06 ***
+black        3.871e+00  2.279e-01  16.987  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5547.0  on 4118  degrees of freedom
+Residual deviance: 4457.7  on 4109  degrees of freedom
+  (1384 observations deleted due to missingness)
+AIC: 4477.7
+
+Number of Fisher Scoring iterations: 6
+
+
+[[2]]
+
+Call:
+glm(formula = vote_dem ~ harm + fairness + authority + ingroup + 
+    +pid_dem + pid_rep + relig + educ + age + female + black, 
+    family = binomial("logit"), data = data_tfidf)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.5088  -0.3639   0.1047   0.3858   2.8256  
+
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  1.175063   0.185892   6.321 2.59e-10 ***
+harm        11.989371   5.718244   2.097  0.03602 *  
+fairness    31.362722   7.141699   4.391 1.13e-05 ***
+authority   -9.650620   7.306719  -1.321  0.18657    
+ingroup     -8.269738   6.589935  -1.255  0.20951    
+pid_dem      2.677864   0.129857  20.622  < 2e-16 ***
+pid_rep     -2.587986   0.140651 -18.400  < 2e-16 ***
+relig       -0.256851   0.029499  -8.707  < 2e-16 ***
+educ         0.159991   0.106049   1.509  0.13139    
+age         -0.022454   0.003146  -7.137 9.53e-13 ***
+female       0.308269   0.101160   3.047  0.00231 ** 
+black        2.974462   0.254347  11.695  < 2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5534.4  on 4108  degrees of freedom
+Residual deviance: 2562.1  on 4097  degrees of freedom
+  (1394 observations deleted due to missingness)
+AIC: 2586.1
+
+Number of Fisher Scoring iterations: 6
+
+
+[[1]]
+
+Call:
+glm(formula = vote ~ harm + fairness + authority + ingroup + 
+    +relig + educ + age + female + black + num_total, family = binomial("logit"), 
+    data = data_dfm)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.5833   0.2790   0.4668   0.6570   1.3185  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -0.8924931  0.1359465  -6.565 5.20e-11 ***
+harm         2.5714302  2.6360665   0.975 0.329322    
+fairness    13.4219233  3.9236989   3.421 0.000625 ***
+authority   12.1047898  4.1130539   2.943 0.003250 ** 
+ingroup      9.4451183  4.1933906   2.252 0.024298 *  
+relig        0.1306145  0.0244933   5.333 9.68e-08 ***
+educ         0.8855786  0.1010905   8.760  < 2e-16 ***
+age          0.0305906  0.0024321  12.578  < 2e-16 ***
+female      -0.0698064  0.0803734  -0.869 0.385107    
+black        0.4916036  0.1119110   4.393 1.12e-05 ***
+num_total    0.0053686  0.0007628   7.038 1.95e-12 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4527.9  on 4860  degrees of freedom
+Residual deviance: 4029.0  on 4850  degrees of freedom
+  (642 observations deleted due to missingness)
+AIC: 4051
+
+Number of Fisher Scoring iterations: 5
+
+
+[[2]]
+
+Call:
+glm(formula = vote ~ harm + fairness + authority + ingroup + 
+    +pid_str + relig + educ + age + female + black + num_total, 
+    family = binomial("logit"), data = data_dfm)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.4467   0.2555   0.4304   0.6286   1.6088  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -1.5336582  0.1499185 -10.230  < 2e-16 ***
+harm         1.4849061  2.6823909   0.554  0.57987    
+fairness    12.1875929  3.9282992   3.103  0.00192 ** 
+authority    9.7380852  4.1641163   2.339  0.01936 *  
+ingroup      8.7789471  4.2317400   2.075  0.03803 *  
+pid_str      0.4586082  0.0389327  11.780  < 2e-16 ***
+relig        0.1044556  0.0249778   4.182 2.89e-05 ***
+educ         0.8836217  0.1023525   8.633  < 2e-16 ***
+age          0.0299639  0.0024811  12.077  < 2e-16 ***
+female      -0.1158150  0.0820005  -1.412  0.15784    
+black        0.2865739  0.1154424   2.482  0.01305 *  
+num_total    0.0051320  0.0007615   6.739 1.59e-11 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4527.9  on 4860  degrees of freedom
+Residual deviance: 3886.1  on 4849  degrees of freedom
+  (642 observations deleted due to missingness)
+AIC: 3910.1
+
+Number of Fisher Scoring iterations: 5
+
+
+[[1]]
+
+Call:
+glm(formula = vote ~ harm + fairness + authority + ingroup + 
+    +relig + educ + age + female + black + num_total, family = binomial("logit"), 
+    data = data_tfidf)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.5938   0.2798   0.4705   0.6548   1.2812  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -0.8043195  0.1330769  -6.044 1.50e-09 ***
+harm         2.6263065  4.5589097   0.576   0.5646    
+fairness    11.8559567  6.1631992   1.924   0.0544 .  
+authority   16.3321957  7.1803250   2.275   0.0229 *  
+ingroup      9.7588099  6.0734930   1.607   0.1081    
+relig        0.1264320  0.0243809   5.186 2.15e-07 ***
+educ         0.9085154  0.1007798   9.015  < 2e-16 ***
+age          0.0304319  0.0024243  12.553  < 2e-16 ***
+female      -0.0673123  0.0800335  -0.841   0.4003    
+black        0.4946200  0.1114234   4.439 9.03e-06 ***
+num_total    0.0052466  0.0007905   6.637 3.21e-11 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4527.9  on 4860  degrees of freedom
+Residual deviance: 4046.4  on 4850  degrees of freedom
+  (642 observations deleted due to missingness)
+AIC: 4068.4
+
+Number of Fisher Scoring iterations: 5
+
+
+[[2]]
+
+Call:
+glm(formula = vote ~ harm + fairness + authority + ingroup + 
+    +pid_str + relig + educ + age + female + black + num_total, 
+    family = binomial("logit"), data = data_tfidf)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.4549   0.2555   0.4335   0.6315   1.5798  
+
+Coefficients:
+              Estimate Std. Error z value Pr(>|z|)    
+(Intercept) -1.4657159  0.1472797  -9.952  < 2e-16 ***
+harm         0.6625666  4.6385168   0.143   0.8864    
+fairness     9.3661413  6.1798131   1.516   0.1296    
+authority   16.0419538  7.2109505   2.225   0.0261 *  
+ingroup      8.1756226  6.0981173   1.341   0.1800    
+pid_str      0.4651622  0.0388385  11.977  < 2e-16 ***
+relig        0.1008840  0.0248862   4.054 5.04e-05 ***
+educ         0.9038517  0.1020908   8.853  < 2e-16 ***
+age          0.0297885  0.0024735  12.043  < 2e-16 ***
+female      -0.1174471  0.0816998  -1.438   0.1506    
+black        0.2842263  0.1150643   2.470   0.0135 *  
+num_total    0.0050333  0.0007889   6.380 1.77e-10 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4527.9  on 4860  degrees of freedom
+Residual deviance: 3898.6  on 4849  degrees of freedom
+  (642 observations deleted due to missingness)
+AIC: 3922.6
+
+Number of Fisher Scoring iterations: 5
+
+
