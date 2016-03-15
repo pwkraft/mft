@@ -12,7 +12,7 @@
 
 # install / load required packages
 # I have to rewrite the code since tmt relies on old packages (Snowball etc...)
-pkg <- c("plyr","stringr","tm","foreign", "car","mondate","readstata13","tmt") # dplyr
+pkg <- c("plyr","dplyr","stringr","tm","foreign", "car","mondate","readstata13","tmt")
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})

@@ -14,7 +14,7 @@ if(sessionInfo()$platform == "x86_64-apple-darwin10.8.0 (64-bit)"){
   setwd("/data/Uni/projects/2014/mft/calc") 
 }
 source("func/anes_recode.R")
-# load("out/anes_full.RData")
+#load("out/anes_full.RData")
 
 
 ### spell checking and preprocessing of open survey responses
@@ -169,6 +169,77 @@ anes2008merge_noleader <- anes_merge(ts = anes2008ts, opend = anes2008opend_nole
                                    , valence = TRUE, check = TRUE)
 anes2012merge_noleader <- anes_merge(ts = anes2012ts, opend = anes2012opend_noleader
                                    , valence = TRUE, check = TRUE)
+
+
+### calculate cosine similarity between dictionaries and documents
+
+## load dictionary
+dict <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+  read.csv(paste0("in/graham/",x,"_noregex.csv")) %>%
+    sapply(paste, collapse = " ") %>% as.character()
+})
+dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+  cbind(read.csv(paste0("in/graham/",x,".csv"), allowEscapes = T, stringsAsFactors = F)[[1]]
+        , read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)[[1]])
+}) %>% do.call("rbind", .)
+
+## load alternative dictionary, create dfm and tfidf (not used at the moment)
+dict_new <- strsplit(paste(read.csv("in/dictionary_noregex.csv")[,1], collapse = " ")
+                     , "\\s\\w*\\.\\w*\\s")[[1]]
+dict_new <- c(paste(dict_new[1:2], collapse = " "), paste(dict_new[3:4], collapse = " "),
+              paste(dict_new[5:6], collapse = " "), paste(dict_new[7:8], collapse = " "), 
+              paste(dict_new[9:10], collapse = " "), paste(dict_new[11:12], collapse = " "))
+
+## load open-ended responses
+anes2008resp <- apply(anes2008opend$spell[,-1], 1, paste, collapse = " ")
+anes2008resp <- gsub("NA\\s*","",anes2008resp)
+names(anes2008resp) <- anes2008opend$spell$id
+anes2008resp <- anes2008resp[anes2008resp != ""]
+for(i in 1:nrow(dict_df)){
+  anes2008resp <- gsub(dict_df[i,1],dict_df[i,2],anes2008resp)
+}
+
+anes2012resp <- apply(anes2012opend$spell[,-1], 1, paste, collapse = " ")
+anes2012resp <- gsub("NA\\s*","",anes2012resp)
+names(anes2012resp) <- anes2012opend$spell$id
+anes2012resp <- anes2012resp[anes2012resp != ""]
+for(i in 1:nrow(dict_df)){
+  anes2012resp <- gsub(dict_df[i,1],dict_df[i,2],anes2012resp)
+}
+
+## combine dictionary and responses in common dfm/tfidf
+anes2008tfidf <- corpus(c(dict,anes2008resp)
+                        , docnames = c("authority","fairness","harm","ingroup","purity"
+                                       , names(anes2008resp))) %>% dfm() %>% tfidf()
+# anes2008tfidf@Dimnames$docs[1:10]
+# anes2008tfidf@Dimnames$features[1:10]
+
+anes2012tfidf <- corpus(c(dict,anes2012resp)
+                        , docnames = c("authority","fairness","harm","ingroup","purity"
+                                       , names(anes2012resp))) %>% dfm() %>% tfidf()
+
+## calculate similarity (check pr_DB$get_entries() for options)
+# normalization is not necessary, cosine similarity is length invariant and therefor results are unchanged
+anes2008sim <- similarity(anes2008tfidf
+                          , selection =  c("harm","fairness","ingroup","authority","purity")
+                          , margin = "documents", method = "cosine") %>% as.matrix() %>% data.frame()
+anes2008sim$general <- apply(anes2008sim,1,sum)
+anes2008sim$id <- as.numeric(rownames(anes2008sim))
+anes2008sim <- anes2008sim %>% arrange(id) %>% filter(!is.na(id))
+anes2008merge$data <- merge(anes2008merge$data, anes2008sim)
+
+anes2012sim <- similarity(anes2012tfidf
+                          , selection =  c("harm","fairness","ingroup","authority","purity")
+                          , margin = "documents", method = "cosine") %>% as.matrix() %>% data.frame()
+anes2012sim$general <- apply(anes2012sim,1,sum)
+anes2012sim$id <- as.numeric(rownames(anes2012sim))
+anes2012sim <- anes2012sim %>% arrange(id) %>% filter(!is.na(id))
+anes2012merge$data <- merge(anes2012merge$data, anes2012sim)
+
+plot(harm ~ harm_all, data = anes2012merge$data)
+## there might be a problem, similarity is maybe increased if other categories are NOT mentioned...
+## However, keep in mind that the dictionaries are not exactly the same here
+## maybe try to look at each query independently to calculate the distance, combine afterwards?
 
 
 ### save objects for analyses
