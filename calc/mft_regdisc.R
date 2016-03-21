@@ -290,6 +290,26 @@ test <- RDestimate(num_prop ~ regdi_year, data = merge(anes2008,anes2012, all =T
 summary(test)
 
 
+#####################################################
+### regdisc using new similarity measure
+
+
+### regression discontinuity design investigating the effect of previous voting
+
+# plot discontinuity for aggregate data
+ggplot(data_tfidf, aes(x=regdi_year, y=general, color=regdi_year>=18, shape = regdi_year>=18)) + 
+  geom_point() + scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Loess Fit (2012 Survey)") +
+  geom_smooth(method=lm) + theme_bw()
+
+ggplot(data_dfm, aes(x=regdi_year, y=general, color=regdi_year>=18, shape = regdi_year>=18)) + 
+  geom_point() + scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
+  scale_shape(guide=FALSE) + scale_y_continuous(name="% Referencing Moral Foundations") +
+  scale_x_continuous(name="Age at the Time of the Previous Election") +
+  geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Loess Fit (2012 Survey)") +
+  geom_smooth(method=lm) + theme_bw()
 
 
 
