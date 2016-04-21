@@ -8,10 +8,10 @@
 
 
 rm(list=ls())
-setwd("/data/Uni/projects/2014/mft/calc")
+setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load packages
-pkg <- c("ggplot2","stargazer","xtable","quanteda","systemfit","dplyr","rstan","VGAM")
+pkg <- c("ggplot2","stargazer","xtable","quanteda","systemfit","dplyr","rstan","VGAM","censReg")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
@@ -33,12 +33,12 @@ covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female
              ,"Race (African American)","Number of Words")
 
 ## create scaled variables for moral foundations (throws an error if run twice, not sure why)
-anes2012 <- mutate(anes2012, harm_s = scale(harm), fairness_s = scale(fairness)
-                   , ingroup_s = scale(ingroup), authority_s = scale(authority)
-                   , purity_s = scale(purity), general_s = scale(general))
-anes2008 <- mutate(anes2008, harm_s = scale(harm), fairness_s = scale(fairness)
-                   , ingroup_s = scale(ingroup), authority_s = scale(authority)
-                   , purity_s = scale(purity), general_s = scale(general))
+anes2012 <- mutate(anes2012, harm_s = scale(harm, center = FALSE), fairness_s = scale(fairness, center = FALSE)
+                   , ingroup_s = scale(ingroup, center = FALSE), authority_s = scale(authority, center = FALSE)
+                   , purity_s = scale(purity, center = FALSE), general_s = scale(general, center = FALSE))
+anes2008 <- mutate(anes2008, harm_s = scale(harm, center = FALSE), fairness_s = scale(fairness, center = FALSE)
+                   , ingroup_s = scale(ingroup, center = FALSE), authority_s = scale(authority, center = FALSE)
+                   , purity_s = scale(purity, center = FALSE), general_s = scale(general, center = FALSE))
 
 
 
@@ -63,14 +63,28 @@ prop_plot(data=list(anes2012)
           , file = "fig/fig1prop.pdf", width = 6, height = 4)
 
 
-### Figure 2: ideology -> mft (SUR)
+### Figure 2: ideology -> mft (tobit)
+
+## model estimation: tobit (could also use the censReg or AER packages...)
+m2 <- list(NULL)
+m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + num_total
+              , tobit(Lower = 0), data = anes2012)
+m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + num_total
+              , tobit(Lower = 0), data = anes2012)
+m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + num_total
+              , tobit(Lower = 0), data = anes2012)
+m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + num_total
+              , tobit(Lower = 0), data = anes2012)
+lapply(m2, summary)
+
+iv=data.frame(ideol=c(0,1))
 
 ## model estimation (SUR)
 eqSystem <- list(harm = harm_s ~ ideol + relig + educ + age + female + black + num_total
                , fairness = fairness_s ~ ideol + relig + educ + age + female + black + num_total
                , ingroup = ingroup_s ~ ideol + relig + educ + age + female + black + num_total
                , authority = authority_s ~ ideol + relig + educ + age + female + black + num_total)
-m2 <- systemfit(eqSystem, "SUR", data = anes2012)
+m2 <- systemfit(eqSystem, "OLS", data = anes2012)
 m2res <- coef(summary(m2))
 m2res <- data.frame(m2res[grep("Conservative",rownames(m2res)),1:2])
 colnames(m2res) <- c("mean","se")
@@ -530,42 +544,26 @@ ggplot(rbind(m2res,m2_2008res), aes(x = -mean, y=var-.052+.11*(year=="2008")
 ggsave(filename = "fig/appD1ideol.pdf", height = 5)
 
 
-## alternative model: tobit (could also use the censReg or AER packages...)
-t1 <- list(NULL)
-t1[[1]] <- vglm(harm ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2012)
-t1[[2]] <- vglm(fairness ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2012)
-t1[[3]] <- vglm(ingroup ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2012)
-t1[[4]] <- vglm(authority ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2012)
-t1[[5]] <- vglm(harm ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2008)
-t1[[6]] <- vglm(fairness ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2008)
-t1[[7]] <- vglm(ingroup ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2008)
-t1[[8]] <- vglm(authority ~ ideol + relig + educ + age + female + black + num_total, tobit(Lower = 0)
-                , data = anes2008)
-lapply(t1, summary)
+
 
 ## alternative model: beta
 
 ## alternative model: dirichlet
-# m1raw <- data_dfm %>% dplyr::select(harm, fairness, authority, ingroup, purity
-#                                     , ideol_lib, ideol_con, relig, educ, age, female, black
-#                                     , num_total) %>% na.omit()
-# ## model with Y matrix:Y = m1raw[,c("harm", "fairness", "authority", "ingroup", "purity")]
-# m1dl <- list(Y = m1raw[,"authority"] + .001
-#              , X = m1raw[,c("ideol_lib", "ideol_con", "relig", "educ", "age", "female", "black"
-#                             , "num_total")], I = nrow(m1raw), J = 8
-#              , X_new = data.frame(ideol_lib = c(1,0), ideol_con = c(0,1), relig = mean(m1raw$relig)
-#                                   , educ = mean(m1raw$educ), age = mean(m1raw$educ)
-#                                   , female = mean(m1raw$female), black = mean(m1raw$black)
-#                                   , num_total = mean(m1raw$num_total)))
-# m1stan <- stan(file = "func/mft_beta.stan", data = m1dl)
-# print(m1stan, pars="gamma")
+m1raw <- anes2012 %>% dplyr::select(harm, fairness, authority, ingroup, purity
+                                    , ideol_lib, ideol_con, relig, educ, age, female, black
+                                    , num_total) %>% na.omit()
+Y <- m1raw[,c("harm", "fairness", "authority", "ingroup")]
+Y <- Y + min(Y[Y!=0])
+Y <- cbind(Y, 1 - apply(Y,1,sum))
+m1dl <- list(Y = Y, K = ncol(Y), init_r = c(-.5,.5)
+             , X = m1raw[,c("ideol_lib", "ideol_con", "relig", "educ", "age", "female", "black"
+                            , "num_total")], I = nrow(m1raw), J = 8
+             , X_new = data.frame(ideol_lib = c(1,0), ideol_con = c(0,1), relig = mean(m1raw$relig)
+                                  , educ = mean(m1raw$educ), age = mean(m1raw$educ)
+                                  , female = mean(m1raw$female), black = mean(m1raw$black)
+                                  , num_total = mean(m1raw$num_total)))
+m1stan <- stan(file = "func/mft_dirichlet.stan", data = m1dl)
+print(m1stan)
 
 
 

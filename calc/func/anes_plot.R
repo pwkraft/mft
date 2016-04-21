@@ -130,18 +130,21 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975)){
         }
 
         ## extract variable names
-        vars <- names(models[[i]]$coefficients)
-        int <- grep(":", vars)
+        vars <- names(coef(models[[i]]))
+        int <- grep("[^)]:", vars)
         varsInt <- strsplit(vars[int], ":")
 
         ## generate matrix of covariates
         X <- matrix(1, nrow=length(vars), ncol=nrow(iv))
         X[vars %in% names(iv),] <- t(iv[vars[vars %in% names(iv)]])
-        if(unique(unlist(lapply(models, class)))[1]=="lm"){
+        if(class(models[[i]])[1]=="lm"){
             means <- apply(models[[i]]$model[vars[-c(1,which(vars %in% names(iv)),int)]]
                          , 2, mean, na.rm=T)
-        } else if(unique(unlist(lapply(models, class)))[1] == "glm"){
+        } else if(class(models[[i]])[1] == "glm"){
             means <- apply(models[[i]]$data[vars[-c(1,which(vars %in% names(iv)),int)]]
+                         , 2, mean, na.rm=T)
+        } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
+            means <- apply(models[[i]]@x[,vars[-c(1,2,which(vars %in% names(iv)),int)]]
                          , 2, mean, na.rm=T)
         } else stop("Model type not supported")
         X[vars %in% names(means),] <- means
@@ -154,14 +157,24 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975)){
         }
         
         ## calculate expected values
-        if(unique(unlist(lapply(models, class)))[1]=="lm"){
+        if(class(models[[i]])[1]=="lm"){
             evs <- betas %*% X
-        } else if(unique(unlist(lapply(models, class)))[1] == "glm"){
-            if(models[[1]]$family$link == "logit"){
+        } else if(class(models[[i]])[1] == "glm"){
+            if(models[[i]]$family$link == "logit"){
                 evs <- 1/(1+exp(-betas %*% X))
-            } else if(models[[1]]$family$link == "probit"){
+            } else if(models[[i]]$family$link == "probit"){
                 evs <- pnorm(betas %*% X)
             } else stop("Model type not supported")
+        } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
+            ## CONTINUE HERE, check whether this is correct
+            ## IDEA: each original evs column as a new matrix where each column is an individual
+            ## simulation with the given mean of the row of the original matrix.
+            ## then decompose effect of tobit in dP(Y>0) and dY|Y>0
+            evs <- matrix(rnorm(nrow(betas)*100, betas[,-2] %*% X[-2,]
+                              , sd = exp(betas[,2])), ncol = 2)
+            evs2 <- apply(evs, 2, function(x) )
+            
+            unique(models[[i]]@misc$Lower)
         } else stop("Model type not supported")
         
         if(nrow(iv)==2){

@@ -2,7 +2,7 @@ data {
   int<lower=1> I;                 // number of observations
   int<lower=1> J;                 // number of parameters
   int<lower=1> K;                 // number of dimensions
-  vector<lower=0,upper=1>[K] Y[I]; // proportions
+  simplex[K] Y[I]; // proportions
   vector[J] X[I];                  // matrix of independent variables
   matrix[2,J] X_new;              // new matrix to get predicted values comparing lib and con
 }
