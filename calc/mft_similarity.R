@@ -11,7 +11,7 @@ rm(list=ls())
 setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load packages
-pkg <- c("ggplot2","stargazer","xtable","quanteda","systemfit","dplyr","rstan","VGAM","censReg")
+pkg <- c("ggplot2","stargazer","xtable","quanteda","systemfit","dplyr","rstan","VGAM")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
 lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})

@@ -352,7 +352,7 @@ ts_recode <- function(dta_src, raw_out = FALSE
         if(class(polmedia)!="list") stop("'polmedia' argument must be a list")
         dat$polmedia <- 0
         for(i in 1:length(polmedia)){
-            tmp <- recode(raw[,polmedia[[i]][1]], "c(-8,-9)=NA; -1=0")
+            tmp <- recode(raw[,polmedia[[i]][1]], "c(-4,-8,-9)=NA; -1=0")
             if(length(polmedia[[i]])>1){
                 tmp[raw[,polmedia[[i]][1]]==-1] <- recode(raw[,polmedia[[i]][2]]
                                 , "c(-8,-9,-1)=NA")[raw[,polmedia[[i]][1]]==-1]
@@ -368,7 +368,10 @@ ts_recode <- function(dta_src, raw_out = FALSE
         if(class(polknow)!="list") stop("'polknow' argument must be a list")
         dat$polknow <- 0
         for(i in 1:length(polknow)){
-            tmp <- recode(raw[,names(polknow)[i]], "c(-2)=NA") # DK/mis treated as 0
+            tmp <- raw[,names(polknow)[i]] # DK/mis treated as 0
+            if(year=="2008") {
+                tmp <- recode(tmp, "c(-2)=NA")
+            }
             dat$polknow <- dat$polknow + as.numeric(tmp == polknow[[i]])
             rm(tmp)
         }
