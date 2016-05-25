@@ -8,7 +8,7 @@
 
 
 rm(list=ls())
-setwd("/data/Uni/projects/2014/mft/calc")
+setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load packages
 pkg <- c("ggplot2","stargazer","xtable")
@@ -120,7 +120,8 @@ ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
     theme_bw() + scale_y_continuous(breaks=3:1, labels=polLabs) +
     ggtitle("Change in Predicted Probabilities to Reference\nany Moral Foundation") +
     guides(lty=guide_legend(title="Control for both remaining variables")) +
-    theme(legend.position="bottom", legend.box="horizontal")
+    theme(legend.position="bottom", legend.box="horizontal") +
+    scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig3learn.pdf", width = 6, height = 4)
 
 

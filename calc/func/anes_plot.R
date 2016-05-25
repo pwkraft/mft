@@ -7,7 +7,7 @@
 ###########################################################################################
 
 ### Load packages and data
-setwd("/data/Uni/projects/2014/mft/calc")
+setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 pkg <- c("reshape2","ggplot2","Hmisc","MASS","sandwich")
 inst <- pkg %in% installed.packages()  
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])  
@@ -172,7 +172,7 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975)){
             ## then decompose effect of tobit in dP(Y>0) and dY|Y>0
             evs <- matrix(rnorm(nrow(betas)*100, betas[,-2] %*% X[-2,]
                               , sd = exp(betas[,2])), ncol = 2)
-            evs2 <- apply(evs, 2, function(x) )
+            evs2 <- apply(evs, 2, function(x) x)
             
             unique(models[[i]]@misc$Lower)
         } else stop("Model type not supported")
