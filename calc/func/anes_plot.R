@@ -46,7 +46,7 @@ prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file =
         geom_point(size=3) + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) +
         scale_color_manual(values=c("royalblue", "forestgreen", "firebrick")) +
         labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-        ggtitle(title) + theme_bw() + geom_hline(yintercept = seq(1.5,4.5,1), col = "grey") +
+        ggtitle(title) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + geom_hline(yintercept = seq(1.5,4.5,1), col = "grey") +
         guides(color=guide_legend(title=legendname), shape=guide_legend(title=legendname)) +
         scale_x_continuous(limits = c(0, 0.6)) + theme(legend.position="bottom") +
         scale_y_continuous(breaks=1:5, labels=c("Purity / \nSanctity", "Authority / \nRespect"

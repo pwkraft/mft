@@ -97,7 +97,7 @@ ggplot(m2res, aes(x = -mean, y = var)) +
   geom_errorbarh(aes(xmax=-mean+1.96*se,xmin=-mean-1.96*se),height=.2) + 
   labs(y = "Dependent Variable:\nMoral Foundation"
        , x = "Change in Similarity Score (in standard deviations)") + 
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Emphasis on each Moral Foundation\nfor Liberals compared to Conservatives")  + 
   ggsave(filename = "fig/fig2ideol.pdf", width = 6, height = 4)
 
@@ -134,10 +134,11 @@ ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Independent Variable", x= "Change in Similarity Score (in standard deviations)") + 
-  theme_bw() + scale_y_continuous(breaks=3:1, labels=polLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Predicted Emphasis on\nany Moral Foundation") +
   guides(lty=guide_legend(title="Control for both remaining variables")) +
-  theme(legend.position="bottom", legend.box="horizontal")
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig3learn.pdf", width = 6, height = 4)
 
 
@@ -222,10 +223,11 @@ ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
-  theme_bw() + scale_y_continuous(breaks=3:1, labels=polLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
   guides(lty=guide_legend(title="Control for Both Remaining Variables")) +
-  theme(legend.position="bottom", legend.box="horizontal") + facet_wrap(~dv)
+  theme(legend.position="bottom", legend.box="horizontal") + facet_wrap(~dv) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig4ideolearn.pdf", width = 6, height = 5)
 
 
@@ -259,10 +261,11 @@ ggplot(m5_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Probability") +
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to\nParticipate in Election") +
   guides(lty=guide_legend(title="Control for PID Strength")) +
-  theme(legend.position="bottom", legend.box="horizontal")
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig5turnout.pdf", width = 6, height = 4)
 
 
@@ -289,10 +292,11 @@ ggplot(m6_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Protest Index") +
-  theme_bw() + ggtitle("Change in Protest Behavior Index") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + ggtitle("Change in Protest Behavior Index") +
   guides(lty=guide_legend(title="Control for PID Strength")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
-  scale_y_continuous(breaks=1:4, labels=mftLabs)
+  scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig6part.pdf", width = 6, height = 4)
 
 
@@ -328,10 +332,11 @@ ggplot(m5_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Dependent Variable:", x= "Change in Probability") +
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=c("Button","Petition","Protest","Vote")) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=c("Button","Petition","Protest","Vote")) +
   ggtitle("Change in Predicted Probabilities to\nParticipate in Political Action") +
   guides(lty=guide_legend(title="Control for PID Strength")) +
-  theme(legend.position="bottom", legend.box="horizontal")
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig5turnout.pdf", width = 6, height = 4)
 
 
@@ -366,10 +371,11 @@ ggplot(m7_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Independent Variable: Moral Foundation"
        , x= "Change in Feeling Thermometer (Democrat - Republican)") +
-  theme_bw() + ggtitle("Change in Feeling Thermometer Differentials") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + ggtitle("Change in Feeling Thermometer Differentials") +
   guides(lty=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
-  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.)
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig7feel.pdf", width = 6, height = 5)
 
 
@@ -398,10 +404,11 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
   labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Probability") +
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to Vote\nfor Democratic Candidate") +
   guides(lty=guide_legend(title="Control for Party Identification")) +
-  theme(legend.position="bottom", legend.box="horizontal")
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/fig8vote.pdf", width = 6, height = 4)
 
 
@@ -450,27 +457,27 @@ print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
 ## create individual plots
 appB2a <- qplot(num_total, data=anes2012[anes2012$num_total>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2012)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2012)") +
   geom_vline(aes(xintercept = mean(num_total, na.rm=T)), linetype="dotted", size=1)
 appB2b <- qplot(num_ca, data=anes2012[anes2012$num_ca>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2012)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2012)") +
   geom_vline(aes(xintercept = mean(num_ca, na.rm=T)), linetype="dotted", size=1)
 appB2c <- qplot(num_pa, data=anes2012[anes2012$num_pa>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2012)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2012)") +
   geom_vline(aes(xintercept = mean(num_pa, na.rm=T)), linetype="dotted", size=1)
 appB2d <- qplot(num_total, data=anes2008[anes2008$num_total>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("All Open-Ended Responses (2008)") +
   geom_vline(aes(xintercept = mean(num_total, na.rm=T)), linetype="dotted", size=1)
 appB2e <- qplot(num_ca, data=anes2008[anes2008$num_ca>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("Candidate Evaluations (2008)") +
   geom_vline(aes(xintercept = mean(num_ca, na.rm=T)), linetype="dotted", size=1)
 appB2f <- qplot(num_pa, data=anes2008[anes2008$num_pa>0, ], geom="bar", binwidth = 1
                 , ylab = "Frequency", xlab = "Number of Words") +
-  theme_bw() + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_x_continuous(limits=c(1,200)) + ggtitle("Party Evaluations (2008)") +
   geom_vline(aes(xintercept = mean(num_pa, na.rm=T)), linetype="dotted", size=1)
 
 
@@ -537,7 +544,7 @@ ggplot(rbind(m2res,m2_2008res), aes(x = -mean, y=var-.052+.11*(year=="2008")
   geom_errorbarh(aes(xmax=-mean+1.96*se,xmin=-mean-1.96*se),height=.1) + 
   labs(y = "Dependent Variable:\nMoral Foundation"
        , x = "Change in Similarity Score (in standard deviations)") + 
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Emphasis on each Moral Foundation\nfor Conservatives compared to Liberals")  + 
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")) +
   theme(legend.position="bottom") + scale_color_manual(values=c("royalblue", "firebrick"))
@@ -549,21 +556,21 @@ ggsave(filename = "fig/appD1ideol.pdf", height = 5)
 ## alternative model: beta
 
 ## alternative model: dirichlet
-m1raw <- anes2012 %>% dplyr::select(harm, fairness, authority, ingroup, purity
-                                    , ideol_lib, ideol_con, relig, educ, age, female, black
-                                    , num_total) %>% na.omit()
-Y <- m1raw[,c("harm", "fairness", "authority", "ingroup")]
-Y <- Y + min(Y[Y!=0])
-Y <- cbind(Y, 1 - apply(Y,1,sum))
-m1dl <- list(Y = Y, K = ncol(Y), init_r = c(-.5,.5)
-             , X = m1raw[,c("ideol_lib", "ideol_con", "relig", "educ", "age", "female", "black"
-                            , "num_total")], I = nrow(m1raw), J = 8
-             , X_new = data.frame(ideol_lib = c(1,0), ideol_con = c(0,1), relig = mean(m1raw$relig)
-                                  , educ = mean(m1raw$educ), age = mean(m1raw$educ)
-                                  , female = mean(m1raw$female), black = mean(m1raw$black)
-                                  , num_total = mean(m1raw$num_total)))
-m1stan <- stan(file = "func/mft_dirichlet.stan", data = m1dl)
-print(m1stan)
+# m1raw <- anes2012 %>% dplyr::select(harm, fairness, authority, ingroup, purity
+#                                     , ideol_lib, ideol_con, relig, educ, age, female, black
+#                                     , num_total) %>% na.omit()
+# Y <- m1raw[,c("harm", "fairness", "authority", "ingroup")]
+# Y <- Y + min(Y[Y!=0])
+# Y <- cbind(Y, 1 - apply(Y,1,sum))
+# m1dl <- list(Y = Y, K = ncol(Y), init_r = c(-.5,.5)
+#              , X = m1raw[,c("ideol_lib", "ideol_con", "relig", "educ", "age", "female", "black"
+#                             , "num_total")], I = nrow(m1raw), J = 8
+#              , X_new = data.frame(ideol_lib = c(1,0), ideol_con = c(0,1), relig = mean(m1raw$relig)
+#                                   , educ = mean(m1raw$educ), age = mean(m1raw$educ)
+#                                   , female = mean(m1raw$female), black = mean(m1raw$black)
+#                                   , num_total = mean(m1raw$num_total)))
+# m1stan <- stan(file = "func/mft_dirichlet.stan", data = m1dl)
+# print(m1stan)
 
 
 
@@ -599,12 +606,13 @@ ggplot(rbind(m3_res,m3_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
   geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable", x= "Change in Similarity Score (in standard deviations)") + 
-  theme_bw() + scale_color_manual(values=c("royalblue", "firebrick")) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_color_manual(values=c("royalblue", "firebrick")) +
   ggtitle("Change in Predicted  Emphasis on\nany Moral Foundation") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
          , lty=guide_legend(title="Control for both remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
-  scale_y_continuous(breaks=3:1, labels=polLabs)
+  scale_y_continuous(breaks=3:1, labels=polLabs) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/appD7learn.pdf", height = 6)
 
 
@@ -689,12 +697,13 @@ ggplot(rbind(m4_res,m4_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
   geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
-  theme_bw() + scale_y_continuous(breaks=3:1, labels=polLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
          , lty=guide_legend(title="Control for Both Remaining Variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + facet_wrap(~dv) +
-  scale_color_manual(values=c("royalblue", "firebrick"))
+  scale_color_manual(values=c("royalblue", "firebrick")) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/appD8ideolearn.pdf", height = 6)
 
 
@@ -728,13 +737,57 @@ ggplot(rbind(m5_res,m5_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
   geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Probability") +
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to\nParticipate in Election") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
          , lty=guide_legend(title="Control for PID Strength")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_manual(values=c("royalblue", "firebrick"))
+  scale_color_manual(values=c("royalblue", "firebrick")) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/appD9turnout.pdf", height = 6)
+
+### New analyses for political relevance
+
+m5_2008 <- NULL
+m5_2008[[1]] <- glm(vote ~ general_s + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[2]] <- glm(vote ~ general_s + pid_str + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[3]] <- glm(protest ~ general_s + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[4]] <- glm(protest ~ general_s + pid_str + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[5]] <- glm(petition ~ general_s + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[6]] <- glm(petition ~ general_s + pid_str + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[7]] <- glm(button ~ general_s + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+m5_2008[[8]] <- glm(button ~ general_s + pid_str + relig + educ + age + female + black + num_total
+               , data=anes2008, family=binomial("logit"))
+lapply(m5_2008, summary)
+
+## simulation of predicted probabilities / first differences
+m5_2008_res <- rbind(sim(m5_2008, iv=data.frame(general_s = min(anes2008$general_s)+c(0,1))))
+m5_2008_res$cond <- rep(c("No","Yes"),4)
+m5_2008_res$var <- rep(4:1,each=2)
+m5_2008_res$year <- "2008"
+
+## generate plot
+ggplot(rbind(m5_res,m5_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*(cond=="Yes")
+                                      , shape=year, color = year, lty=cond)) +
+  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) + 
+  labs(y = "Dependent Variable:", x= "Change in Probability") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=c("Button","Petition","Protest","Vote")) +
+  ggtitle("Change in Predicted Probabilities to\nParticipate in Political Action") +
+  guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
+         , lty=guide_legend(title="Control for PID Strength")) +
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_color_manual(values=c("royalblue", "firebrick")) +
+    scale_linetype_manual(values=c(1,2))
+ggsave(filename = "fig/appD9turnout.pdf", height = 6)
+
 
 
 ### Figure D11 [fig 7 + 2008]: mft -> feeling thermometer differentials (ols)
@@ -767,12 +820,13 @@ ggplot(rbind(m7_res, m7_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable: Moral Foundation"
        , x= "Change in Feeling Thermometer (Democrat - Republican)") +
-  theme_bw() + ggtitle("Change in Feeling Thermometer Differentials") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + ggtitle("Change in Feeling Thermometer Differentials") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
          , lty=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.) +
-  scale_color_manual(values=c("royalblue", "firebrick"))
+  scale_color_manual(values=c("royalblue", "firebrick")) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/appD11feel.pdf", height = 6)
 
 
@@ -802,12 +856,13 @@ ggplot(rbind(m8_res,m8_2008_res), aes(x = mean, y = var-.1+.3*(year=="2008")-.1*
   geom_vline(xintercept=0, col="grey") + geom_point(size=4) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.1) + 
   labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Probability") +
-  theme_bw() + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to Vote\nfor Democratic Candidate") +
   guides(color=guide_legend(title="Survey Year"), shape=guide_legend(title="Survey Year")
          , lty=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_manual(values=c("royalblue", "firebrick"))
+  scale_color_manual(values=c("royalblue", "firebrick")) +
+  scale_linetype_manual(values=c(1,2))
 ggsave(filename = "fig/appD12vote.pdf", height = 6)
 
 
