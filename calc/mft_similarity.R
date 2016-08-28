@@ -21,6 +21,7 @@ options(mc.cores = parallel::detectCores())
 
 ## load additional functions
 source("func/anes_plot.R")
+library(pmisc)
 
 ## load recoded dataset
 load("out/anes.RData")
@@ -77,8 +78,17 @@ m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + num_
               , tobit(Lower = 0), data = anes2012)
 lapply(m2, summary)
 
-pmisc::sim(m2, iv=data.frame(ideolModerate = c(0,0), ideolConservative = c(0,1)))
+m2res <- sim(m2, iv=data.frame(ideolModerate = c(0,0), ideolConservative = c(1,0)))
+m2res$var <- rep(4:1, each=2)
 
+ggplot(m2res, aes(x = mean, y = var)) +
+  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Marginal Effect") +
+  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
+
+ggsave(filename = "fig/fig2ideol.pdf", width = 6, height = 4)
 
 ## model estimation (SUR)
 eqSystem <- list(harm = harm_s ~ ideol + relig + educ + age + female + black + num_total
@@ -108,7 +118,7 @@ ggplot(m2res, aes(x = -mean, y = var)) +
 ### Part 2: Determinants of moral reasoning
 
 
-### Figure 3: engagement -> general mft reference (OLS)
+### Figure 3: engagement -> general mft reference (tobit)
 
 ## model estimation
 m3 <- NULL
