@@ -90,29 +90,6 @@ ggplot(m2res, aes(x = mean, y = var)) +
 
 ggsave(filename = "fig/fig2ideol.pdf", width = 6, height = 4)
 
-## model estimation (SUR)
-eqSystem <- list(harm = harm_s ~ ideol + relig + educ + age + female + black + num_total
-               , fairness = fairness_s ~ ideol + relig + educ + age + female + black + num_total
-               , ingroup = ingroup_s ~ ideol + relig + educ + age + female + black + num_total
-               , authority = authority_s ~ ideol + relig + educ + age + female + black + num_total)
-m2 <- systemfit(eqSystem, "OLS", data = anes2012)
-m2res <- coef(summary(m2))
-m2res <- data.frame(m2res[grep("Conservative",rownames(m2res)),1:2])
-colnames(m2res) <- c("mean","se")
-m2res$var <- 4:1
-m2res$year <- "2012"
-
-## generate plot
-ggplot(m2res, aes(x = -mean, y = var)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) + xlim(-0.4,0.4) +
-  geom_errorbarh(aes(xmax=-mean+1.96*se,xmin=-mean-1.96*se),height=.2) +
-  labs(y = "Dependent Variable:\nMoral Foundation"
-       , x = "Change in Similarity Score (in standard deviations)") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
-  ggtitle("Change in Emphasis on each Moral Foundation\nfor Liberals compared to Conservatives")  +
-  ggsave(filename = "fig/fig2ideol.pdf", width = 6, height = 4)
-
-
 
 ###########################################
 ### Part 2: Determinants of moral reasoning
@@ -121,35 +98,38 @@ ggplot(m2res, aes(x = -mean, y = var)) +
 ### Figure 3: engagement -> general mft reference (tobit)
 
 ## model estimation
-m3 <- NULL
-m3[[1]] <- lm(general_s ~ polknow + relig + educ + age + female + black + num_total, data=anes2012)
-m3[[2]] <- lm(general_s ~ polmedia + relig + educ + age + female + black + num_total, data=anes2012)
-m3[[3]] <- lm(general_s ~ poldisc + relig + educ + age + female + black + num_total, data=anes2012)
-m3[[4]] <- lm(general_s ~ polknow + polmedia + poldisc
-               + relig + educ + age + female + black + num_total
-               , data=anes2012)
+m3 <- list(NULL)
+m3[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black + num_total
+                , tobit(Lower = 0), data=anes2012)
+m3[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black + num_total
+                , tobit(Lower = 0), data=anes2012)
+m3[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black + num_total
+                , tobit(Lower = 0), data=anes2012)
+m3[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
+                + relig + educ + age + female + black + num_total
+                , tobit(Lower = 0), data=anes2012)
 
 ## simulation of predicted probabilities / first differences
-m3_res <- rbind(sim(m3[[1]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)), robust = T)
-                , sim(m3[[2]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)), robust = T)
-                , sim(m3[[3]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)), robust = T)
-                , sim(m3[[4]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)), robust = T)
-                , sim(m3[[4]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)), robust = T)
-                , sim(m3[[4]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T), robust = T)))
-m3_res$cond <- rep(c("No", "Yes"), each=3)
-m3_res$var <- rep(3:1,2)
+m3_res <- rbind(sim(m3[[1]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                , sim(m3[[2]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                , sim(m3[[3]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
+                , sim(m3[[4]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                , sim(m3[[4]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                , sim(m3[[4]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
+m3_res$cond <- rep(c("No", "Yes"), each=6)
+m3_res$var <- rep(c(3:1,3:1),each=2)
 m3_res$year <- "2012"
 
 ## generate plot
 ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
   geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=.2) +
-  labs(y = "Independent Variable", x= "Change in Similarity Score (in standard deviations)") +
+  labs(y = "Independent Variable", x= "Marginal Effect") +
   theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Predicted Emphasis on\nany Moral Foundation") +
   guides(lty=guide_legend(title="Control for both remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_linetype_manual(values=c(1,2))
+  scale_linetype_manual(values=c(1,2)) + facet_grid(~value, scales = "free_x")
 ggsave(filename = "fig/fig3learn.pdf", width = 6, height = 4)
 
 
