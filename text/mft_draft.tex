@@ -33,7 +33,7 @@
 \onehalfspacing
 
 \begin{abstract}
-This paper investigates how differences in moral judgments between liberals and conservatives shape and structure political reasoning. Using open-ended survey responses in the 2012 American National Election Study, I utilize a moral dictionary proposed in the literature on Moral Foundations Theory to identify references to basic moral intuitions when individuals report their attitudes towards political parties and candidates. The results show that liberals and conservatives rely on different sets of moral foundations when evaluating political actors---even without being cued to think about morality. Furthermore, moral reasoning is shown predict important political outcomes such as attitudes towards parties and candidates, vote choice, and turnout. However, the ideological differences in moral reasoning are more context-specific than previous studies suggest.
+Moral Foundations Theory suggests that individual political attitudes and ideology are shaped and structured by fundamental moral considerations. However, recent research casts doubt on the theory's underlying tenets, such as whether moral foundations are indeed heritable and more stable than ideology. This paper further explores the notion that moral foundations in politics might not necessarily reflect an underlying stable trait but are rather context dependent. Using open-ended survey responses in the 2012 American National Election Study, I utilize a moral dictionary proposed in the literature on Moral Foundations Theory to identify references to basic moral intuitions when individuals report their attitudes towards political parties and candidates. I show that the role of moral foundations in political judgment is conditional on campaign exposure and engagement. The findings indicate that moral foundations are evoked by people to justify their political preferences and judgments in a given context and are therefore less stable than Moral Foundations Theory initially suggested.
 
 \vspace{\baselineskip}
 \noindent \textbf{Keywords:} Moral Foundations Theory, Political Reasoning, Ideology, Political Behavior, Open-ended Survey Responses
@@ -42,6 +42,13 @@ This paper investigates how differences in moral judgments between liberals and 
 
 
 \section{Introduction}
+
+% % Basic argument:
+% Open with debate about moral  foundations and its usefulness for political science
+% Recent crtics argue that it is less stable than it should be
+% I argue that it is indeed less stable and that this instability is moderated by exposure to the political process.
+% Morality as a way for people to justify their political preferences
+% I look at how people justify their political preferences and whether they make references to moral foundations
 
 To what extent are political belief systems and ideologies meaningfully structured by individual psychological characteristics and underlying motivations? This question has been of frequent scholarly interest in political science and related disciplines, yielding an array of different perspectives. Early accounts emphasized how ordinary citizens lack consistent political attitudes and knowledge necessary to form meaningful ideologies \citep[e.g.][]{converse1964nature}. However, with increasing levels of polarization and partisan sorting in contemporary politics \citep{iyengar2015fear}, there has been renewed interest in systematic psychological and attitudinal differences between liberals and conservatives \citep{jost2006end}. One such area of research focuses on the differing moral concerns of liberals and conservatives.
 
@@ -111,6 +118,18 @@ This hypothesized variability in moral reasoning, measured through open-ended re
 \textsl{Hypothesis 3b:} & The degree to which individuals rely on general moral reasoning predicts turnout and other forms of political participation.
 \end{tabular}
 \vspace{0.5cm}
+
+% NEW ANALYSES:
+% VALIDATION
+% 1a: Differences in Moral Foundations are similar to other research
+% 1b: Differences in Moral FOundations predict candidate evaluations and vote choice
+% 2a: The degree to which moral foundations are raised is conditional on campaign exposure and political engagement
+% 2b: Campaign exposure increases difference between liberals and conservatives
+% CHANGES: foundations do not predict engagement anymore, that's a cyclical argument
+% NOTE: add survey mode as a control variable!
+% REVISE ALL OLD ANALYSES, don't use function for data recoding, that's harder for people to understand
+% maybe check regression discontinuity again?
+
 
 
 \subsection{Data, Variables, and Model Specification}
@@ -364,91 +383,91 @@ Each moral dictionary and open-ended response is now represented as a vector of 
 where $\vec{m}(j)\cdotp\vec{r}(n)$ is the dot-product of the dictionary and the response, and $|\vec{m}(j)||\vec{r}(n)|$ is the product of the Euclidean norm of both vectors. $\theta_{j,n}$ can therefore be understood as the angle between the vector space representation of the moral foundation dictionary $j$ and the open-ended response of individual $n$. The cosine score is 1 if the relative frequency of words used by the respondent overlap completely with the terms in the dictionary (not that this holds irrespective of the length of the response), and 0 if there is no overlap.
 
 
-\clearpage
+%\clearpage
 \section{Additional Descriptive Plots}\label{app:desc}
 \renewcommand\thefigure{\thesection.\arabic{figure}}
 \renewcommand\thetable{\thesection.\arabic{table}}
 \setcounter{figure}{0}
 \setcounter{table}{0}
 
-\begin{figure}[h]
-  \centering
-  \caption{Weighted proportion of Respondents mentioning each of the moral foundations in any of their open-ended responses, along with 95\% confidence intervals.}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appC1prop.pdf}
-\caption{Proportions based on all open-ended responses}\label{fig:appC1prop}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appC2cand.pdf}
-\caption{Proportions based on candidate evaluations}\label{fig:appC2cand}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appC3party.pdf}
-\caption{Proportions based on party evaluations}\label{fig:appC3party}
-  \end{subfigure}
-\end{figure}
+%\begin{figure}[h]
+%  \centering
+%  \caption{Weighted proportion of Respondents mentioning each of the moral foundations in any of their open-ended responses, along with 95\% confidence intervals.}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appC1prop.pdf}
+%\caption{Proportions based on all open-ended responses}\label{fig:appC1prop}
+%  \end{subfigure}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appC2cand.pdf}
+%\caption{Proportions based on candidate evaluations}\label{fig:appC2cand}
+%  \end{subfigure}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appC3party.pdf}
+%\caption{Proportions based on party evaluations}\label{fig:appC3party}
+%  \end{subfigure}
+%\end{figure}
+%
+%
+%\clearpage
+%\section{Alternative Model Specifications and Robustness Checks}\label{app:robust}
+%\renewcommand\thefigure{\thesection.\arabic{figure}}
+%\renewcommand\thetable{\thesection.\arabic{table}}
+%\setcounter{figure}{0}
+%\setcounter{table}{0}
+%
+%
+%\subsection{Ideological differences in moral reasoning including 2008 ANES data}
+%
+%\begin{figure}[h]
+%  \centering
+%  \caption{Difference in similarity score for each moral foundation between liberals and conservatives, holding all other control variables at their respective means (along with 95\% confidence intervals). Positive values indicate that liberals emphasize the respective moral foundations more than conservatives, and vice versa. Estimates are based on seemingly unrelated regressions for each foundation's similarity score.}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appD1ideol.pdf}
+%    \caption{Basic models including data from 2008 ANES. Full model results are reported in Table \ref{tab:m2ideol}.}\label{fig:appD1ideol}
+%  \end{subfigure}
+%\end{figure}
+%
+%\clearpage
+%\subsection{Determinants of moral reasoning including 2008 ANES data}
+%
+%\begin{figure}[h]
+%  \centering
+%  \caption{Models predicting emphasis on any moral foundation including 2008 ANES data.}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appD7learn.pdf}
+%    \caption{Change in predicted overall reliance on moral foundations depending on political knowledge, media exposure, and frequency of political discussions. The plot shows the predicted difference in the summed similarity scores if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals, based on robust standard errors). Positive values indicate higher emphasis of any moral foundation. Estimates are based on OLS and dotted lines indicate estimates while controlling for both remaining variables. Full model results are reported in Table \ref{tab:m3learn}.}\label{fig:appD7learn}
+%  \end{subfigure}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appD8ideolearn.pdf}
+%    \caption{Change in effect of ideology on emphasis of each moral foundation moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference). The plot shows how the difference in predicted similarity scores for each moral foundation between liberals and conservatives changes if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that liberals are more likely to mention a specific moral foundation if they score high on the moderating variable (knowledge, exposure, or discussions), and vice versa. Estimates are based on individual OLS models for each foundation and dotted lines indicate estimates while controlling for both remaining variables. Full model results are reported in Tables \ref{tab:m4ideolearn2012a} to \ref{tab:m4ideolearn2008b}.}\label{fig:appD8ideolearn}
+%  \end{subfigure}
+%\end{figure}
+%
+%
+%\clearpage
+%\subsection{Consequences and political relevance of moral reasoning including 2008 ANES data}
+%
+%\begin{figure}[h]
+%  \centering
+%  \caption{Models predicting feeling thermometer differentials and vote choice based on moral reasoning including 2008 ANES data.}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appD11feel.pdf}
+%    \caption{Change in predicted feeling thermometer differential when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasized the respective foundation evaluated the Democratic candidate/party more favorably than the Republican candidate/party, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including similarity scores for each foundation and dotted lines indicate estimates while additionally controlling for party identification. Full model results are reported in Table \ref{tab:m7feel}.}\label{fig:appD11feel}
+%  \end{subfigure}
+%  \begin{subfigure}[t]{0.49\textwidth}
+%    \includegraphics[scale=.4]{../calc/fig/appD12vote.pdf}
+%    \caption{Difference in predicted probabilities to vote for Democratic candidate when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasize the respective foundation are more likely to vote for the Democratic candidate, and vice versa. Estimates are based on a single logit model including similarity scores or each foundation and dotted lines indicate estimates while additionally controlling for party identification. Full model results are reported in Table \ref{tab:m8vote}.}\label{fig:appD12vote}
+%  \end{subfigure}
+%\end{figure}
+%
+%\begin{figure}[t]
+%  \centering
+%    \includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
+%    \caption{Difference in predicted probabilities to participate in election when the aggregated similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate, and vice versa. Estimates are based on a logit models including the normalized sum of similaritiy scores for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Full model results are reported in Table \ref{tab:m5turnout}}\label{fig:appD9turnout}
+%\end{figure}
 
 
-\clearpage
-\section{Alternative Model Specifications and Robustness Checks}\label{app:robust}
-\renewcommand\thefigure{\thesection.\arabic{figure}}
-\renewcommand\thetable{\thesection.\arabic{table}}
-\setcounter{figure}{0}
-\setcounter{table}{0}
-
-
-\subsection{Ideological differences in moral reasoning including 2008 ANES data}
-
-\begin{figure}[h]
-  \centering
-  \caption{Difference in similarity score for each moral foundation between liberals and conservatives, holding all other control variables at their respective means (along with 95\% confidence intervals). Positive values indicate that liberals emphasize the respective moral foundations more than conservatives, and vice versa. Estimates are based on seemingly unrelated regressions for each foundation's similarity score.}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD1ideol.pdf}
-    \caption{Basic models including data from 2008 ANES. Full model results are reported in Table \ref{tab:m2ideol}.}\label{fig:appD1ideol}
-  \end{subfigure}
-\end{figure}
-
-\clearpage
-\subsection{Determinants of moral reasoning including 2008 ANES data}
-
-\begin{figure}[h]
-  \centering
-  \caption{Models predicting emphasis on any moral foundation including 2008 ANES data.}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD7learn.pdf}
-    \caption{Change in predicted overall reliance on moral foundations depending on political knowledge, media exposure, and frequency of political discussions. The plot shows the predicted difference in the summed similarity scores if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals, based on robust standard errors). Positive values indicate higher emphasis of any moral foundation. Estimates are based on OLS and dotted lines indicate estimates while controlling for both remaining variables. Full model results are reported in Table \ref{tab:m3learn}.}\label{fig:appD7learn}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD8ideolearn.pdf}
-    \caption{Change in effect of ideology on emphasis of each moral foundation moderated by political knowledge, media exposure, and frequency of political discussions (difference-in-difference). The plot shows how the difference in predicted similarity scores for each moral foundation between liberals and conservatives changes if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that liberals are more likely to mention a specific moral foundation if they score high on the moderating variable (knowledge, exposure, or discussions), and vice versa. Estimates are based on individual OLS models for each foundation and dotted lines indicate estimates while controlling for both remaining variables. Full model results are reported in Tables \ref{tab:m4ideolearn2012a} to \ref{tab:m4ideolearn2008b}.}\label{fig:appD8ideolearn}
-  \end{subfigure}
-\end{figure}
-
-
-\clearpage
-\subsection{Consequences and political relevance of moral reasoning including 2008 ANES data}
-
-\begin{figure}[h]
-  \centering
-  \caption{Models predicting feeling thermometer differentials and vote choice based on moral reasoning including 2008 ANES data.}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD11feel.pdf}
-    \caption{Change in predicted feeling thermometer differential when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasized the respective foundation evaluated the Democratic candidate/party more favorably than the Republican candidate/party, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including similarity scores for each foundation and dotted lines indicate estimates while additionally controlling for party identification. Full model results are reported in Table \ref{tab:m7feel}.}\label{fig:appD11feel}
-  \end{subfigure}
-  \begin{subfigure}[t]{0.49\textwidth}
-    \includegraphics[scale=.4]{../calc/fig/appD12vote.pdf}
-    \caption{Difference in predicted probabilities to vote for Democratic candidate when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasize the respective foundation are more likely to vote for the Democratic candidate, and vice versa. Estimates are based on a single logit model including similarity scores or each foundation and dotted lines indicate estimates while additionally controlling for party identification. Full model results are reported in Table \ref{tab:m8vote}.}\label{fig:appD12vote}
-  \end{subfigure}
-\end{figure}
-
-\begin{figure}[t]
-  \centering
-    \includegraphics[scale=.4]{../calc/fig/appD9turnout.pdf}
-    \caption{Difference in predicted probabilities to participate in election when the aggregated similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who mentioned the respective foundation are more likely to participate, and vice versa. Estimates are based on a logit models including the normalized sum of similaritiy scores for each foundation and dotted lines indicate estimates while additionally controlling for the strength of party identification. Full model results are reported in Table \ref{tab:m5turnout}}\label{fig:appD9turnout}
-\end{figure}
-
-
-\clearpage
+%\clearpage
 \section{Tables of Model Estimates}\label{app:tables}
 \renewcommand\thefigure{\thesection.\arabic{figure}}
 \renewcommand\thetable{\thesection.\arabic{table}}
@@ -456,25 +475,25 @@ where $\vec{m}(j)\cdotp\vec{r}(n)$ is the dot-product of the dictionary and the 
 \setcounter{table}{0}
 
 
-\subsection{Ideological differences in moral reasoning including 2008 ANES data}
-
-\input{../calc/tab/m2ideol}
-
-\clearpage
-\subsection{Determinants of moral reasoning including 2008 ANES data}
-
-\input{../calc/tab/m3learn}
-\input{../calc/tab/m4ideolearn2012a}
-\input{../calc/tab/m4ideolearn2012b}
-\input{../calc/tab/m4ideolearn2008a}
-\input{../calc/tab/m4ideolearn2008b}
-
-\clearpage
-\subsection{Consequences and political relevance of moral reasoning including 2008 ANES data}
-
-\input{../calc/tab/m7feel}
-\input{../calc/tab/m8vote}
-\input{../calc/tab/m5turnout}
+%\subsection{Ideological differences in moral reasoning including 2008 ANES data}
+%
+%\input{../calc/tab/m2ideol}
+%
+%\clearpage
+%\subsection{Determinants of moral reasoning including 2008 ANES data}
+%
+%\input{../calc/tab/m3learn}
+%\input{../calc/tab/m4ideolearn2012a}
+%\input{../calc/tab/m4ideolearn2012b}
+%\input{../calc/tab/m4ideolearn2008a}
+%\input{../calc/tab/m4ideolearn2008b}
+%
+%\clearpage
+%\subsection{Consequences and political relevance of moral reasoning including 2008 ANES data}
+%
+%\input{../calc/tab/m7feel}
+%\input{../calc/tab/m8vote}
+%\input{../calc/tab/m5turnout}
 
 
 \end{document}

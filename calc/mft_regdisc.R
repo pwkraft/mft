@@ -7,7 +7,7 @@
 
 
 rm(list=ls())
-setwd("/data/Uni/projects/2014/mft/calc")
+setwd("/data/Dropbox/Uni/projects/2014/mft/calc")
 
 # load packages
 pkg <- c("reshape2","ggplot2","stargazer","xtable","rdd","rdrobust")
@@ -29,6 +29,10 @@ load("out/anes.RData")
 
 
 ### regression discontinuity design investigating the effect of previous voting
+
+anes2012$cond <- anes2012$regdi_year >= 18
+ggplot(anes2012, aes(y= general, x=regdi_year, col = cond)) + geom_point(alpha=.1) + geom_smooth(method=lm, formula = y~poly(x,2))
+ggplot(anes2012, aes(y= general, x=regdi_year, col = cond)) + geom_point(alpha=.1) + geom_smooth(method="lm")
 
 # plot discontinuity for aggregate data
 anes2008regdi <- aggregate(anes2008$mft_all,by=list(anes2008$regdi_year),FUN=mean,na.rm=T)
@@ -52,7 +56,7 @@ rd1c <- ggplot(anes2008regdi, aes(x=Group.1, y=x, color=cond, shape=cond)) + geo
   geom_vline(aes(xintercept=17.5),color="grey") + ggtitle("Quadratic Fit (2008 Survey)") +
   geom_smooth(method=lm, formula = y~poly(x,2)) + theme_bw()
 
-anes2012regdi <- aggregate(anes2012$mft_all,by=list(anes2012$regdi_year),FUN=mean,na.rm=T)
+anes2012regdi <- aggregate(anes2012$general,by=list(anes2012$regdi_year),FUN=mean,na.rm=T)
 anes2012regdi$cond <- anes2012regdi$Group.1 >= 18
 rd1d <- ggplot(anes2012regdi, aes(x=Group.1, y=x, color=cond, shape = cond)) + geom_point() +
   scale_color_manual(values=c("royalblue", "firebrick"),guide=FALSE) +
