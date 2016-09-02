@@ -9,9 +9,20 @@ rm(list=ls())
 setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load packages
-pkg <- c("reshape2","ggplot2","Hmisc","MASS","sandwich")
-pkg_github <- c("pmisc")
+pkg <- c("reshape2","ggplot2","readstata13","car","dplyr","quanteda","stargazer"
+         ,"xtable","VGAM","gridExtra","devtools")
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
-lapply(pkg,function(x){suppressPackageStartupMessages(library(x,character.only=TRUE))})
+invisible(lapply(pkg, library, character.only = TRUE))
+if(!"pmisc" %in% installed.packages()) install_github("pwkraft/pmisc")
+invisible(library(pmisc))
 rm(pkg,inst)
+
+## prepare dataset
+source("prep.R")
+
+## run main analyses
+source("analyses.R")
+
+## run analyses for appendix
+source("appendix.R")

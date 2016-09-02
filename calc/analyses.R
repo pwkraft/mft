@@ -32,20 +32,19 @@ covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female
 anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0,]
 
 
-######################################################
-### Part 1: Ideological differences in moral reasoning
+##############################################
+### Ideological differences in moral reasoning
 
 
-### Figure 1: Moral foundations and ideology
+### Moral foundations and ideology
 
-## generate plot
 prop_plot(data=list(anes2012)
           , mftvarnames=c("purity_d", "authority_d", "ingroup_d", "fairness_d", "harm_d")
-          , groupvarname="ideol", legendname = "Ideology", title = "Moral Foundation and Ideology"
-          , file = "fig/fig1prop.pdf", width = 6, height = 4)
+          , groupvarname="ideol", legendname = NULL, title = "Moral Foundations and Ideology"
+          , file = "fig/prop_ideol.pdf", width = 3, height = 3)
 
 
-### Figure 2: ideology -> mft (tobit)
+### ideology -> mft (tobit)
 
 ## model estimation: tobit (could also use the censReg or AER packages...)
 m2 <- list(NULL)
@@ -59,20 +58,22 @@ m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc 
               , tobit(Lower = 0), data = anes2012)
 lapply(m2, summary)
 
+## simulated expected values / marginal effects
 m2res <- sim(m2, iv=data.frame(ideolModerate = c(0,0), ideolConservative = c(1,0)))
 m2res$var <- rep(4:1, each=2)
 
+## generate plot
 ggplot(m2res, aes(x = mean, y = var)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_vline(xintercept=0, col="grey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation") +
   labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Marginal Effect") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
+ggsave(filename = "fig/tobit_ideol.pdf", width = 5, height = 2.5)
 
-ggsave(filename = "fig/fig2ideol.pdf", width = 6, height = 4)
 
-
-### Figure 7: mft -> feeling thermometer differentials (ols)
+### mft -> feeling thermometer differentials (ols)
 
 ## model estimation
 m7 <- NULL
@@ -97,19 +98,20 @@ levels(m7_res$dv) <- c("Party Evaluation", "Candidate Evaluation")
 
 ## generate plot
 ggplot(m7_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_vline(xintercept=0, col="grey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable: Moral Foundation"
        , x= "Change in Feeling Thermometer (Democrat - Republican)") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + ggtitle("Change in Feeling Thermometer Differentials") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  ggtitle("Change in Feeling Thermometer Differentials") +
   guides(lty=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(dv ~.) +
-  scale_linetype_manual(values=c(1,2))
-ggsave(filename = "fig/fig7feel.pdf", width = 6, height = 5)
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_wrap(~dv) +
+  scale_linetype_manual(values=c(1,5))
+ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
 
 
-### Figure 8: mft -> vote democratic (logit)
+### mft -> vote democratic (logit)
 
 ## model estimation
 m8 <- NULL
@@ -131,22 +133,22 @@ m8_res$year <- "2012"
 
 ## generate plot
 ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_vline(xintercept=0, col="grey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
-  labs(y = "Independent Variable:\nMoral Foundation", x= "Change in Probability") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
-  ggtitle("Change in Predicted Probabilities to Vote\nfor Democratic Candidate") +
+  labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  ggtitle("Change in Predicted Probabilities to\nVote for Democratic Candidate") +
   guides(lty=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_linetype_manual(values=c(1,2))
-ggsave(filename = "fig/fig8vote.pdf", width = 6, height = 4)
+  scale_linetype_manual(values=c(1,5))
+ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 
-###########################################
-### Part 2: Determinants of moral reasoning
+###################################
+### Determinants of moral reasoning
 
 
-### Figure 3: campaign exposure -> general mft reference (tobit)
+### campaign exposure -> general mft reference (tobit)
 
 ## model estimation
 m3 <- list(NULL)
@@ -182,20 +184,20 @@ m3_res$year <- "2012"
 
 ## generate plot
 ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_vline(xintercept=0, col="grey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=5:1, labels=polLabs) +
-  ggtitle("Change in Predicted Emphasis on\nany Moral Foundation") +
+  ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
   guides(lty=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_linetype_manual(values=c(1,2)) + facet_grid(~value, scales = "free_x")
-ggsave(filename = "fig/fig3learn.pdf", width = 6, height = 4)
+  scale_linetype_manual(values=c(1,5)) + facet_grid(~value, scales = "free_x")
+ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
 
 
 
-### Figure 4: engagement/sophistication X ideology -> specific mft reference (logit)
+### engagement/sophistication X ideology -> specific mft reference (tobit)
 
 ## model estimation
 m4_know <- list(NULL)
@@ -349,20 +351,18 @@ m4_res$cond <- rep(c("No","Yes"), each = 40)
 m4_res$year <- "2012"
 levels(m4_res$dv) <- gsub("\n", "", rev(mftLabs))
 
-
-
 ## generate plot
 ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point(size=3) +
+  geom_vline(xintercept=0, col="grey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
-  theme_classic() + theme(panel.border = element_rect(fill=NA)) + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=5:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
-  guides(lty=guide_legend(title="Control for Both Remaining Variables")) +
+  guides(lty=guide_legend(title="Control for All Remaining Variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + facet_grid(dv~value) +
-  scale_linetype_manual(values=c(1,2))
-ggsave(filename = "fig/fig4ideolearn.pdf", width = 6, height = 5)
+  scale_linetype_manual(values=c(1,5))
+ggsave(filename = "fig/tobit_learnideol.pdf", width = 4, height = 6)
 
 
 

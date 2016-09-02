@@ -197,6 +197,10 @@ dict <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
   read.csv(paste0("in/graham/",x,"_noregex.csv")) %>%
     sapply(paste, collapse = " ") %>% as.character()
 })
+dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+  cbind(read.csv(paste0("in/graham/",x,".csv"), allowEscapes = T, stringsAsFactors = F)[[1]]
+        , read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)[[1]])
+}) %>% do.call("rbind", .)
 
 ## load open-ended responses
 anes2012resp <- apply(anes2012spell[,-1], 1, paste, collapse = " ")

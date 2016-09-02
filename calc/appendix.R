@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("dplyr","ggplot2","stargazer","xtable","VGAM","pmisc")
+pkg <- c("dplyr","ggplot2","stargazer","xtable","VGAM","gridExtra","pmisc")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -38,7 +38,7 @@ rownames(tab_mis) <- c("Spanish Interview", "No Responses")
 ## export table
 print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
              , caption = "Missing open-ended responses"
-             , label="tab:appB1mis"),file="tab/appB1mis.tex")
+             , label="tab:app_mis"),file="tab/app_mis.tex")
 
 ## drop spanish respondents and empty responses
 anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0,]
@@ -61,10 +61,10 @@ p2 <- ggplot(anes2012, aes(lwc, ..density..)) +
   geom_histogram(binwidth = 0.2, fill='grey') + geom_density() + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   geom_vline(xintercept = lwc_mean, linetype = 3) + 
-  ylab("Density") + xlab("log(Word Count + 1)")
+  ylab("Density") + xlab("log(Word Count)")
 
 ## combine plots
-pdf("fig/wc.pdf",width=7, height=2)
+pdf("fig/app_wc.pdf",width=7, height=3)
 grid.arrange(p1, p2, ncol=2)
 dev.off()
 
