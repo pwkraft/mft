@@ -203,7 +203,7 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 }) %>% do.call("rbind", .)
 
 ## load open-ended responses
-anes2012resp <- apply(anes2012spell[,-1], 1, paste, collapse = " ")
+anes2012resp <- toLower(apply(anes2012spell[,-1], 1, paste, collapse = " "))
 anes2012resp <- gsub("NA\\s*","",anes2012resp)
 names(anes2012resp) <- anes2012spell$id
 anes2012resp <- anes2012resp[anes2012resp != ""]

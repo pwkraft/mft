@@ -69,7 +69,8 @@ ggplot(m2res, aes(x = mean, y = var)) +
   ggtitle("Change in Predicted Emphasis on Moral Foundation") +
   labs(y = "Dependent Variable: Moral Foundation"
        , x = "Marginal Effect (Liberal - Conservative)") +
-  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
 ggsave(filename = "fig/tobit_ideol.pdf", width = 5, height = 2.5)
 
 
@@ -97,17 +98,18 @@ m7_res$year <- "2012"
 levels(m7_res$dv) <- c("Party Evaluation", "Candidate Evaluation")
 
 ## generate plot
-ggplot(m7_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point() +
+ggplot(m7_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable: Moral Foundation"
        , x= "Change in Feeling Thermometer (Democrat - Republican)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   ggtitle("Change in Feeling Thermometer Differentials") +
-  guides(lty=guide_legend(title="Control for Party Identification")) +
+  guides(col=guide_legend(title="Control for Party Identification")
+         , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_wrap(~dv) +
-  scale_linetype_manual(values=c(1,5))
+  scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
 
 
@@ -132,15 +134,16 @@ m8_res$var <- rep(4:1,each=2)
 m8_res$year <- "2012"
 
 ## generate plot
-ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point() +
+ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to\nVote for Democratic Candidate") +
-  guides(lty=guide_legend(title="Control for Party Identification")) +
+  guides(col=guide_legend(title="Control for Party Identification")
+         , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_linetype_manual(values=c(1,5))
+  scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 
@@ -183,16 +186,17 @@ m3_res$var <- rep(c(5:1,5:1),each=2)
 m3_res$year <- "2012"
 
 ## generate plot
-ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point() +
+ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=5:1, labels=polLabs) +
   ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
-  guides(lty=guide_legend(title="Control for remaining variables")) +
+  guides(col=guide_legend(title="Control for remaining variables")
+         , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_linetype_manual(values=c(1,5)) + facet_grid(~value, scales = "free_x")
+  scale_color_grey(start=0,end=.5) + facet_grid(~value, scales = "free_x")
 ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
 
 
@@ -261,52 +265,6 @@ m4_all[[4]] <- vglm(authority_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*pol
 
 ## simulation of predicted probabilities / difference-in-difference
 m4_res <- rbind(sim(models = m4_know
-                    , iv=data.frame(polknow_c=rep(range(anes2012$polknow_c, na.rm = T),2)
-                                    , ideolModerate = rep(0,4)
-                                    , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_media
-                      , iv=data.frame(polmedia_c=rep(range(anes2012$polmedia_c, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_disc
-                      , iv=data.frame(poldisc_c=rep(range(anes2012$poldisc_c, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_vote
-                      , iv=data.frame(vote=rep(range(anes2012$vote, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_part
-                      , iv=data.frame(part=rep(range(anes2012$part, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(polknow_c=rep(range(anes2012$polknow_c, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(polmedia_c=rep(range(anes2012$polmedia_c, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(poldisc_c=rep(range(anes2012$poldisc_c, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(vote=rep(range(anes2012$vote, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(part=rep(range(anes2012$part, na.rm = T),2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,0,1,1))))
-m4_res$var <- rep(rep(5:1,each=8),2)
-m4_res$cond <- rep(c("No","Yes"), each = 40)
-m4_res$year <- "2012"
-levels(m4_res$dv) <- gsub("\n", "", rev(mftLabs))
-
-
-m4_res <- rbind(sim(models = m4_know
                     , iv=data.frame(polknow_c=rep(range(anes2012$polknow_c, na.rm = T),each=2)
                                     , ideolModerate = rep(0,4)
                                     , ideolConservative = c(0,1,0,1)))
@@ -352,16 +310,17 @@ m4_res$year <- "2012"
 levels(m4_res$dv) <- gsub("\n", "", rev(mftLabs))
 
 ## generate plot
-ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), lty=cond)) +
-  geom_vline(xintercept=0, col="grey") + geom_point() +
+ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=5:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
-  guides(lty=guide_legend(title="Control for All Remaining Variables")) +
+  guides(col=guide_legend(title="Control for All Remaining Variables")
+         , shape=guide_legend(title="Control for All Remaining Variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + facet_grid(dv~value) +
-  scale_linetype_manual(values=c(1,5))
+  scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/tobit_learnideol.pdf", width = 4, height = 6)
 
 
