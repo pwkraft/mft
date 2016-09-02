@@ -47,8 +47,8 @@ anes2012$ideol_str <- abs(anes2012$ideol_ct)
 anes2012$pid <- factor(recode(raw2012$pid_x
                               , "1:2=1; c(3,4,5)=2; 6:7=3; else=NA")
                        , labels = c("Democrat","Independent","Republican"))
-anes2012$pid_dem <- as.numeric(dat$pid=="Democrat")
-anes2012$pid_rep <- as.numeric(dat$pid=="Republican")
+anes2012$pid_dem <- as.numeric(anes2012$pid=="Democrat")
+anes2012$pid_rep <- as.numeric(anes2012$pid=="Republican")
 
 ## pid continuous
 anes2012$pid_cont <- (recode(raw2012$pid_x, "lo:0=NA") - 4)/3
@@ -63,7 +63,7 @@ anes2012$polmedia <- with(raw2012, recode(prmedia_wkinews, "lo:-4=NA; -1=0")
                           + recode(prmedia_wkrdnws, "lo:-4=NA; -1=0")) / 28
 
 ## political media exposure (mean centered)
-dat$polmedia_c <- scale(anes2012$polmedia, scale=F)
+anes2012$polmedia_c <- scale(anes2012$polmedia, scale=F)
 
 ## political knowledge (factual knowledge questions, pre-election)
 anes2012$polknow <- with(raw2012, ((preknow_prestimes==2) + (preknow_sizedef==1)
@@ -71,7 +71,7 @@ anes2012$polknow <- with(raw2012, ((preknow_prestimes==2) + (preknow_sizedef==1)
                                            + (preknow_leastsp==1))/5)
 
 ## political knowledge (mean centered)
-anes2012$polknow_c <- scale(anes2012(dat$polknow, scale=F))
+anes2012$polknow_c <- scale(anes2012$polknow, scale=F)
 
 ## political discussion
 anes2012$poldisc <- recode(raw2012$discuss_discpstwk, "lo:-1 = NA")/7
@@ -88,6 +88,9 @@ anes2012$eval_cand <- (recode(raw2012$ft_dpc, "lo:-1=NA; 101:hi=NA") -
 anes2012$eval_party <- (recode(raw2012$ft_dem, "lo:-1=NA; 101:hi=NA") -
                           recode(raw2012$ft_rep, "lo:-1=NA; 101:hi=NA"))
 
+## voted in previous election
+anes2012$pastvote <- recode(raw2012$interest_voted2008, "c(2,5)=0; lo:-1=NA")
+
 ## voted in current election
 anes2012$vote <- recode(raw2012$rvote2012_x, "2=0; lo:-1=NA")
 
@@ -99,10 +102,13 @@ anes2012$protest <- recode(raw2012$dhsinvolv_march, "c(2,5)=0; lo:-1=NA")
 
 ## signed a petition
 anes2012$petition <- as.numeric((recode(raw2012$dhsinvolv_netpetition, "c(2,5)=0; lo:-1=NA") +
-                                   recode(raw2012dhsinvolv_petition, "c(2,5)=0; lo:-1=NA")) > 0)
+                                   recode(raw2012$dhsinvolv_petition, "c(2,5)=0; lo:-1=NA")) > 0)
 
 ## wear a campaign button
 anes2012$button <- recode(raw2012$mobilpo_sign, "c(2,5)=0; lo:-1=NA")
+
+## additive index protest behavior
+anes2012$part <- with(anes2012, as.numeric((protest + petition + button)>0))
 
 ## age
 anes2012$age <- recode(raw2012$dem_age_r_x, "c(-2,-9,-8) = NA")
@@ -178,7 +184,7 @@ anes2012spell <- data.frame(id = anes2012opend$caseid, anes2012spell,stringsAsFa
 anes2012$wc <- apply(anes2012spell[,-1], 1, function(x){
   length(unlist(strsplit(x,"\\s+")))
 })
-anes2012$lwc <- log(anes2012$wc+1)
+anes2012$lwc <- log(anes2012$wc)
 
 ## number of items answered
 anes2012$nitem <- apply(anes2012spell[,-1] != "", 1, sum, na.rm = T)
