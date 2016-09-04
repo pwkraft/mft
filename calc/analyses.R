@@ -64,7 +64,7 @@ m2res$var <- rep(4:1, each=2)
 
 ## generate plot
 ggplot(m2res, aes(x = mean, y = var)) +
-  geom_vline(xintercept=0, col="grey") + geom_point() +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
   ggtitle("Change in Predicted Emphasis on Moral Foundation") +
   labs(y = "Dependent Variable: Moral Foundation"
@@ -317,8 +317,8 @@ ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=5:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
-  guides(col=guide_legend(title="Control for All Remaining Variables")
-         , shape=guide_legend(title="Control for All Remaining Variables")) +
+  guides(col=guide_legend(title="Control for remaining variables")
+         , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + facet_grid(dv~value) +
   scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/tobit_learnideol.pdf", width = 4, height = 6)
