@@ -23,8 +23,7 @@ load("out/anes.RData")
 ## global labels for plots
 mftLabs <- c("Authority / \nRespect", "Ingroup / \nLoyalty"
              , "Fairness / \nReciprocity", "Harm / \nCare")
-polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions"
-             , "Voted\nin 2008","Protest\nBehavior")
+polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female)"
              ,"Race (African American)","Number of Words")
 
@@ -138,7 +137,8 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable: Moral Foundation", x= "Change in Probability") +
-  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Predicted Probabilities to\nVote for Democratic Candidate") +
   guides(col=guide_legend(title="Control for Party Identification")
          , shape=guide_legend(title="Control for Party Identification")) +
@@ -161,11 +161,7 @@ m3[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black + lwc
                 , tobit(Lower = 0), data=anes2012)
 m3[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black + lwc + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[4]] <- vglm(general_s ~ pastvote + relig + educ + age + female + black + lwc + mode
-                , tobit(Lower = 0), data=anes2012)
-m3[[5]] <- vglm(general_s ~ part + relig + educ + age + female + black + lwc + mode
-                , tobit(Lower = 0), data=anes2012)
-m3[[6]] <- vglm(general_s ~ polknow + polmedia + poldisc + pastvote + part
+m3[[6]] <- vglm(general_s ~ polknow + polmedia + poldisc
                 + relig + educ + age + female + black + lwc + mode
                 , tobit(Lower = 0), data=anes2012)
 lapply(m3, summary)
@@ -174,15 +170,11 @@ lapply(m3, summary)
 m3_res <- rbind(sim(m3[[1]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
                 , sim(m3[[2]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
                 , sim(m3[[3]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
-                , sim(m3[[4]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
-                , sim(m3[[5]], iv=data.frame(part=range(anes2012$part, na.rm = T)))
                 , sim(m3[[6]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
                 , sim(m3[[6]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(part=range(anes2012$part, na.rm = T))))
-m3_res$cond <- rep(c("No", "Yes"), each=10)
-m3_res$var <- rep(c(5:1,5:1),each=2)
+                , sim(m3[[6]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
+m3_res$cond <- rep(c("No", "Yes"), each=6)
+m3_res$var <- rep(c(3:1,3:1),each=2)
 m3_res$year <- "2012"
 
 ## generate plot
@@ -191,13 +183,30 @@ ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=5:1, labels=polLabs) +
+  scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5) + facet_grid(~value, scales = "free_x")
 ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
+
+## alternative plot specification
+m3_res$var <- as.factor(m3_res$var)
+dodge <- position_dodge(width=.5)  
+
+ggplot(m3_res, aes(y = mean, x = var, col=cond, shape=cond)) +
+  geom_hline(yintercept=0, col="lightgrey") + geom_point(position = dodge) +
+  geom_errorbar(aes(ymax=cihi,ymin=cilo),width=0,position = dodge) +
+  labs(x = "Independent Variable", y= "Marginal Effect") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_x_discrete(breaks=3:1, labels=polLabs) +
+  ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
+  guides(col=guide_legend(title="Control for remaining variables")
+         , shape=guide_legend(title="Control for remaining variables")) +
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_color_grey(start=0,end=.5) + facet_grid(~value, scales = "free_y") + coord_flip()
+
 
 
 
@@ -231,37 +240,15 @@ m4_disc[[3]] <- vglm(ingroup_s ~ ideol*poldisc_c + relig + educ + age + female +
                      lwc + mode, tobit(Lower = 0), data=anes2012)
 m4_disc[[4]] <- vglm(authority_s ~ ideol*poldisc_c + relig + educ + age + female + black + 
                      lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_vote <- list(NULL)
-m4_vote[[1]] <- vglm(harm_s ~ ideol*vote + relig + educ + age + female + black +
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_vote[[2]] <- vglm(fairness_s ~ ideol*vote + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_vote[[3]] <- vglm(ingroup_s ~ ideol*vote + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_vote[[4]] <- vglm(authority_s ~ ideol*vote + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_part <- list(NULL)
-m4_part[[1]] <- vglm(harm_s ~ ideol*part + relig + educ + age + female + black +
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_part[[2]] <- vglm(fairness_s ~ ideol*part + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_part[[3]] <- vglm(ingroup_s ~ ideol*part + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
-m4_part[[4]] <- vglm(authority_s ~ ideol*part + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
 m4_all <- list(NULL)
 m4_all[[1]] <- vglm(harm_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c + 
-                    ideol*vote + ideol*part + relig + educ + age + female + black + 
-                    lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[2]] <- vglm(fairness_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    ideol*vote + ideol*part + relig + educ + age + female + black + 
-                    lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[3]] <- vglm(ingroup_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    ideol*vote + ideol*part + relig + educ + age + female + black + 
-                    lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[4]] <- vglm(authority_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    ideol*vote + ideol*part + relig + educ + age + female + black + 
-                    lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
 
 ## simulation of predicted probabilities / difference-in-difference
 m4_res <- rbind(sim(models = m4_know
@@ -276,14 +263,6 @@ m4_res <- rbind(sim(models = m4_know
                       , iv=data.frame(poldisc_c=rep(range(anes2012$poldisc_c, na.rm = T),each=2)
                                       , ideolModerate = rep(0,4)
                                       , ideolConservative = c(0,1,0,1)))
-                , sim(models = m4_vote
-                      , iv=data.frame(vote=rep(range(anes2012$vote, na.rm = T),each=2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,1,0,1)))
-                , sim(models = m4_part
-                      , iv=data.frame(part=rep(range(anes2012$part, na.rm = T),each=2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,1,0,1)))
                 , sim(models = m4_all
                       , iv=data.frame(polknow_c=rep(range(anes2012$polknow_c, na.rm = T),each=2)
                                       , ideolModerate = rep(0,4)
@@ -295,17 +274,9 @@ m4_res <- rbind(sim(models = m4_know
                 , sim(models = m4_all
                       , iv=data.frame(poldisc_c=rep(range(anes2012$poldisc_c, na.rm = T),each=2)
                                       , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,1,0,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(vote=rep(range(anes2012$vote, na.rm = T),each=2)
-                                      , ideolModerate = rep(0,4)
-                                      , ideolConservative = c(0,1,0,1)))
-                , sim(models = m4_all
-                      , iv=data.frame(part=rep(range(anes2012$part, na.rm = T),each=2)
-                                      , ideolModerate = rep(0,4)
                                       , ideolConservative = c(0,1,0,1))))
-m4_res$var <- rep(rep(5:1,each=8),2)
-m4_res$cond <- rep(c("No","Yes"), each = 40)
+m4_res$var <- rep(rep(3:1,each=8),2)
+m4_res$cond <- rep(c("No","Yes"), each = 24)
 m4_res$year <- "2012"
 levels(m4_res$dv) <- gsub("\n", "", rev(mftLabs))
 
@@ -315,7 +286,7 @@ ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=5:1, labels=polLabs) +
+  scale_y_continuous(breaks=3:1, labels=polLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
