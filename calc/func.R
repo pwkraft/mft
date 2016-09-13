@@ -73,21 +73,20 @@ mftSimilarity <- function(opend, id, dict, regex){
   # normalization is not necessary, cosine similarity is length invariant so results are unchanged
   sim <- similarity(spell_tfidf, selection = names(dict)
                     , margin = "documents", method = "cosine") %>% 
-    as.matrix() %>% data.frame()
-  sim$general <- apply(sim,1,sum)
+    as.matrix() %>% data.frame() %>% 
+    mutate(general = apply(.,1,sum), id = as.numeric(rownames(.))) %>%
+    arrange(id) %>% filter(!is.na(id))
   
   ## create scaled variable for moral foundations
-  sim_s <- apply(sim, 2, function(x) scale(x, center=FALSE))
+  sim_s <- apply(select(sim,-id), 2, function(x) x/sd(x[wc>0]))
   colnames(sim_s) <- paste0(colnames(sim_s),"_s")
   
   ## dichotmous indicator for moral foundations
-  sim_d <- apply(sim, 2, function(x) as.numeric(x>0))
+  sim_d <- apply(select(sim,-id), 2, function(x) as.numeric(x>0))
   colnames(sim_d) <- paste0(colnames(sim_d),"_d")
   
   ## combine similarity results
-  res <- cbind(sim, sim_d, sim_s) %>%
-    mutate(id = as.numeric(rownames(sim))) %>%
-    arrange(id) %>% filter(!is.na(id))
+  res <- cbind(sim, sim_d, sim_s)
   
   ## add spell-checked open-ends
   out <- data.frame(id, spell=spell, wc=wc, lwc=lwc, nitem=nitem

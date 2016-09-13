@@ -124,10 +124,10 @@ m8[[2]] <- glm(vote_dem ~ harm_s + fairness_s + ingroup_s + authority_s
                , data=anes2012, family = binomial("logit"))
 
 ## simulation of predicted probabilities / first differences
-m8_res <- rbind(sim(m8, iv=data.frame(harm_s = min(anes2012$harm_s)+c(0,1)))
-                , sim(m8, iv=data.frame(fairness_s = min(anes2012$fairness_s)+c(0,1)))
-                , sim(m8, iv=data.frame(ingroup_s = min(anes2012$ingroup_s)+c(0,1)))
-                , sim(m8, iv=data.frame(authority_s = min(anes2012$authority_s)+c(0,1))))
+m8_res <- rbind(sim(m8, iv=data.frame(harm_s = c(0,1)))
+                , sim(m8, iv=data.frame(fairness_s = c(0,1)))
+                , sim(m8, iv=data.frame(ingroup_s = c(0,1)))
+                , sim(m8, iv=data.frame(authority_s = c(0,1))))
 m8_res$cond <- rep(c("No","Yes"),4)
 m8_res$var <- rep(4:1,each=2)
 m8_res$year <- "2012"
@@ -143,7 +143,7 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   guides(col=guide_legend(title="Control for Party Identification")
          , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_grey(start=0,end=.5)
+  scale_color_grey(start=0,end=.5) + xlim(-.05,.06)
 ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 
@@ -296,3 +296,104 @@ ggsave(filename = "fig/tobit_learnideol.pdf", width = 4, height = 6)
 
 
 
+## new simulation of predicted probabilities / difference-in-difference (complete model)
+m4_new <- rbind(sim(models = m4_all
+                    , iv=data.frame(polknow_c=min(anes2012$polknow_c, na.rm = T)
+                                    , polmedia_c=min(anes2012$polmedia_c, na.rm = T)
+                                    , poldisc_c=min(anes2012$poldisc_c, na.rm = T)
+                                    , ideolModerate = c(0,0)
+                                    , ideolConservative = c(1,0)))
+                , sim(models = m4_all
+                      , iv=data.frame(polknow_c=max(anes2012$polknow_c, na.rm = T)
+                                      , polmedia_c=max(anes2012$polmedia_c, na.rm = T)
+                                      , poldisc_c=max(anes2012$poldisc_c, na.rm = T)
+                                      , ideolModerate = c(0,0)
+                                      , ideolConservative = c(1,0))))
+m4_new$var <- factor(m4_new$dv)
+levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+m4_new$cond <- rep(c("Minimum","Maximum"),each=8)
+
+ggplot(m4_new, aes(x = mean, y = dv)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  facet_grid(cond~value) + 
+  scale_y_discrete(limits = rev(levels(m4_new$dv)))
+ggsave(filename = "fig/tobit_ideol_all.pdf", width = 3, height = 4)
+
+
+## only knowledge
+m4_new <- rbind(sim(models = m4_know
+                    , iv=data.frame(polknow_c=min(anes2012$polknow_c, na.rm = T)
+                                    , ideolModerate = c(0,0)
+                                    , ideolConservative = c(1,0)))
+                , sim(models = m4_know
+                      , iv=data.frame(polknow_c=max(anes2012$polknow_c, na.rm = T)
+                                      , ideolModerate = c(0,0)
+                                      , ideolConservative = c(1,0))))
+m4_new$var <- factor(m4_new$dv)
+levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+m4_new$cond <- rep(c("Low Knowledge","High Knowledge"),each=8)
+
+ggplot(m4_new, aes(x = mean, y = dv)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  facet_grid(cond~value) + 
+  scale_y_discrete(limits = rev(levels(m4_new$dv)))
+ggsave(filename = "fig/tobit_ideol_know.pdf", width = 5, height = 3)
+
+## only media exposure
+m4_new <- rbind(sim(models = m4_media
+                    , iv=data.frame(polmedia_c=min(anes2012$polmedia_c, na.rm = T)
+                                    , ideolModerate = c(0,0)
+                                    , ideolConservative = c(1,0)))
+                , sim(models = m4_media
+                      , iv=data.frame(polmedia_c=max(anes2012$polmedia_c, na.rm = T)
+                                      , ideolModerate = c(0,0)
+                                      , ideolConservative = c(1,0))))
+m4_new$var <- factor(m4_new$dv)
+levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+m4_new$cond <- rep(c("Low Media Exposure","High Media Exposure"),each=8)
+
+ggplot(m4_new, aes(x = mean, y = dv)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  facet_grid(cond~value) + 
+  scale_y_discrete(limits = rev(levels(m4_new$dv)))
+ggsave(filename = "fig/tobit_ideol_media.pdf", width = 4, height = 3)
+
+
+## only media exposure
+m4_new <- rbind(sim(models = m4_disc
+                    , iv=data.frame(poldisc_c=min(anes2012$poldisc_c, na.rm = T)
+                                    , ideolModerate = c(0,0)
+                                    , ideolConservative = c(1,0)))
+                , sim(models = m4_disc
+                      , iv=data.frame(poldisc_c=max(anes2012$poldisc_c, na.rm = T)
+                                      , ideolModerate = c(0,0)
+                                      , ideolConservative = c(1,0))))
+m4_new$var <- factor(m4_new$dv)
+levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+m4_new$cond <- rep(c("Low Discussion","High Discussion"),each=8)
+
+ggplot(m4_new, aes(x = mean, y = dv)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Dependent Variable: Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  facet_grid(cond~value) + 
+  scale_y_discrete(limits = rev(levels(m4_new$dv)))
+ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
