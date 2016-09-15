@@ -12,7 +12,7 @@ invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
 ## working directory
-setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
+setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load additional functions
 source("func.R")
@@ -188,7 +188,7 @@ ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_grey(start=0,end=.5) + facet_grid(~value, scales = "free_x")
+  scale_color_grey(start=0,end=.5) + facet_grid(~value)
 ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
 
 ## alternative plot specification
@@ -205,7 +205,7 @@ ggplot(m3_res, aes(y = mean, x = var, col=cond, shape=cond)) +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_grey(start=0,end=.5) + facet_grid(~value, scales = "free_y") + coord_flip()
+  scale_color_grey(start=0,end=.5) + facet_grid(~value) + coord_flip()
 
 
 
@@ -292,7 +292,7 @@ ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") + facet_grid(dv~value) +
   scale_color_grey(start=0,end=.5)
-ggsave(filename = "fig/tobit_learnideol.pdf", width = 4, height = 6)
+ggsave(filename = "fig/tobit_ideol_difdif.pdf", width = 4, height = 5)
 
 
 
@@ -310,7 +310,7 @@ m4_new <- rbind(sim(models = m4_all
                                       , ideolModerate = c(0,0)
                                       , ideolConservative = c(1,0))))
 m4_new$var <- factor(m4_new$dv)
-levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+levels(m4_new$dv) <- rev(mftLabs)
 m4_new$cond <- rep(c("Minimum","Maximum"),each=8)
 
 ggplot(m4_new, aes(x = mean, y = dv)) +
@@ -335,7 +335,7 @@ m4_new <- rbind(sim(models = m4_know
                                       , ideolModerate = c(0,0)
                                       , ideolConservative = c(1,0))))
 m4_new$var <- factor(m4_new$dv)
-levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+levels(m4_new$dv) <- rev(mftLabs)
 m4_new$cond <- rep(c("Low Knowledge","High Knowledge"),each=8)
 
 ggplot(m4_new, aes(x = mean, y = dv)) +
@@ -347,7 +347,7 @@ ggplot(m4_new, aes(x = mean, y = dv)) +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   facet_grid(cond~value) + 
   scale_y_discrete(limits = rev(levels(m4_new$dv)))
-ggsave(filename = "fig/tobit_ideol_know.pdf", width = 5, height = 3)
+ggsave(filename = "fig/tobit_ideol_know.pdf", width = 4, height = 3)
 
 ## only media exposure
 m4_new <- rbind(sim(models = m4_media
@@ -359,7 +359,7 @@ m4_new <- rbind(sim(models = m4_media
                                       , ideolModerate = c(0,0)
                                       , ideolConservative = c(1,0))))
 m4_new$var <- factor(m4_new$dv)
-levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
+levels(m4_new$dv) <- rev(mftLabs)
 m4_new$cond <- rep(c("Low Media Exposure","High Media Exposure"),each=8)
 
 ggplot(m4_new, aes(x = mean, y = dv)) +
@@ -384,8 +384,8 @@ m4_new <- rbind(sim(models = m4_disc
                                       , ideolModerate = c(0,0)
                                       , ideolConservative = c(1,0))))
 m4_new$var <- factor(m4_new$dv)
-levels(m4_new$dv) <- gsub("\n", "", rev(mftLabs))
-m4_new$cond <- rep(c("Low Discussion","High Discussion"),each=8)
+levels(m4_new$dv) <- rev(mftLabs)
+m4_new$cond <- rep(c("Low Discussion Frequency","High Discussion Frequency"),each=8)
 
 ggplot(m4_new, aes(x = mean, y = dv)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
