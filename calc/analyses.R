@@ -161,18 +161,26 @@ m3[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black + lwc
                 , tobit(Lower = 0), data=anes2012)
 m3[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black + lwc + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[6]] <- vglm(general_s ~ polknow + polmedia + poldisc
+m3[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
                 + relig + educ + age + female + black + lwc + mode
                 , tobit(Lower = 0), data=anes2012)
+m3[[5]] <- vglm(general_s ~ pastvote + relig + educ + age + female + black + lwc + mode
+                , tobit(Lower = 0), data=anes2012)
+m3[[6]] <- vglm(general_s ~ part + relig + educ + age + female + black + lwc + mode
+                , tobit(Lower = 0), data=anes2012)
+m3[[7]] <- vglm(general_s ~ pastvote + part
+                + relig + educ + age + female + black + lwc + mode
+                , tobit(Lower = 0), data=anes2012)
+
 lapply(m3, summary)
 
 ## simulation of predicted probabilities / first differences
 m3_res <- rbind(sim(m3[[1]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
                 , sim(m3[[2]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
                 , sim(m3[[3]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
+                , sim(m3[[4]], iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                , sim(m3[[4]], iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                , sim(m3[[4]], iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
 m3_res$cond <- rep(c("No", "Yes"), each=6)
 m3_res$var <- rep(c(3:1,3:1),each=2)
 m3_res$year <- "2012"
@@ -208,6 +216,30 @@ ggplot(m3_res, aes(y = mean, x = var, col=cond, shape=cond)) +
   scale_color_grey(start=0,end=.5) + facet_grid(~value) + coord_flip()
 
 
+## plot for pastvote and non-conventional participation
+
+## simulation of predicted probabilities / first differences
+m3_res <- rbind(sim(m3[[5]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
+                , sim(m3[[6]], iv=data.frame(part=range(anes2012$part, na.rm = T)))
+                , sim(m3[[7]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
+                , sim(m3[[7]], iv=data.frame(part=range(anes2012$part, na.rm = T))))
+m3_res$cond <- rep(c("No", "Yes"), each=4)
+m3_res$var <- rep(c(2:1,2:1),each=2)
+m3_res$year <- "2012"
+dodge <- position_dodge(width=.5)
+
+ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
+  labs(y = "Independent Variable", x= "Marginal Effect") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=2:1, labels=c("Voted in 2008", "Protest Behavior")) +
+  ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
+  guides(col=guide_legend(title="Control for remaining variables")
+         , shape=guide_legend(title="Control for remaining variables")) +
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_color_grey(start=0,end=.5) + facet_grid(~value)
+ggsave(filename = "fig/tobit_learn_participation.pdf", width = 5, height = 3)
 
 
 ### engagement/sophistication X ideology -> specific mft reference (tobit)
