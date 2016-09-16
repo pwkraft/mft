@@ -100,16 +100,16 @@ mftSimilarity <- function(opend, id, dict, regex){
 prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file = NULL
                     , width = par("din")[1], height = par("din")[2], lim = c(0, 0.6)){
     ## prepare dataset
-    ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/sum(!is.na(x)))}
+    ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/(sum(!is.na(x))-1))}
 
     prop_df <- NULL
     for(i in 1:length(data)){
-        tmp <-  cbind(melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+        tmp <-  cbind(melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
                                     ,by=list(groupvar = data[[i]][,groupvarname]),FUN=mean,na.rm=T))
-                    , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+                    , melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
                                     ,by=list(groupvar = data[[i]][,groupvarname])
                                     ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
-                    , melt(aggregate(data[[i]][,mftvarnames]*data[[i]]$weight
+                    , melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
                                     ,by=list(groupvar = data[[i]][,groupvarname])
                                     ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
                       )
