@@ -28,14 +28,31 @@ covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female
              ,"Race (African American)","Number of Words")
 
 ## drop spanish respondents and empty responses
-anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0,]
+anes2012 <- anes2012 %>% filter(anes2012$spanish != 1 & anes2012$wc != 0)
 
 
 ##############################################
 ### Ideological differences in moral reasoning
 
 
-### Moral foundations and ideology
+### Moral foundations in open-ended responses
+
+plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, harm_d) %>%
+  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))-1))) %>%
+  t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
+
+ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
+  geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
+  labs(y = "Moral Foundation", x = "Proportion of Respondents") +
+  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_discrete(labels=c("Purity / \nSanctity", "Authority / \nRespect"
+                            , "Ingroup / \nLoyalty", "Fairness / \nReciprocity"
+                            , "Harm / \nCare"))
+ggsave(file = "fig/prop_mft.pdf", width = 4, height = 2)
+
+
+### Moral foundations and ideology (raw proportions)
 
 prop_plot(data=list(anes2012)
           , mftvarnames=c("purity_d", "authority_d", "ingroup_d", "fairness_d", "harm_d")
