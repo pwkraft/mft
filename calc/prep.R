@@ -33,7 +33,7 @@ raw2008 <- read.dta13(paste0(datsrc,"anes2008/anes_timeseries_2008.dta"), conver
 ## respondent id, wave, weight, interview mode (1=FTF, 2=online)
 anes2012 <- data.frame(id=raw2012$caseid, year=2012
                        , weight = raw2012$weight_full
-                       , mode = raw2012$mode)
+                       , mode = factor(raw2012$mode, labels = c("Face-to-Face","Online")))
 
 anes2008 <- data.frame(id=raw2008$V080001, year=2008
                        , weight = raw2008$V080101
@@ -155,6 +155,9 @@ anes2008$vote_dem <- recode(raw2008$V083169a, "2=0; c(-2,5)=NA")
 anes2012$protest <- recode(raw2012$dhsinvolv_march, "c(2,5)=0; lo:-1=NA")
 anes2008$protest <- recode(raw2008$V085201a, "c(2,5)=0; lo:-1=NA")
 
+## letter to congressman/senator
+anes2012$letter <- recode(raw2012$dhsinvolv_contact1, "2=0; lo:-1=NA")
+
 ## signed a petition
 anes2012$petition <- as.numeric((recode(raw2012$dhsinvolv_netpetition, "c(2,5)=0; lo:-1=NA") +
                                    recode(raw2012$dhsinvolv_petition, "c(2,5)=0; lo:-1=NA")) > 0)
@@ -206,6 +209,13 @@ anes2012$spanish <- as.numeric(raw2012$profile_spanishsurv == 1 |
 
 anes2008$spanish <- as.numeric(raw2008$V082011 == 2 |
                                  raw2008$V082011 == 3)
+
+## wordsum literacy test
+anes2012$wordsum <- with(raw2012, (wordsum_setb == 5) + (wordsum_setd == 3)
+                         + (wordsum_sete == 1) + (wordsum_setf == 3)
+                         + (wordsum_setg == 5) + (wordsum_seth == 4)
+                         + (wordsum_setj == 1) + (wordsum_setk == 1)
+                         + (wordsum_setl == 4) + (wordsum_seto == 2))/10
 
 
 ###############################

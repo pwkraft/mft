@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("tidyverse","stargazer","xtable","VGAM","pmisc")
+pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM","pmisc")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -64,13 +64,13 @@ prop_plot(data=list(anes2012)
 
 ## model estimation: tobit (could also use the censReg or AER packages...)
 m2 <- list(NULL)
-m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc + mode
+m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc + mode
+m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc + mode
+m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc + mode
+m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
 lapply(m2, summary)
 
@@ -95,13 +95,13 @@ ggsave(filename = "fig/tobit_ideol.pdf", width = 5, height = 2.5)
 ## model estimation
 m7 <- NULL
 m7[[1]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
-              + relig + educ + age + female + black, data=anes2012)
+              + relig + educ + age + female + black + lwc + wordsum + mode, data=anes2012)
 m7[[2]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
-              + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012)
+              + pid_dem + pid_rep + relig + educ + age + female + black + lwc + wordsum + mode, data=anes2012)
 m7[[3]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
-              + relig + educ + age + female + black, data=anes2012)
+              + relig + educ + age + female + black + lwc + wordsum + mode, data=anes2012)
 m7[[4]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
-              + pid_dem + pid_rep + relig + educ + age + female + black, data=anes2012)
+              + pid_dem + pid_rep + relig + educ + age + female + black + lwc + wordsum + mode, data=anes2012)
 
 ## simulation of predicted probabilities / first differences
 m7_res <- rbind(sim(m7, iv=data.frame(harm_s = min(anes2012$harm_s)+c(0,1)), robust=T)
@@ -134,10 +134,10 @@ ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
 ## model estimation
 m8 <- NULL
 m8[[1]] <- glm(vote_dem ~ harm_s + fairness_s + ingroup_s + authority_s
-               + relig + educ + age + female + black
+               + relig + educ + age + female + black + lwc + wordsum + mode
                , data=anes2012, family = binomial("logit"))
 m8[[2]] <- glm(vote_dem ~ harm_s + fairness_s + ingroup_s + authority_s
-               + pid_dem + pid_rep + relig + educ + age + female + black
+               + pid_dem + pid_rep + relig + educ + age + female + black + lwc + wordsum + mode
                , data=anes2012, family = binomial("logit"))
 
 ## simulation of predicted probabilities / first differences
@@ -160,7 +160,7 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   guides(col=guide_legend(title="Control for Party Identification")
          , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_grey(start=0,end=.5) + xlim(-.05,.06)
+  scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 
@@ -172,21 +172,27 @@ ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 ## model estimation
 m3 <- list(NULL)
-m3[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black + lwc + mode
+m3[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black + lwc + mode
+m3[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black + lwc + mode
+m3[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
 m3[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
-                + relig + educ + age + female + black + lwc + mode
+                + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[5]] <- vglm(general_s ~ pastvote + relig + educ + age + female + black + lwc + mode
+m3[[5]] <- vglm(general_s ~ pastvote + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[6]] <- vglm(general_s ~ part + relig + educ + age + female + black + lwc + mode
+m3[[6]] <- vglm(general_s ~ protest + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-m3[[7]] <- vglm(general_s ~ pastvote + part
-                + relig + educ + age + female + black + lwc + mode
+m3[[7]] <- vglm(general_s ~ petition + relig + educ + age + female + black + lwc + wordsum + mode
+                , tobit(Lower = 0), data=anes2012)
+m3[[8]] <- vglm(general_s ~ button + relig + educ + age + female + black + lwc + wordsum + mode
+                , tobit(Lower = 0), data=anes2012)
+m3[[9]] <- vglm(general_s ~ letter + relig + educ + age + female + black + lwc + wordsum + mode
+                , tobit(Lower = 0), data=anes2012)
+m3[[10]] <- vglm(general_s ~ pastvote + protest + petition + button + letter
+                + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
 
 lapply(m3, summary)
@@ -237,11 +243,17 @@ ggplot(m3_res, aes(y = mean, x = var, col=cond, shape=cond)) +
 
 ## simulation of predicted probabilities / first differences
 m3_res <- rbind(sim(m3[[5]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
-                , sim(m3[[6]], iv=data.frame(part=range(anes2012$part, na.rm = T)))
-                , sim(m3[[7]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
-                , sim(m3[[7]], iv=data.frame(part=range(anes2012$part, na.rm = T))))
-m3_res$cond <- rep(c("No", "Yes"), each=4)
-m3_res$var <- rep(c(2:1,2:1),each=2)
+                , sim(m3[[6]], iv=data.frame(protest=range(anes2012$protest, na.rm = T)))
+                , sim(m3[[7]], iv=data.frame(petition=range(anes2012$petition, na.rm = T)))
+                , sim(m3[[8]], iv=data.frame(button=range(anes2012$button, na.rm = T)))
+                , sim(m3[[9]], iv=data.frame(letter=range(anes2012$letter, na.rm = T)))
+                , sim(m3[[10]], iv=data.frame(pastvote=range(anes2012$pastvote, na.rm = T)))
+                , sim(m3[[10]], iv=data.frame(protest=range(anes2012$protest, na.rm = T)))
+                , sim(m3[[10]], iv=data.frame(petition=range(anes2012$petition, na.rm = T)))
+                , sim(m3[[10]], iv=data.frame(button=range(anes2012$button, na.rm = T)))
+                , sim(m3[[10]], iv=data.frame(letter=range(anes2012$letter, na.rm = T))))
+m3_res$cond <- rep(c("No", "Yes"), each=10)
+m3_res$var <- rep(c(5:1,5:1),each=2)
 m3_res$year <- "2012"
 dodge <- position_dodge(width=.5)
 
@@ -250,7 +262,7 @@ ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=2:1, labels=c("Voted in 2008", "Protest Behavior")) +
+  scale_y_continuous(breaks=5:1, labels=c("Voted in 2008", "Protest", "Petition", "Button", "Letter")) +
   ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
@@ -264,40 +276,40 @@ ggsave(filename = "fig/tobit_learn_participation.pdf", width = 5, height = 3)
 ## model estimation
 m4_know <- list(NULL)
 m4_know[[1]] <- vglm(harm_s ~ ideol*polknow_c + relig + educ + age + female + black + 
-                       lwc + mode, tobit(Lower = 0), data=anes2012)
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_know[[2]] <- vglm(fairness_s ~ ideol*polknow_c + relig + educ + age + female + black + 
-                     lwc + mode, tobit(Lower = 0), data=anes2012)
+                     lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_know[[3]] <- vglm(ingroup_s ~ ideol*polknow_c + relig + educ + age + female + black +
-                   lwc + mode, tobit(Lower = 0), data=anes2012)
+                   lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_know[[4]] <- vglm(authority_s ~ ideol*polknow_c + relig + educ + age + female + black +
-                   lwc + mode, tobit(Lower = 0), data=anes2012)
+                   lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_media <- list(NULL)
 m4_media[[1]] <- vglm(harm_s ~ ideol*polmedia_c + relig + educ + age + female + black + 
-                      lwc + mode, tobit(Lower = 0), data=anes2012)
+                      lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_media[[2]] <- vglm(fairness_s ~ ideol*polmedia_c + relig + educ + age + female + black + 
-                      lwc + mode, tobit(Lower = 0), data=anes2012)
+                      lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_media[[3]] <- vglm(ingroup_s ~ ideol*polmedia_c + relig + educ + age + female + black + 
-                      lwc + mode, tobit(Lower = 0), data=anes2012)
+                      lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_media[[4]] <- vglm(authority_s ~ ideol*polmedia_c + relig + educ + age + female + black + 
-                      lwc + mode, tobit(Lower = 0), data=anes2012)
+                      lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_disc <- list(NULL)
 m4_disc[[1]] <- vglm(harm_s ~ ideol*poldisc_c + relig + educ + age + female + black +
-                   lwc + mode, tobit(Lower = 0), data=anes2012)
+                   lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_disc[[2]] <- vglm(fairness_s ~ ideol*poldisc_c + relig + educ + age + female + black + 
-                     lwc + mode, tobit(Lower = 0), data=anes2012)
+                     lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_disc[[3]] <- vglm(ingroup_s ~ ideol*poldisc_c + relig + educ + age + female + black + 
-                     lwc + mode, tobit(Lower = 0), data=anes2012)
+                     lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_disc[[4]] <- vglm(authority_s ~ ideol*poldisc_c + relig + educ + age + female + black + 
-                     lwc + mode, tobit(Lower = 0), data=anes2012)
+                     lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_all <- list(NULL)
 m4_all[[1]] <- vglm(harm_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c + 
-                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[2]] <- vglm(fairness_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[3]] <- vglm(ingroup_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_all[[4]] <- vglm(authority_s ~ ideol*polknow_c + ideol*polmedia_c + ideol*poldisc_c +
-                    relig + educ + age + female + black + lwc + mode, tobit(Lower = 0), data=anes2012)
+                    relig + educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 
 ## simulation of predicted probabilities / difference-in-difference
 m4_res <- rbind(sim(models = m4_know
@@ -446,3 +458,34 @@ ggplot(m4_new, aes(x = mean, y = dv)) +
   facet_grid(cond~value) + 
   scale_y_discrete(limits = rev(levels(m4_new$dv)))
 ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
+
+
+### Summary of independent variables
+
+desc <- list(NULL)
+plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+desc[[1]] <- ggplot(anes2012, aes(x=ideol)) + geom_bar(stat="count") + labs(y="Count", x="Ideology") + plot_default
+desc[[2]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + labs(y="Count", x="Political Knowledge") + plot_default
+desc[[3]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + labs(y="Count", x="Political Media Exposure") + plot_default
+desc[[4]] <- ggplot(anes2012, aes(x=poldisc)) + geom_bar(stat="count") + labs(y="Count", x="Political Discussions") + plot_default
+desc[[5]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) + labs(y="Count", x="Feeling Thermometer (Candidates)") + plot_default
+desc[[6]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + labs(y="Count", x="Feeling Thermometer (Parties)") + plot_default
+desc[[7]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
+desc[[8]] <- ggplot(anes2012, aes(x=factor(vote_dem, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Voted for Democratic Candidate") + plot_default
+desc[[9]] <- ggplot(anes2012, aes(x=factor(pastvote, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Voted in 2008") + plot_default
+desc[[10]] <- ggplot(anes2012, aes(x=factor(protest, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Participated in Protest") + plot_default
+desc[[11]] <- ggplot(anes2012, aes(x=factor(letter, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Letter to Congressmen/Senator") + plot_default
+desc[[12]] <- ggplot(anes2012, aes(x=factor(petition, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Signed Petition") + plot_default
+desc[[13]] <- ggplot(anes2012, aes(x=factor(button, labels=c("No","Yes")))) + geom_bar(stat="count") + labs(y="Count", x="Wearing Campaign Button") + plot_default
+desc[[14]] <- ggplot(anes2012, aes(x=age)) + geom_bar(stat="count") + labs(y="Count", x="Age") + plot_default
+desc[[15]] <- ggplot(anes2012, aes(x=factor(female,labels=c("Male","Female")))) + geom_bar(stat="count") + labs(y="Count", x="Sex") + plot_default
+desc[[16]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + geom_bar(stat="count") + labs(y="Count", x="Race/Ethnicity") + plot_default
+desc[[17]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + labs(y="Count", x="Church Attendance") + plot_default
+desc[[18]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
+desc[[19]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + labs(y="Count", x="Party Identification") + plot_default
+desc[[20]] <- ggplot(anes2012, aes(x=mode)) + geom_bar(stat="count") + labs(y="Count", x="Survey Mode") + plot_default
+desc[[21]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + labs(y="Count", x="Wordsum Literacy Test") + plot_default
+pdf("fig/app_desc.pdf", width=7, height=9)
+grid.arrange(grobs=desc,ncol=3)
+dev.off()
+       
