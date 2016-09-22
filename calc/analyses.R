@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("dplyr","ggplot2","stargazer","xtable","VGAM","pmisc")
+pkg <- c("tidyverse","stargazer","xtable","VGAM","pmisc")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -28,7 +28,7 @@ covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female
              ,"Race (African American)","Number of Words")
 
 ## drop spanish respondents and empty responses
-anes2012 <- anes2012 %>% filter(anes2012$spanish != 1 & anes2012$wc != 0)
+anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0, ]
 
 
 ##############################################
