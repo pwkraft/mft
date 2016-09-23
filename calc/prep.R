@@ -33,7 +33,7 @@ raw2008 <- read.dta13(paste0(datsrc,"anes2008/anes_timeseries_2008.dta"), conver
 ## respondent id, wave, weight, interview mode (1=FTF, 2=online)
 anes2012 <- data.frame(id=raw2012$caseid, year=2012
                        , weight = raw2012$weight_full
-                       , mode = factor(raw2012$mode, labels = c("Face-to-Face","Online")))
+                       , mode = raw2012$mode-1)
 
 anes2008 <- data.frame(id=raw2008$V080001, year=2008
                        , weight = raw2008$V080101

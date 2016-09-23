@@ -161,7 +161,7 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
          , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5)
-ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
+ggsave(filename = "fig/logit_vote.pdf", width = 5, height = 3)
 
 
 ###################################
@@ -483,7 +483,7 @@ desc[[16]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hi
 desc[[17]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + labs(y="Count", x="Church Attendance") + plot_default
 desc[[18]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
 desc[[19]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + labs(y="Count", x="Party Identification") + plot_default
-desc[[20]] <- ggplot(anes2012, aes(x=mode)) + geom_bar(stat="count") + labs(y="Count", x="Survey Mode") + plot_default
+desc[[20]] <- ggplot(anes2012, aes(x=factor(mode, labels=c("Face-to-Face","Online")))) + geom_bar(stat="count") + labs(y="Count", x="Survey Mode") + plot_default
 desc[[21]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + labs(y="Count", x="Wordsum Literacy Test") + plot_default
 pdf("fig/app_desc.pdf", width=7, height=9)
 grid.arrange(grobs=desc,ncol=3)
