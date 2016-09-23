@@ -161,7 +161,7 @@ ggplot(m8_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
          , shape=guide_legend(title="Control for Party Identification")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5)
-ggsave(filename = "fig/logit_vote.pdf", width = 5, height = 3)
+ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 
 
 ###################################
