@@ -22,6 +22,8 @@ datsrc <- "~/Dropbox/Uni/Data/"
 ## load data
 lidat <- read.dta(paste0(datsrc,"lisurvey/combined123.dta"))
 lidat$id <- rownames(lidat)
+lidat$ideol <- recode(lidat$ideol, "'liberal' = '1. Liberal'; 'moderate'='2. Moderate'; 'conservative'='3. Conservative'; else=NA")
+#levels(lidat$ideol) <- c("Liberal","Moderate","Conservative")
 
 ## load dictionary
 dict <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
@@ -45,11 +47,18 @@ lisim_con <- mftSimilarity(opend = select(lidat, descon,desconb)
 
 apply(lisim_lib[-2],2,function(x) mean(as.numeric(x))) - apply(lisim_con[-2],2,function(x) mean(as.numeric(x)))
 
-dat <- merge(lidat, lisim)
+dat <- merge(lidat, lisim) %>% mutate(year = "all responses")
 dat %>% group_by(ideol) %>% summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
 
-dat <- merge(lidat, lisim_lib)
+dat_lib <- merge(lidat, lisim_lib) %>% mutate(year = "liberals")
 dat %>% group_by(ideol) %>% summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
 
-dat <- merge(lidat, lisim_con)
+dat_con <- merge(lidat, lisim_con) %>% mutate(year = "conservatives")
 dat %>% group_by(ideol) %>% summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
+
+
+prop_plot(data=list(dat,dat_lib,dat_con)
+          , mftvarnames=c("purity_d", "authority_d", "ingroup_d", "fairness_d", "harm_d")
+          , groupvarname="ideol", legendname = NULL, title = "Moral Foundations and Ideology"
+          , file = "fig/prop_lisurvey.pdf", width = 3, height = 3, lim=c(0,.25))
+
