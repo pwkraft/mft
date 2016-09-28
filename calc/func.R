@@ -14,13 +14,14 @@ rm(pkg)
 ### function to pre-process open-ended responses and calculate cosine similarity
 
 mftSimilarity <- function(opend, id, dict, regex){
-  if(nrow(opend) != length(id))          stop("ID vector must be equal to number of observations/documents")
+  if(nrow(opend) != length(id))         stop("ID vector must be equal to number of observations/documents")
   if(length(unique(id)) != length(id))  stop("IDs are not unique")
   
   ## minor pre-processing
   spell <- apply(opend, 2, function(x){
     x <- gsub("(^\\s+|\\s+$)","", x)
-    x[x %in% c("-1 Inapplicable","-7 Refused","N/A","no","none","#(43042)","i am","Nome")] <- ""
+    x[x %in% c("-1 Inapplicable","-7 Refused","N/A","no","none","#(43042)","i am","Nome"
+               ,"dk","skip","no","no.","no5","don't know","n/a")] <- ""
     x <- gsub("//"," ", x , fixed = T)
     x <- gsub("[[:punct:]]"," ", x)
     x <- gsub("\\s+"," ", x)
