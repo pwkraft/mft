@@ -101,7 +101,7 @@ mftSimilarity <- function(opend, id, dict, regex){
 prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file = NULL
                     , width = par("din")[1], height = par("din")[2], lim = c(0, 0.6)){
     ## prepare dataset
-    ci <- function(x){1.96 * sqrt((mean(x, na.rm=T)*(1-mean(x, na.rm=T)))/(sum(!is.na(x))-1))}
+    ci <- function(x){1.96 * sd(x, na.rm=T)/sqrt(sum(!is.na(x)))}
 
     prop_df <- NULL
     for(i in 1:length(data)){

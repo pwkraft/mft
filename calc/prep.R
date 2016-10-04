@@ -218,6 +218,7 @@ anes2012$wordsum <- with(raw2012, (wordsum_setb == 5) + (wordsum_setd == 3)
                          + (wordsum_setl == 4) + (wordsum_seto == 2))/10
 
 
+
 ###############################
 ### open-ended survey responses
 
@@ -254,4 +255,83 @@ anes2008sim <- mftSimilarity(opend = anes2008opend[-1], id = anes2008opend$casei
 anes2012 <- merge(anes2012, anes2012sim)
 anes2008 <- merge(anes2008, anes2008sim)
 
-save(anes2012, anes2012opend, anes2008, anes2008opend, file="out/anes.RData")
+
+
+##########################
+### media content analysis
+
+
+## read textfiles
+docs2012 <- textfile(list.files(path = paste0(datsrc, "anes2012/media")
+                                , pattern = "\\.txt$", full.names = TRUE, recursive = FALSE))
+
+## replace regular expressions with word stems
+pb <- txtProgressBar(min = 0, max = nrow(dict_df), style = 3)
+for(i in 1:nrow(dict_df)){
+  docs2012@texts <- gsub(dict_df[i,1], dict_df[i,2], docs2012@texts)
+  setTxtProgressBar(pb, i)
+}
+close(pb)
+
+## combine dictionary and responses in common dfm/tfidf
+media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% 
+  dfm() %>% tfidf()
+
+## calculate cosine similarity b/w dictionaries and documents
+media2012_sim <- similarity(media2012_tfidf, selection = names(dict)
+                            , margin = "documents", method = "cosine") %>% 
+  as.matrix() %>% data.frame() %>%
+  mutate(general = apply(.,1,sum), id = gsub("\\.txt","",rownames(.))) %>%
+  filter(general != 1) %>% arrange(id) %>% select(id, everything())
+
+## create scaled variable for moral foundations
+media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x))
+colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
+
+## combine similarity results
+media2012 <- cbind(media2012_sim, media2012_sim_s)
+
+## recode anes media usage data
+anes2012media <- data.frame(#INET_CNN_com = raw2012$medsrc_websites_02==1
+                            #, INET_MSNBC_com = raw2012$medsrc_websites_10==1
+                            #, INET_TheNewYorkTimes = raw2012$medsrc_websites_11==1 | raw2012$medsrc_printnews_01==1 | raw2012$medsrc_inetnews_01==1
+                            #, INET_USAToday = raw2012$medsrc_websites_13==1 | raw2012$medsrc_printnews_02==1 | raw2012$medsrc_inetnews_02==1
+                            #, INET_Washingtonpost_com = raw2012$medsrc_websites_14==1 | raw2012$medsrc_inetnews_04==1
+                            #, NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
+                            #, NPR_FreshAir = raw2012$medsrc_radio_04==1
+                            #, NPR_MorningEdition = raw2012$medsrc_radio_08==1
+                            #, PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
+                            #, PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1 | raw2012$medsrc_inetnews_03==1,
+                            TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
+                            , TV_ABC_GoodMorningAmerica = raw2012$medsrc_tvprog_24==1
+                            , TV_ABC_ThisWeek = raw2012$medsrc_tvprog_45==1
+                            , TV_ABC_WorldNews = raw2012$medsrc_tvprog_04==1
+                            , TV_CBS_EveningNews = raw2012$medsrc_tvprog_11==1
+                            , TV_CBS_FaceTheNation = raw2012$medsrc_tvprog_20==1
+                            , TV_CBS_SundayMorning = raw2012$medsrc_tvprog_43==1
+                            , TV_CBS_ThisMorning = raw2012$medsrc_tvprog_12==1
+                            , TV_CNN_AndersonCooper = raw2012$medsrc_tvprog_09==1
+                            , TV_Fox_Hannity = raw2012$medsrc_tvprog_25==1
+                            , TV_Fox_OReillyFactor = raw2012$medsrc_tvprog_36==1
+                            , TV_Fox_SpecialReport = raw2012$medsrc_tvprog_41==1
+                            , TV_Fox_TheFive = raw2012$medsrc_tvprog_21==1
+                            , TV_NBC_Dateline = raw2012$medsrc_tvprog_17==1
+                            , TV_NBC_MeetThePress = raw2012$medsrc_tvprog_32==1
+                            , TV_NBC_NightlyNews = raw2012$medsrc_tvprog_34==1
+                            , TV_NBC_RockCenter = raw2012$medsrc_tvprog_39==1
+                            , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
+                            ) %>% apply(2,as.numeric)
+
+## combine media usage with mft similarity scores and add to anes
+tmp <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
+colnames(tmp) <- paste0("media_",colnames(tmp))
+anes2012 <- cbind(anes2012,tmp)
+anes2012$media <- apply(tmp,1,sum)>0
+
+
+
+##############################
+### save output for analyses.R
+
+
+save(anes2012, anes2012opend, anes2008, anes2008opend, media2012, file="out/anes.RData")

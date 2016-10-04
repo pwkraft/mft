@@ -6,7 +6,7 @@
 ###########################################################################################
 
 ## packages
-pkg <- c("foreign","car","dplyr","quanteda")
+pkg <- c("foreign","car","dplyr","quanteda","tidyr")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -60,5 +60,31 @@ dat %>% group_by(ideol) %>% summarise_each(authority_s, fairness_s, harm_s, ingr
 prop_plot(data=list(dat,dat_lib,dat_con)
           , mftvarnames=c("purity_d", "authority_d", "ingroup_d", "fairness_d", "harm_d")
           , groupvarname="ideol", legendname = NULL, title = "Moral Foundations and Ideology"
-          , file = "fig/prop_lisurvey.pdf", width = 3, height = 3, lim=c(0,.25))
+          , file = "fig/prop_lisurvey.pdf", width = 3, height = 3, lim=c(-.01,.25))
+
+se <- function(x){
+  sd(x, na.rm=T)/sqrt(sum(!is.na(x)))
+}
+
+plot_df <- rbind(dat_lib,dat_con) %>% 
+  select(year, authority_s, ingroup_s, fairness_s, harm_s) %>%
+  gather(mft, score, -year) %>% group_by(year,mft) %>% summarise_each(funs(mean,se))
+
+ggplot(plot_df, aes(x=mean, xmin=mean-1.96*se, xmax=mean+1.96*se, y=year)) +
+  geom_point() + geom_errorbarh(height=0) + facet_wrap(~mft) +
+  labs(y = "Ideology", x = "Proportion of Respondents") +
+  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+ggsave(file = "fig/prop_lisurvey_libcon.pdf", width = 4, height = 2)
+
+plot_df <- rbind(dplyr::filter(dat_lib,ideol=="1. Liberal"),dplyr::filter(dat_con,ideol=="3. Conservative")) %>% 
+  select(year, authority_s, ingroup_s, fairness_s, harm_s) %>%
+  gather(mft, score, -year) %>% group_by(year,mft) %>% summarise_each(funs(mean,se))
+
+ggplot(plot_df, aes(x=mean, xmin=mean-1.96*se, xmax=mean+1.96*se, y=year)) +
+  geom_point() + geom_errorbarh(height=0) + facet_wrap(~mft) +
+  labs(y = "Ideology", x = "Proportion of Respondents") +
+  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+#ggsave(file = "fig/prop_lisurvey_libcon.pdf", width = 4, height = 2)
 

@@ -38,7 +38,7 @@ anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0, ]
 ### Moral foundations in open-ended responses
 
 plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, harm_d) %>%
-  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))-1))) %>%
+  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))))) %>%
   t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
 
 ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
@@ -458,6 +458,134 @@ ggplot(m4_new, aes(x = mean, y = dv)) +
   facet_grid(cond~value) + 
   scale_y_discrete(limits = rev(levels(m4_new$dv)))
 ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
+
+
+##########################
+### Media content analysis
+
+m4_cont <- list(NULL)
+m4_cont[[1]] <- vglm(harm_s ~ media_harm + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[2]] <- vglm(harm_s ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[3]] <- vglm(fairness_s ~ media_fairness + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[4]] <- vglm(fairness_s ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[5]] <- vglm(ingroup_s ~ media_ingroup + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[6]] <- vglm(ingroup_s ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[7]] <- vglm(authority_s ~ media_authority + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[8]] <- vglm(authority_s ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(m4_cont, summary)
+
+m4_cont <- list(NULL)
+m4_cont[[1]] <- vglm(harm_s ~ media_harm*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[2]] <- vglm(harm_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[3]] <- vglm(fairness_s ~ media_fairness*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[4]] <- vglm(fairness_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[5]] <- vglm(ingroup_s ~ media_ingroup*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[6]] <- vglm(ingroup_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[7]] <- vglm(authority_s ~ media_authority*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+m4_cont[[8]] <- vglm(authority_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(m4_cont, summary)
+
+m4_cont <- list(NULL)
+m4_cont[[1]] <- glm(harm_d ~ media_harm + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[2]] <- glm(harm_d ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[3]] <- glm(fairness_d ~ media_fairness + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[4]] <- glm(fairness_d ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[5]] <- glm(ingroup_d ~ media_ingroup + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[6]] <- glm(ingroup_d ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[7]] <- glm(authority_d ~ media_authority + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+m4_cont[[8]] <- glm(authority_d ~ media_harm + media_fairness + media_ingroup + media_authority +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, family = binomial(link = "logit"), data=anes2012)
+lapply(m4_cont, summary)
+
+m4_cont <- list(NULL)
+m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[2]] <- vglm(harm_s ~ media_harm_s + media_fairness_s + media_ingroup_s + media_authority_s +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[3]] <- vglm(fairness_s ~ media_fairness_s + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[4]] <- vglm(fairness_s ~ media_harm_s + media_fairness_s + media_ingroup_s + media_authority_s +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[5]] <- vglm(ingroup_s ~ media_ingroup_s + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[6]] <- vglm(ingroup_s ~ media_harm_s + media_fairness_s + media_ingroup_s + media_authority_s +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[7]] <- vglm(authority_s ~ media_authority_s + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[8]] <- vglm(authority_s ~ media_harm_s + media_fairness_s + media_ingroup_s + media_authority_s +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+lapply(m4_cont, summary)
+
+m4_cont <- list(NULL)
+m4_cont[[1]] <- vglm(harm_s ~ media_harm*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[2]] <- vglm(harm_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[3]] <- vglm(fairness_s ~ media_fairness*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[4]] <- vglm(fairness_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[5]] <- vglm(ingroup_s ~ media_ingroup*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[6]] <- vglm(ingroup_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[7]] <- vglm(authority_s ~ media_authority*polmedia + relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+m4_cont[[8]] <- vglm(authority_s ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia +
+                       relig + educ + age + female + black + 
+                       lwc + wordsum + mode, tobit(Lower = 0), data=anes2012[anes2012$media==T,])
+lapply(m4_cont, summary)
+
+summary(vglm(fairness_s ~ media_fairness + relig + educ + age + female + black + 
+               lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(fairness_s ~ media_harm + media_fairness + media_ingroup + media_authority
+             , tobit(Lower = 0), data=anes2012))
+summary(vglm(fairness ~ media_harm + media_fairness + media_ingroup + media_authority
+             , tobit(Lower = 0), data=anes2012[anes2012$media==T,]))
+summary(vglm(harm ~ media_harm*polmedia + media_fairness*polmedia + media_ingroup*polmedia + media_authority*polmedia
+             , tobit(Lower = 0), data=anes2012[anes2012$media==T,]))
 
 
 ### Summary of independent variables
