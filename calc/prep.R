@@ -265,6 +265,15 @@ anes2008 <- merge(anes2008, anes2008sim)
 docs2012 <- textfile(list.files(path = paste0(datsrc, "anes2012/media")
                                 , pattern = "\\.txt$", full.names = TRUE, recursive = FALSE))
 
+txtproc <- function(x) {
+  gsub("\\n\\nLOAD-DATE:\\s+\\w*\\s+\\d{1,2},\\s+\\d{4}\\n\\n.*$","", x) %>%
+    tail(-1) %>% paste(collapse=" ")
+}
+
+docs2012@texts <- docs2012@texts %>%
+  strsplit("\\n\\nLENGTH:\\s+\\d+\\s+words\\n\\n") %>%
+  sapply(txtproc)
+
 ## replace regular expressions with word stems
 pb <- txtProgressBar(min = 0, max = nrow(dict_df), style = 3)
 for(i in 1:nrow(dict_df)){
@@ -286,23 +295,25 @@ media2012_sim <- similarity(media2012_tfidf, selection = names(dict)
 
 ## create scaled variable for moral foundations
 media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x))
+media2012_sim_d <- apply(select(media2012_sim, -id), 2, function(x) ifelse(x>=median(x),1,-1))
 colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
+colnames(media2012_sim_d) <- paste0(colnames(media2012_sim_d),"_d")
 
 ## combine similarity results
-media2012 <- cbind(media2012_sim, media2012_sim_s)
+media2012 <- cbind(media2012_sim, media2012_sim_s, media2012_sim_d)
 
 ## recode anes media usage data
-anes2012media <- data.frame(#INET_CNN_com = raw2012$medsrc_websites_02==1
-                            #, INET_MSNBC_com = raw2012$medsrc_websites_10==1
-                            #, INET_TheNewYorkTimes = raw2012$medsrc_websites_11==1 | raw2012$medsrc_printnews_01==1 | raw2012$medsrc_inetnews_01==1
-                            #, INET_USAToday = raw2012$medsrc_websites_13==1 | raw2012$medsrc_printnews_02==1 | raw2012$medsrc_inetnews_02==1
-                            #, INET_Washingtonpost_com = raw2012$medsrc_websites_14==1 | raw2012$medsrc_inetnews_04==1
-                            #, NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
-                            #, NPR_FreshAir = raw2012$medsrc_radio_04==1
-                            #, NPR_MorningEdition = raw2012$medsrc_radio_08==1
-                            #, PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
-                            #, PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1 | raw2012$medsrc_inetnews_03==1,
-                            TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
+anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
+                            , INET_MSNBC_com = raw2012$medsrc_websites_10==1
+                            , INET_TheNewYorkTimes = raw2012$medsrc_websites_11==1 | raw2012$medsrc_printnews_01==1 | raw2012$medsrc_inetnews_01==1
+                            , INET_USAToday = raw2012$medsrc_websites_13==1 | raw2012$medsrc_printnews_02==1 | raw2012$medsrc_inetnews_02==1
+                            , INET_Washingtonpost_com = raw2012$medsrc_websites_14==1 | raw2012$medsrc_inetnews_04==1
+                            , NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
+                            , NPR_FreshAir = raw2012$medsrc_radio_04==1
+                            , NPR_MorningEdition = raw2012$medsrc_radio_08==1
+                            , PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
+                            , PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1 | raw2012$medsrc_inetnews_03==1
+                            , TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
                             , TV_ABC_GoodMorningAmerica = raw2012$medsrc_tvprog_24==1
                             , TV_ABC_ThisWeek = raw2012$medsrc_tvprog_45==1
                             , TV_ABC_WorldNews = raw2012$medsrc_tvprog_04==1
@@ -323,10 +334,12 @@ anes2012media <- data.frame(#INET_CNN_com = raw2012$medsrc_websites_02==1
                             ) %>% apply(2,as.numeric)
 
 ## combine media usage with mft similarity scores and add to anes
-tmp <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
-colnames(tmp) <- paste0("media_",colnames(tmp))
-anes2012 <- cbind(anes2012,tmp)
-anes2012$media <- apply(tmp,1,sum)>0
+tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
+colnames(tmp1) <- paste0("media_",colnames(tmp1))
+tmp2 <- apply(tmp1[,grep("_d",colnames(tmp1))], 2, function(x) as.numeric(x>0))
+colnames(tmp2) <- paste0(colnames(tmp2),"01")
+anes2012 <- cbind(anes2012,tmp1,tmp2)
+anes2012$media <- apply(anes2012media,1,sum)>0
 
 
 
