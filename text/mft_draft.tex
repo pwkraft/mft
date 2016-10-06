@@ -159,29 +159,6 @@ Positive values denote a higher probability of mentioning the respective moral f
 Taken together, the results are largely consistent with previous findings in the literature on MFT. Individuals evoke moral considerations when evaluating political parties and candidates without being explicitly asked about morality. Furthermore, there are systematic differences between liberals and conservatives in their reliance on binding and individualizing foundations \citep[see][for similar ideological differences when analyzing the content of life-narrative interviews]{mcadams2008family}. However, the fact that the authority/respect foundation showed insignificant patterns could suggest that the public's reliance on moral foundations may be more context-specific than previously thought.
 
 
-\subsubsection{Consequences and Political Relevance of Moral Reasoning}
-
-A skeptical reader might argue that ideological differences in moral reasoning are not unequivocally consistent with MFT because open-ended responses provide a less precise measure as compared to the MFQ. In order to alleviate this concern, We proceed to show that the expression of specific moral foundations in open-ended responses has important effects on political attitudes and behavior that match existing findings in the literature. Previous research relying on the MFQ has linked moral foundations to an array of political outcomes, such as candidate preferences \citep{iyer2010beyond} and voting behavior \citep{franks2015using}. Do we see the same patterns for explicit moral reasoning as compared to latent moral foundations?
-
-\begin{figure}[ht]\centering
-\includegraphics{../calc/fig/ols_feel.pdf}
-\caption{Change in predicted feeling thermometer differential when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasized the respective foundation evaluated the Democratic candidate/party more favorably than the Republican candidate/party, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including similarity scores for each foundation and gray triangles indicate estimates while additionally controlling for party identification. %Full model results are displayed in Table~\ref{tab:m7feel}.
-}\label{fig:ols_feel}
-\end{figure}
-
-As a first step, we examine the relationship of moral reasoning and attitudes towards political parties and candidates. Figure~\ref{fig:ols_feel} presents OLS estimates where feeling thermometer differentials between the Republican and the Democratic party (left panel) and between both Presidential candidates (right panel) are regressed on similarity scores for all moral foundations (including the control variables discussed above). Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are largely consistent with the previous results on ideological differences. Individuals who emphasize considerations related to harm/care, and fairness/reciprocity evaluate the Democratic party/candidate on average about 3 points higher than the Republican party/candidate (on a 100 point scale). On the other hand, if individuals emphasized the ingroup/loyalty dimension, they reported stronger preferences for the Republican party/candidate. These effects are robust after controlling for individual party identification. Thus, in both analyses in Figure~\ref{fig:ols_feel}, we observed sizable and significant effects for the influence of moral reasoning.
-
-\begin{figure}[ht]\centering
-\includegraphics[scale=.9]{../calc/fig/logit_vote.pdf}
-\caption{Change in predicted probabilities to vote for Democratic candidate when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasize the respective foundation are more likely to vote for the Democratic candidate, and vice versa. Estimates are based on a single logit model including similarity scores or each foundation and dotted lines indicate estimates while additionally controlling for party identification. %Full model results are displayed in Table~\ref{tab:m8vote}.
-}\label{fig:logit_vote}
-\end{figure}
-
-Figure~\ref{fig:logit_vote} presents the changes in expected probabilities of voting for the Democratic (vs. the Republican) presidential candidate in the 2012 election for individuals emphasizing the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including similarity scores for each moral foundation as independent variables (as well as  the remaining controls), which were held constant at their mean values when computing expected values. Again, the patterns are strikingly similar to the results presented thus far, and largely consistent with MFT. Individuals who emphasized moral considerations related to the harm/care and fairness/reciprocity foundations are more likely to vote for Barack Obama than for Mitt Romney. Respondents who emphasized the ingroup/loyalty foundation, on the other hand, were less likely to vote for Obama. 
-
-The effects on political evaluations and vote choice might not seem large, but bear in mind that the measure of moral reasoning is solely based on open-ended responses, in which respondents were \textit{not} explicitly asked about morality. Nevertheless, the moral considerations evoked were powerfully related to party and candidate evaluations as well as vote choice, even after controlling for strength of party identification and the length of individual responses. Overall, the analyses show that people's open-ended comments about both candidates and both parties are imbued with moral content and that these comments relate to political judgments in the manner predicted by MFT.
-
-
 \subsubsection{Determinants of Moral Reasoning}
 
 Having shown that liberals and conservatives differ with regard to the moral foundations they emphasize when evaluating political actors and that these differences allow us to predict preferences and vote choice, we now investigate whether the reliance on moral considerations varies between individuals as a product of political knowledge and exposure to political discourse. Campaign exposure and discussions influence the degree to which political attitudes are moralized to the extent to which individuals adopt moral rhetoric from elites and their peers. As such, we first focus on determinants of the general tendency to emphasize \textit{any} moral foundation by regressing the sum of similarity scores for each individual on political knowledge, political media exposure, and frequency of political discussions. Figure~\ref{fig:tobit_learn} depicts the respective effects when each independent variable is increased from its empirical minimum value to its empirical maximum value, holding all other variables (including the logged number of words in each individual response) constant at their means. Again, estimates are based on tobit models that take into account the censoring of the moral reasoning measure and effects are decomposed into probability of mentioning any moral foundation (left panel) as well as the emphasis on morality, given that any foundation was mentioned (right panel).
@@ -222,6 +199,49 @@ Lastly, Figure~\ref{fig:tobit_ideol_disc} differentiates between individuals who
 These results draw much more nuanced picture of the ideological differences in moral reasoning than previous studies. The patterns are only unequivocally consistent with MFT among politically knowledgeable respondents.\footnote{This is especially noteworthy given that many studies on MFT are based on opt-in samples collected through \url{www.yourmorals.org}, which potentially leads to biases towards higher education among respondents.} However, the picture is more complicated when looking at the influence of media exposure and political discussions. Exposure to political discourse increases the ideological divide on some dimensions but decreases it on others. Explaining these patterns requires a more detailed analyses of the content of the media coverage as well as the nature of political discussions. For now, we leave this issue as a fruitful area for future research efforts.
 
 Furthermore, it should be emphasized that not all changes discussed in Figures~\ref{fig:tobit_ideol_know} through \ref{fig:tobit_ideol_disc} are necessarily statistically significant \citep[c.f.,][]{gelman2006difference}.\footnote{See the appendix, Figure~\ref{fig:tobit_ideol_difdif} for detailed results on the statistical significance of the difference-in-differences between the comparisons.} Nevertheless, we can conclude from the analyses that whether researchers are able to recover systematic ideological differences in moral reasoning consistent with MFT is highly conditional on individual-level factors. Overall, political knowledge, media exposure and discussion frequency not only affect general levels of moral reasoning but also moderate the ideological gap between liberals and conservatives. Some portion of the ideological differences in emphasis on moral foundations can therefore be described as a product of learning in the political environment. However, the nature of the relationship between the political context and individual moral reasoning is complex and requires further investigation.
+
+
+\subsubsection{Robustness Checks and Alternative Explanations}
+
+
+\begin{figure}[ht]\centering
+\includegraphics{../calc/fig/tobit_ideol_lisurvey.pdf}
+\caption{Replication using Long Island Survey Data
+}\label{fig:tobit_ideol_lisurvey}
+\end{figure}
+
+A skeptical reader might argue that ideological differences in moral reasoning are not unequivocally consistent with MFT because open-ended responses provide a less precise measure as compared to the MFQ. In order to alleviate this concern, We proceed to show that the expression of specific moral foundations in open-ended responses has important effects on political attitudes and behavior that match existing findings in the literature. Previous research relying on the MFQ has linked moral foundations to an array of political outcomes, such as candidate preferences \citep{iyer2010beyond} and voting behavior \citep{franks2015using}. Do we see the same patterns for explicit moral reasoning as compared to latent moral foundations?
+
+\begin{figure}[ht]\centering
+\includegraphics{../calc/fig/ols_feel.pdf}
+\caption{Change in predicted feeling thermometer differential when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasized the respective foundation evaluated the Democratic candidate/party more favorably than the Republican candidate/party, and vice versa. Estimates are based on a single OLS model (using robust standard errors) including similarity scores for each foundation and gray triangles indicate estimates while additionally controlling for party identification. %Full model results are displayed in Table~\ref{tab:m7feel}.
+}\label{fig:ols_feel}
+\end{figure}
+
+As a first step, we examine the relationship of moral reasoning and attitudes towards political parties and candidates. Figure~\ref{fig:ols_feel} presents OLS estimates where feeling thermometer differentials between the Republican and the Democratic party (left panel) and between both Presidential candidates (right panel) are regressed on similarity scores for all moral foundations (including the control variables discussed above). Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are largely consistent with the previous results on ideological differences. Individuals who emphasize considerations related to harm/care, and fairness/reciprocity evaluate the Democratic party/candidate on average about 3 points higher than the Republican party/candidate (on a 100 point scale). On the other hand, if individuals emphasized the ingroup/loyalty dimension, they reported stronger preferences for the Republican party/candidate. These effects are robust after controlling for individual party identification. Thus, in both analyses in Figure~\ref{fig:ols_feel}, we observed sizable and significant effects for the influence of moral reasoning.
+
+\begin{figure}[ht]\centering
+\includegraphics[scale=.9]{../calc/fig/logit_vote.pdf}
+\caption{Change in predicted probabilities to vote for Democratic candidate when similarity score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding all other control variables constant at their respective means (along with 95\% confidence intervals). Positive values indicate that respondents who emphasize the respective foundation are more likely to vote for the Democratic candidate, and vice versa. Estimates are based on a single logit model including similarity scores or each foundation and dotted lines indicate estimates while additionally controlling for party identification. %Full model results are displayed in Table~\ref{tab:m8vote}.
+}\label{fig:logit_vote}
+\end{figure}
+
+Figure~\ref{fig:logit_vote} presents the changes in expected probabilities of voting for the Democratic (vs. the Republican) presidential candidate in the 2012 election for individuals emphasizing the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including similarity scores for each moral foundation as independent variables (as well as  the remaining controls), which were held constant at their mean values when computing expected values. Again, the patterns are strikingly similar to the results presented thus far, and largely consistent with MFT. Individuals who emphasized moral considerations related to the harm/care and fairness/reciprocity foundations are more likely to vote for Barack Obama than for Mitt Romney. Respondents who emphasized the ingroup/loyalty foundation, on the other hand, were less likely to vote for Obama. 
+
+The effects on political evaluations and vote choice might not seem large, but bear in mind that the measure of moral reasoning is solely based on open-ended responses, in which respondents were \textit{not} explicitly asked about morality. Nevertheless, the moral considerations evoked were powerfully related to party and candidate evaluations as well as vote choice, even after controlling for strength of party identification and the length of individual responses. Overall, the analyses show that people's open-ended comments about both candidates and both parties are imbued with moral content and that these comments relate to political judgments in the manner predicted by MFT.
+
+
+\begin{figure}[ht]\centering
+\includegraphics[width=\textwidth]{../calc/fig/media_desc.pdf}
+\caption{Content Analysis of Media Sources
+}\label{fig:media_desc}
+\end{figure}
+
+\begin{figure}[ht]\centering
+\includegraphics{../calc/fig/tobit_media.pdf}
+\caption{Content Analysis of Media Sources
+}\label{fig:tobit_media}
+\end{figure}
 
 
 \section{Conclusion}
