@@ -64,13 +64,13 @@ prop_plot(data=list(anes2012)
 
 ## model estimation: tobit (could also use the censReg or AER packages...)
 m2 <- list(NULL)
-m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
+m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
+m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
+m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
-m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + wordsum + mode
+m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc + wordsum + mode
               , tobit(Lower = 0), data = anes2012)
 lapply(m2, summary)
 
