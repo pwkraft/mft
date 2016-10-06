@@ -465,10 +465,16 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## summary of media sources
 media2012 %>% select(id, authority, fairness, harm, ingroup) %>%
-  gather(mft, similarity, -id) %>%
+  mutate(source = factor(as.numeric(gsub("_.*","",id)%in%c("TV","NPR"))
+                         , labels=c("Newspaper/Online","TV/Radio"))) %>%
+  gather(mft, similarity, -id, -source) %>%
+  mutate(mft = factor(mft, levels = rev(c("authority","ingroup","fairness","harm"))
+                      , labels = gsub("\\n","", rev(mftLabs)))) %>%
   ggplot(aes(y=reorder(id, similarity), x=similarity)) + 
-  geom_point() + 
-  facet_wrap(~mft)
+  geom_point() + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
+  facet_grid(source~mft, scales="free_y") +
+  xlab("Similarity Score") + ylab("News Source")
+ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## influence of media content
 m4_cont <- list(NULL)
@@ -486,16 +492,19 @@ m4_res <- rbind(sim(models = m4_cont[[1]], iv=data.frame(media_harm_d01=c(0,1)))
                 , sim(models = m4_cont[[2]], iv=data.frame(media_fairness_d01=c(0,1)))
                 , sim(models = m4_cont[[3]], iv=data.frame(media_ingroup_d01=c(0,1)))
                 , sim(models = m4_cont[[4]], iv=data.frame(media_authority_d01=c(0,1))))
+m4_res$var <- factor(m4_res$dv)
+levels(m4_res$var) <- rev(mftLabs)
 
-ggplot(m4_res, aes(x = mean, y = dv)) +
+ggplot(m4_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
   ggtitle("Change in Predicted Emphasis on Moral Foundation") +
   labs(y = "Dependent Variable: Moral Foundation"
-       , x = "Marginal Effect (Media Content)") +
+       , x = "Marginal Effect (MFT Media Content)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   facet_grid(.~value) + 
-  scale_y_discrete(limits = rev(levels(m4_res$dv)))
+  scale_y_discrete(limits = rev(levels(m4_res$var)))
+ggsave("fig/tobit_media.pdf", width = 5, height = 3)
 
 
 ### Summary of independent variables
