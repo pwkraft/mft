@@ -42,14 +42,14 @@ plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, har
   t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
 
 ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
-  geom_point(size=.8) + geom_errorbarh(height=0) + xlim(0,.5) +
+  geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
   labs(y = "Moral Foundation", x = "Proportion of Respondents") +
   ggtitle("Moral Reasoning in Open-Ended Responses") + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_discrete(labels=c("Purity / \nSanctity", "Authority / \nRespect"
                             , "Ingroup / \nLoyalty", "Fairness / \nReciprocity"
                             , "Harm / \nCare"))
-ggsave(file = "fig/prop_mft.pdf", width = 4, height = 2)
+ggsave(file = "fig/prop_mft.pdf", width = 5, height = 2)
 
 
 ### Moral foundations and ideology (raw proportions)
