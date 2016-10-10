@@ -336,10 +336,10 @@ m4_res <- rbind(sim(models = m4_know
                       , iv=data.frame(poldisc_c=rep(range(anes2012$poldisc_c, na.rm = T),each=2)
                                       , ideolModerate = rep(0,4)
                                       , ideolConservative = c(0,1,0,1))))
-m4_res$var <- rep(rep(3:1,each=8),2)
+m4_res$mod <- factor(rep(rep(1:3,each=8),2), labels = gsub("\n"," ",polLabs))
+m4_res$var <- rep(c(4:1,4:1),each=2)
 m4_res$cond <- rep(c("No","Yes"), each = 24)
 m4_res$year <- "2012"
-levels(m4_res$dv) <- gsub("\n", "", rev(mftLabs))
 
 ## generate plot
 ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
@@ -347,11 +347,11 @@ ggplot(m4_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond))
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Moderating Variable", x= "Change in Effect of Ideology (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=3:1, labels=polLabs) +
+  scale_y_continuous(breaks=1:4, labels=mftLabs) +
   ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
-  theme(legend.position="bottom", legend.box="horizontal") + facet_grid(dv~value) +
+  theme(legend.position="bottom", legend.box="horizontal") + facet_grid(mod~value) +
   scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/tobit_ideol_difdif.pdf", width = 4, height = 5)
 
@@ -504,7 +504,7 @@ ggplot(m4_res, aes(x = mean, y = var)) +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   facet_grid(.~value) + 
   scale_y_discrete(limits = rev(levels(m4_res$var)))
-ggsave("fig/tobit_media.pdf", width = 5, height = 3)
+ggsave("fig/tobit_media.pdf", width = 5, height = 2.5)
 
 
 ### Summary of independent variables
