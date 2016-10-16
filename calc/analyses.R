@@ -464,16 +464,17 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 ### Media content analysis
 
 ## summary of media sources
-media2012 %>% select(id, authority, fairness, harm, ingroup) %>%
-  mutate(source = factor(as.numeric(gsub("_.*","",id)%in%c("TV","NPR"))
-                         , labels=c("Newspaper/Online","TV/Radio"))) %>%
-  gather(mft, similarity, -id, -source) %>%
-  mutate(mft = factor(mft, levels = rev(c("authority","ingroup","fairness","harm"))
+media2012 %>% select(id, authority_s, fairness_s, harm_s, ingroup_s) %>%
+  #mutate(source = factor(as.numeric(gsub("_.*","",id)%in%c("TV","NPR"))
+  #                       , labels=c("Newspaper/Online","TV/Radio"))) %>%
+  gather(mft, similarity, -id) %>%
+  mutate(mft = factor(mft, levels = rev(c("authority_s","ingroup_s","fairness_s","harm_s"))
                       , labels = gsub("\\n","", rev(mftLabs)))) %>%
   ggplot(aes(y=reorder(id, similarity), x=similarity)) + 
   geom_point() + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
-  facet_grid(source~mft, scales="free_y") +
-  xlab("Similarity Score") + ylab("News Source")
+  facet_grid(.~mft) +
+  xlab("Similarity Score (rescaled)") + ylab("News Source") +
+  geom_vline(xintercept=0, col="lightgrey")
 ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## influence of media content
@@ -488,10 +489,10 @@ m4_cont[[4]] <- vglm(authority_s ~ media_authority_d01 + relig + educ + age + fe
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(m4_cont, summary)
 
-m4_res <- rbind(sim(models = m4_cont[[1]], iv=data.frame(media_harm_d01=c(0,1)))
-                , sim(models = m4_cont[[2]], iv=data.frame(media_fairness_d01=c(0,1)))
-                , sim(models = m4_cont[[3]], iv=data.frame(media_ingroup_d01=c(0,1)))
-                , sim(models = m4_cont[[4]], iv=data.frame(media_authority_d01=c(0,1))))
+m4_res <- rbind(sim(models = m4_cont[[1]], iv=data.frame(media_harm_d01=range(anes2012$media_harm_d01)))
+                , sim(models = m4_cont[[2]], iv=data.frame(media_fairness_d01=range(anes2012$media_fairness_d01)))
+                , sim(models = m4_cont[[3]], iv=data.frame(media_ingroup_d01=range(anes2012$media_ingroup_d01)))
+                , sim(models = m4_cont[[4]], iv=data.frame(media_authority_d01=range(anes2012$media_authority_d01))))
 m4_res$var <- factor(m4_res$dv)
 levels(m4_res$var) <- rev(mftLabs)
 

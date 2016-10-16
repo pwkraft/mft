@@ -294,7 +294,7 @@ media2012_sim <- similarity(media2012_tfidf, selection = names(dict)
   filter(general != 1) %>% arrange(id) %>% select(id, everything())
 
 ## create scaled variable for moral foundations
-media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x))
+media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x)))
 media2012_sim_d <- apply(select(media2012_sim, -id), 2, function(x) ifelse(x>=median(x),1,-1))
 colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
 colnames(media2012_sim_d) <- paste0(colnames(media2012_sim_d),"_d")
@@ -340,6 +340,48 @@ tmp2 <- apply(tmp1[,grep("_d",colnames(tmp1))], 2, function(x) as.numeric(x>0))
 colnames(tmp2) <- paste0(colnames(tmp2),"01")
 anes2012 <- cbind(anes2012,tmp1,tmp2)
 anes2012$media <- apply(anes2012media,1,sum)>0
+
+
+### compute bootstrapped standard errors for media content (word-based bootstrap)
+
+## combine dictionary and responses in common dfm/tfidf
+media2012_dfm <- corpus(c(dict, docs2012@texts)
+                         , docnames = c(names(dict), names(docs2012@texts))) %>% 
+  dfm() %>% as.matrix()
+
+nboot <- 10
+media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
+             , dimnames = list(docs = rownames(media2012_dfm)
+                               , features = colnames(media2012_dfm)
+                               , iter = 1:nboot))
+media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),]
+for(d in (length(dict)+1):nrow(media2012_dfm)){
+  media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
+                        , prob = media2012_dfm[d,]/sum(media2012_dfm[d,]))
+}
+
+tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
+                      , dimnames = list(docs = rownames(media2012_dfm)[-1:-length(dict)]
+                                        , mft = names(dict), iter = 1:nboot))
+for(i in 1:nboot){
+  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(k=1)
+  
+  ## calculate cosine similarity b/w dictionaries and documents
+  tmp[,,i] <- similarity(tmp_tfidf, selection = names(dict)
+                         , margin = "documents", method = "cosine") %>% 
+    as.matrix() %>% data.frame() %>%
+    filter(apply(.,1,sum) !=1) %>% as.matrix()
+  
+  ## create scaled variable for moral foundations
+  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
+}
+
+m <- 1
+t(apply(tmp_s[,m,],1,quantile,c(.25,.975)))
+t(apply(tmp[,m,],1,quantile,c(.25,.975)))
+
+for(m in 1:dim(tmp)[2]){
+}
 
 
 
