@@ -344,25 +344,32 @@ anes2012$media <- apply(anes2012media,1,sum)>0
 
 ### compute bootstrapped standard errors for media content (word-based bootstrap)
 
-## combine dictionary and responses in common dfm/tfidf
+## combine dictionary and responses in common dfm
 media2012_dfm <- corpus(c(dict, docs2012@texts)
                          , docnames = c(names(dict), names(docs2012@texts))) %>% 
   dfm() %>% as.matrix()
 
-nboot <- 10
+## initialize object to store individual dfm bootstraps
+nboot <- 100
 media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
              , dimnames = list(docs = rownames(media2012_dfm)
                                , features = colnames(media2012_dfm)
                                , iter = 1:nboot))
 media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),]
+
+## parametric bootstrap, create dfms
 for(d in (length(dict)+1):nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
-                        , prob = media2012_dfm[d,]/sum(media2012_dfm[d,]))
+                                   , prob = media2012_dfm[d,]/sum(media2012_dfm[d,]))
 }
 
+## initialize object to store similarity results
 tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
                       , dimnames = list(docs = rownames(media2012_dfm)[-1:-length(dict)]
                                         , mft = names(dict), iter = 1:nboot))
+
+## compute similarity for bootstrapped dfms
+pb <- txtProgressBar(min = 0, max = nboot, style = 3)
 for(i in 1:nboot){
   tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(k=1)
   
@@ -374,13 +381,16 @@ for(i in 1:nboot){
   
   ## create scaled variable for moral foundations
   tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
+  
+  ## progress bar
+  setTxtProgressBar(pb, i)
 }
-
-m <- 1
-t(apply(tmp_s[,m,],1,quantile,c(.25,.975)))
-t(apply(tmp[,m,],1,quantile,c(.25,.975)))
+close(pb)
 
 for(m in 1:dim(tmp)[2]){
+  tmp_res <- t(apply(tmp_s[,m,],1,quantile,c(.025,.975)))
+  colnames(tmp_res) <- paste(names(tmp_s[1,,1])[m],c("s_lo","s_hi"),sep="_")
+  media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
 }
 
 
