@@ -284,7 +284,7 @@ close(pb)
 
 ## combine dictionary and responses in common dfm/tfidf
 media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% 
-  dfm() %>% tfidf()
+  dfm() %>% tfidf(k=1)
 
 ## calculate cosine similarity b/w dictionaries and documents
 media2012_sim <- similarity(media2012_tfidf, selection = names(dict)
@@ -349,18 +349,20 @@ media2012_dfm <- corpus(c(dict, docs2012@texts)
                          , docnames = c(names(dict), names(docs2012@texts))) %>% 
   dfm() %>% as.matrix()
 
-## initialize object to store individual dfm bootstraps
-nboot <- 100
-media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
+## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
+nboot <- 500
+media2012_boot <- array(dim=c(nrow(media2012_dfm),nrow(dict_df),nboot)
              , dimnames = list(docs = rownames(media2012_dfm)
-                               , features = colnames(media2012_dfm)
+                               , features = colnames(media2012_dfm)[1:nrow(dict_df)]
                                , iter = 1:nboot))
-media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),]
+media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),1:nrow(dict_df)]
 
 ## parametric bootstrap, create dfms
 for(d in (length(dict)+1):nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
-                                   , prob = media2012_dfm[d,]/sum(media2012_dfm[d,]))
+                                   #, prob = (media2012_dfm[d,]+1)/(sum(media2012_dfm[d,])+length(media2012_dfm[d,]))
+                                   , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
+                                   )
 }
 
 ## initialize object to store similarity results
@@ -377,6 +379,7 @@ for(i in 1:nboot){
   tmp[,,i] <- similarity(tmp_tfidf, selection = names(dict)
                          , margin = "documents", method = "cosine") %>% 
     as.matrix() %>% data.frame() %>%
+    mutate(id = rownames(.)) %>% arrange(id) %>% select(-id) %>%
     filter(apply(.,1,sum) !=1) %>% as.matrix()
   
   ## create scaled variable for moral foundations
@@ -388,8 +391,8 @@ for(i in 1:nboot){
 close(pb)
 
 for(m in 1:dim(tmp)[2]){
-  tmp_res <- t(apply(tmp_s[,m,],1,quantile,c(.025,.975)))
-  colnames(tmp_res) <- paste(names(tmp_s[1,,1])[m],c("s_lo","s_hi"),sep="_")
+  tmp_res <- t(apply(tmp[,m,],1,quantile,c(.025,.975)))
+  colnames(tmp_res) <- paste(names(tmp[1,,1])[m],c("lo","hi"),sep="_")
   media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
 }
 

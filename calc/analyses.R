@@ -464,14 +464,15 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 ### Media content analysis
 
 ## summary of media sources
-media2012 %>% select(id, authority_s, fairness_s, harm_s, ingroup_s) %>%
-  #mutate(source = factor(as.numeric(gsub("_.*","",id)%in%c("TV","NPR"))
-  #                       , labels=c("Newspaper/Online","TV/Radio"))) %>%
-  gather(mft, similarity, -id) %>%
-  mutate(mft = factor(mft, levels = rev(c("authority_s","ingroup_s","fairness_s","harm_s"))
+cbind(gather(select(media2012, id, authority:ingroup), mft, similarity, -id)
+      , gather(select(media2012, id, authority_lo, fairness_lo, harm_lo, ingroup_lo)
+               , mft_lo, similarity_lo, -id)[,-1]
+      , gather(select(media2012, id, authority_hi, fairness_hi, harm_hi, ingroup_hi)
+                   , mft_hi, similarity_hi, -id)[,-1]) %>%
+  mutate(mft = factor(mft, levels = rev(c("authority","ingroup","fairness","harm"))
                       , labels = gsub("\\n","", rev(mftLabs)))) %>%
-  ggplot(aes(y=reorder(id, similarity), x=similarity)) + 
-  geom_point() + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
+  ggplot(aes(y=reorder(id, similarity), x=similarity,xmin=similarity_lo,xmax=similarity_hi)) + 
+  geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   facet_grid(.~mft) +
   xlab("Similarity Score (rescaled)") + ylab("News Source") +
   geom_vline(xintercept=0, col="lightgrey")
