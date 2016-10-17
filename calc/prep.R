@@ -350,7 +350,7 @@ media2012_dfm <- corpus(c(dict, docs2012@texts)
   dfm() %>% as.matrix()
 
 ## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
-nboot <- 500
+nboot <- 1000
 media2012_boot <- array(dim=c(nrow(media2012_dfm),nrow(dict_df),nboot)
              , dimnames = list(docs = rownames(media2012_dfm)
                                , features = colnames(media2012_dfm)[1:nrow(dict_df)]
@@ -362,12 +362,12 @@ for(d in (length(dict)+1):nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
                                    #, prob = (media2012_dfm[d,]+1)/(sum(media2012_dfm[d,])+length(media2012_dfm[d,]))
                                    , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
-                                   )
+                                   )[1:nrow(dict_df),]
 }
 
 ## initialize object to store similarity results
 tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
-                      , dimnames = list(docs = rownames(media2012_dfm)[-1:-length(dict)]
+                      , dimnames = list(docs = rownames(media2012_dfm)[(length(dict)+1):(length(dict)+nrow(dict_df))]
                                         , mft = names(dict), iter = 1:nboot))
 
 ## compute similarity for bootstrapped dfms
