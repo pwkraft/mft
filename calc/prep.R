@@ -357,19 +357,19 @@ media2012_dfm <- corpus(c(dict, docs2012@texts)
   dfm() %>% as.matrix()
 
 ## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
-nboot <- 1000
-media2012_boot <- array(dim=c(nrow(media2012_dfm),nrow(dict_df),nboot)
+nboot <- 500
+media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
              , dimnames = list(docs = rownames(media2012_dfm)
-                               , features = colnames(media2012_dfm)[1:nrow(dict_df)]
+                               , features = colnames(media2012_dfm)
                                , iter = 1:nboot))
-media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),1:nrow(dict_df)]
+media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),]
 
 ## parametric bootstrap, create dfms
 for(d in (length(dict)+1):nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
                                    #, prob = (media2012_dfm[d,]+1)/(sum(media2012_dfm[d,])+length(media2012_dfm[d,]))
                                    , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
-                                   )[1:nrow(dict_df),]
+                                   )
 }
 
 ## initialize object to store similarity results
@@ -380,15 +380,18 @@ tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
 ## compute similarity for bootstrapped dfms
 pb <- txtProgressBar(min = 0, max = nboot, style = 3)
 for(i in 1:nboot){
-  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(k=1)
+  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T)
+  tmp_tfidf <- tmp_tfidf[names(docs2012@texts),dict_df[,2]]
   
-  ## calculate cosine similarity b/w dictionaries and documents
-  tmp[,,i] <- similarity(tmp_tfidf, selection = names(dict)
-                         , margin = "documents", method = "cosine") %>% 
-    as.matrix() %>% data.frame() %>%
-    mutate(id = rownames(.)) %>% arrange(id) %>% select(-id) %>%
-    filter(apply(.,1,sum) !=1) %>% as.matrix()
-  
+  ## count relative tfidf weights for each media source
+  tmp[,,i] <- data.frame(
+    authority = apply(tmp_tfidf[,dict_list$authority],1,sum)
+    , fairness = apply(tmp_tfidf[,dict_list$fairness],1,sum)
+    , harm = apply(tmp_tfidf[,dict_list$harm],1,sum)
+    , ingroup = apply(tmp_tfidf[,dict_list$ingroup],1,sum)
+    , purity = apply(tmp_tfidf[,dict_list$purity],1,sum)
+  ) %>% as.matrix()
+
   ## create scaled variable for moral foundations
   tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
   
@@ -398,45 +401,10 @@ for(i in 1:nboot){
 close(pb)
 
 for(m in 1:dim(tmp)[2]){
-  tmp_res <- t(apply(tmp[,m,],1,quantile,c(.025,.975)))
+  tmp_res <- t(apply(tmp_s[,m,],1,quantile,c(.025,.975)))
   colnames(tmp_res) <- paste(names(tmp[1,,1])[m],c("lo","hi"),sep="_")
   media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
 }
-
-
-### tests
-
-cosine <- function(x,y){
-  x %*% y / (sqrt(sum(x^2)) * sqrt(sum(y^2)))
-}
-
-a <- c(1,2,3,4,5,0,0,0,0,0)
-b <- c(1,2,3,4,5,1,1,1,1,1)
-c <- c(1,2,3,4,5,5,0,0,0,0)
-cosine(a,b)
-cosine(a,c)
-cosine(b,c)
-
-## cosine benefits equal dist of words
-a <- c(1,1,1,1,1)
-b <- c(1,2,3,4,5)
-c <- c(1,2,2,2,2)
-cosine(a,b)
-cosine(a,c)
-
-## doesn't incorporate emphasis on single term
-a <- c(1,1,1,1,1)
-b <- c(0,0,0,0,5)
-c <- c(0,0,0,0,1)
-cosine(a,b)
-cosine(a,c)
-
-## doesn't incorporate emphasis on single term
-a <- c(1,1,1,1,1)
-b <- c(0,0,5,5,5)
-c <- c(0,1,1,1,1)
-cosine(a,b)
-cosine(a,c)
 
 
 ##############################

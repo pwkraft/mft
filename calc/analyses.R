@@ -464,36 +464,36 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 ### Media content analysis
 
 ## summary of media sources
-cbind(gather(select(media2012, id, authority:ingroup), mft, similarity, -id)
+cbind(gather(select(media2012, id, authority_s:ingroup_s), mft, score, -id)
       , gather(select(media2012, id, authority_lo, fairness_lo, harm_lo, ingroup_lo)
-               , mft_lo, similarity_lo, -id)[,-1]
+               , mft_lo, score_lo, -id)[,-1]
       , gather(select(media2012, id, authority_hi, fairness_hi, harm_hi, ingroup_hi)
-                   , mft_hi, similarity_hi, -id)[,-1]) %>%
-  mutate(mft = factor(mft, levels = rev(c("authority","ingroup","fairness","harm"))
+               , mft_hi, score_hi, -id)[,-1]) %>%
+  mutate(mft = factor(mft, levels = rev(c("authority_s","ingroup_s","fairness_s","harm_s"))
                       , labels = gsub("\\n","", rev(mftLabs)))) %>%
-  ggplot(aes(y=reorder(id, similarity), x=similarity,xmin=similarity_lo,xmax=similarity_hi)) + 
+  ggplot(aes(y=reorder(id, score), x=score,xmin=score_lo,xmax=score_hi)) + 
   geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   facet_grid(.~mft) +
-  xlab("Similarity Score (rescaled)") + ylab("News Source") +
+  xlab("MFT Score (rescaled)") + ylab("News Source") +
   geom_vline(xintercept=0, col="lightgrey")
 ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## influence of media content
 m4_cont <- list(NULL)
-m4_cont[[1]] <- vglm(harm_s ~ media_harm_d01 + relig + educ + age + female + black + 
+m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + polmedia + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[2]] <- vglm(fairness_s ~ media_fairness_d01 + relig + educ + age + female + black + 
+m4_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + polmedia + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_d01 + relig + educ + age + female + black + 
+m4_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + polmedia + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[4]] <- vglm(authority_s ~ media_authority_d01 + relig + educ + age + female + black + 
+m4_cont[[4]] <- vglm(authority_s ~ media_authority_s + polmedia + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(m4_cont, summary)
 
-m4_res <- rbind(sim(models = m4_cont[[1]], iv=data.frame(media_harm_d01=range(anes2012$media_harm_d01)))
-                , sim(models = m4_cont[[2]], iv=data.frame(media_fairness_d01=range(anes2012$media_fairness_d01)))
-                , sim(models = m4_cont[[3]], iv=data.frame(media_ingroup_d01=range(anes2012$media_ingroup_d01)))
-                , sim(models = m4_cont[[4]], iv=data.frame(media_authority_d01=range(anes2012$media_authority_d01))))
+m4_res <- rbind(sim(models = m4_cont[[1]], iv=data.frame(media_harm_s=range(anes2012$media_harm_s)))
+                , sim(models = m4_cont[[2]], iv=data.frame(media_fairness_s=range(anes2012$media_fairness_s)))
+                , sim(models = m4_cont[[3]], iv=data.frame(media_ingroup_s=range(anes2012$media_ingroup_s)))
+                , sim(models = m4_cont[[4]], iv=data.frame(media_authority_s=range(anes2012$media_authority_s))))
 m4_res$var <- factor(m4_res$dv)
 levels(m4_res$var) <- rev(mftLabs)
 

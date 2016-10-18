@@ -74,10 +74,12 @@ lidat$educ <- as.numeric(recode(as.numeric(raw$educ), "c(15,16)=NA") >= 11)
 ### prepare open-ended survey data
 
 ## load dictionary
-dict <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
-  read.csv(paste0("in/graham/",x,"_noregex.csv")) %>%
-    sapply(paste, collapse = " ") %>% as.character()
+dict_list <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+  read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)
 })
+names(dict_list) <- gsub("\\..*","",names(dict_list))
+
+dict <- sapply(dict_list, paste, collapse = " ")
 
 ## regex replacements for dictionary
 dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
@@ -87,11 +89,11 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 
 ## pre-process open-ended data and calculate similarity
 lisim <- mftSimilarity(opend = select(raw, deslib,deslibb,descon,desconb)
-                       , id = raw$id, dict = dict, regex = dict_df)
+                       , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
 lisim_lib <- mftSimilarity(opend = select(raw, deslib,deslibb)
-                           , id = raw$id, dict = dict, regex = dict_df)
+                           , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
 lisim_con <- mftSimilarity(opend = select(raw, descon,desconb)
-                       , id = raw$id, dict = dict, regex = dict_df)
+                       , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
 
 apply(lisim_lib[-2],2,function(x) mean(as.numeric(x))) - apply(lisim_con[-2],2,function(x) mean(as.numeric(x)))
 
@@ -111,7 +113,7 @@ dat %>% group_by(ideol) %>% summarise_each(authority_s, fairness_s, harm_s, ingr
 prop_plot(data=list(dat,dat_lib,dat_con)
           , mftvarnames=c("purity_d", "authority_d", "ingroup_d", "fairness_d", "harm_d")
           , groupvarname="ideol", legendname = NULL, title = "Moral Foundations and Ideology"
-          , file = "fig/prop_lisurvey.pdf", width = 3, height = 3, lim=c(-.01,.25))
+          , file = "fig/prop_lisurvey.pdf", width = 3, height = 3, lim=c(-.01,.31))
 
 se <- function(x){
   sd(x, na.rm=T)/sqrt(sum(!is.na(x)))
