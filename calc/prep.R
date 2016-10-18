@@ -285,9 +285,9 @@ for(i in 1:nrow(dict_df)){
 close(pb)
 
 ## combine dictionary and responses in common dfm/tfidf
-media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% 
-  dfm() %>% tfidf(normalize=T)
-media2012_tfidf <- media2012_tfidf[names(docs2012@texts),dict_df[,2]]
+media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
+media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(normalize=T,k=1)
+media2012_tfidf <- media2012_tfidf[,dict_df[,2]]
 
 ## count relative tfidf weights for each media source
 media2012_sim <- data.frame(
@@ -353,8 +353,8 @@ anes2012$media <- apply(anes2012media,1,sum)>0
 
 ## combine dictionary and responses in common dfm
 media2012_dfm <- corpus(c(dict, docs2012@texts)
-                         , docnames = c(names(dict), names(docs2012@texts))) %>% 
-  dfm() %>% as.matrix()
+                         , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
+media2012_dfm <- media2012_dfm[names(docs2012@texts),] %>% as.matrix()
 
 ## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
 nboot <- 500
@@ -362,10 +362,9 @@ media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
              , dimnames = list(docs = rownames(media2012_dfm)
                                , features = colnames(media2012_dfm)
                                , iter = 1:nboot))
-media2012_boot[1:length(dict),,] <- media2012_dfm[1:length(dict),]
 
 ## parametric bootstrap, create dfms
-for(d in (length(dict)+1):nrow(media2012_dfm)){
+for(d in 1:nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
                                    #, prob = (media2012_dfm[d,]+1)/(sum(media2012_dfm[d,])+length(media2012_dfm[d,]))
                                    , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
@@ -373,15 +372,15 @@ for(d in (length(dict)+1):nrow(media2012_dfm)){
 }
 
 ## initialize object to store similarity results
-tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
-                      , dimnames = list(docs = rownames(media2012_dfm)[(length(dict)+1):(length(dict)+length(docs2012@texts))]
+tmp <- tmp_s <- array(dim=c(nrow(media2012_dfm),5,nboot)
+                      , dimnames = list(docs = rownames(media2012_dfm)
                                         , mft = names(dict), iter = 1:nboot))
 
 ## compute similarity for bootstrapped dfms
 pb <- txtProgressBar(min = 0, max = nboot, style = 3)
 for(i in 1:nboot){
-  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T)
-  tmp_tfidf <- tmp_tfidf[names(docs2012@texts),dict_df[,2]]
+  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T,k=1)
+  tmp_tfidf <- tmp_tfidf[,dict_df[,2]]
   
   ## count relative tfidf weights for each media source
   tmp[,,i] <- data.frame(

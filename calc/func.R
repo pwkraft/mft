@@ -86,10 +86,10 @@ mftSimilarity <- function(opend, id, dict, regex, dict_list){
   }
   
   ## combine dictionary and responses in common dfm/tfidf
-  spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% 
-    dfm() %>% tfidf(normalize=T)
-  spell_tfidf <- spell_tfidf[names(spell),regex[,2]]
-  
+  spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% dfm()
+  spell_tfidf <- spell_tfidf[names(spell),] %>% tfidf(normalize=T,k=1)
+  spell_tfidf <- spell_tfidf[,regex[,2]]
+
   ## count relative tfidf weights for each media source
   sim <- data.frame(
     authority = apply(spell_tfidf[,dict_list$authority],1,sum)

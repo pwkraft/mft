@@ -480,13 +480,13 @@ ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## influence of media content
 m4_cont <- list(NULL)
-m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + polmedia + relig + educ + age + female + black + 
+m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + polmedia + relig + educ + age + female + black + 
+m4_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + polmedia + relig + educ + age + female + black + 
+m4_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-m4_cont[[4]] <- vglm(authority_s ~ media_authority_s + polmedia + relig + educ + age + female + black + 
+m4_cont[[4]] <- vglm(authority_s ~ media_authority_s + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(m4_cont, summary)
 
