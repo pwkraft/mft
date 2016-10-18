@@ -87,7 +87,8 @@ mftSimilarity <- function(opend, id, dict, regex){
   
   ## combine dictionary and responses in common dfm/tfidf
   spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% 
-    dfm() %>% tfidf()
+    dfm() %>% tfidf(normalize=T)
+  spell_tfidf <- spell_tfidf[,regex[,2]]
   
   ## calculate cosine similarity b/w dictionaries and documents (check pr_DB$get_entries() for options)
   # normalization is not necessary, cosine similarity is length invariant so results are unchanged

@@ -406,11 +406,30 @@ cosine <- function(x,y){
 a <- c(1,2,3,4,5,0,0,0,0,0)
 b <- c(1,2,3,4,5,1,1,1,1,1)
 c <- c(1,2,3,4,5,5,0,0,0,0)
-
 cosine(a,b)
 cosine(a,c)
 cosine(b,c)
 
+## cosine benefits equal dist of words
+a <- c(1,1,1,1,1)
+b <- c(1,2,3,4,5)
+c <- c(1,2,2,2,2)
+cosine(a,b)
+cosine(a,c)
+
+## doesn't incorporate emphasis on single term
+a <- c(1,1,1,1,1)
+b <- c(0,0,0,0,5)
+c <- c(0,0,0,0,1)
+cosine(a,b)
+cosine(a,c)
+
+## doesn't incorporate emphasis on single term
+a <- c(1,1,1,1,1)
+b <- c(0,0,5,5,5)
+c <- c(0,1,1,1,1)
+cosine(a,b)
+cosine(a,c)
 
 
 ##############################
