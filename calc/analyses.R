@@ -435,7 +435,7 @@ ggplot(m4_new, aes(x = mean, y = dv)) +
 ggsave(filename = "fig/tobit_ideol_media.pdf", width = 4, height = 3)
 
 
-## only media exposure
+## only discussion
 m4_new <- rbind(sim(models = m4_disc
                     , iv=data.frame(poldisc_c=min(anes2012$poldisc_c, na.rm = T)
                                     , ideolModerate = c(0,0)

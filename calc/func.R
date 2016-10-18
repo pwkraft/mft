@@ -13,7 +13,7 @@ rm(pkg)
 
 ### function to pre-process open-ended responses and calculate cosine similarity
 
-mftSimilarity <- function(opend, id, dict, regex){
+mftSimilarity <- function(opend, id, dict, regex, dict_list){
   if(nrow(opend) != length(id))         stop("ID vector must be equal to number of observations/documents")
   if(length(unique(id)) != length(id))  stop("IDs are not unique")
   
@@ -88,16 +88,19 @@ mftSimilarity <- function(opend, id, dict, regex){
   ## combine dictionary and responses in common dfm/tfidf
   spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% 
     dfm() %>% tfidf(normalize=T)
-  spell_tfidf <- spell_tfidf[,regex[,2]]
+  spell_tfidf <- spell_tfidf[names(spell),regex[,2]]
   
-  ## calculate cosine similarity b/w dictionaries and documents (check pr_DB$get_entries() for options)
-  # normalization is not necessary, cosine similarity is length invariant so results are unchanged
-  sim <- similarity(spell_tfidf, selection = names(dict)
-                    , margin = "documents", method = "cosine") %>% 
-    as.matrix() %>% data.frame() %>% 
-    mutate(general = apply(.,1,sum), id = as.numeric(rownames(.))) %>%
-    arrange(id) %>% filter(!is.na(id))
-  
+  ## count relative tfidf weights for each media source
+  sim <- data.frame(
+    authority = apply(spell_tfidf[,dict_list$authority],1,sum)
+    , fairness = apply(spell_tfidf[,dict_list$fairness],1,sum)
+    , harm = apply(spell_tfidf[,dict_list$harm],1,sum)
+    , ingroup = apply(spell_tfidf[,dict_list$ingroup],1,sum)
+    , purity = apply(spell_tfidf[,dict_list$purity],1,sum)
+  )
+  sim$general <- apply(sim,1,sum)
+  sim$id <- gsub("\\.txt","",rownames(sim))
+
   ## create scaled variable for moral foundations
   sim_s <- apply(select(sim,-id), 2, function(x) x/sd(x[wc>0]))
   colnames(sim_s) <- paste0(colnames(sim_s),"_s")

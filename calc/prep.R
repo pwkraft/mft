@@ -233,10 +233,12 @@ anes2008opend <- read.csv(paste0(datsrc,"anes2008/anes2008TSopenends_redacted_De
          , DemParty_like, DemParty_dislike, RepParty_like, RepParty_dislike)
 
 ## load dictionary
-dict <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
-  read.csv(paste0("in/graham/",x,"_noregex.csv")) %>%
-    sapply(paste, collapse = " ") %>% as.character()
+dict_list <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+  read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)
 })
+names(dict_list) <- gsub("\\..*","",names(dict_list))
+
+dict <- sapply(dict_list, paste, collapse = " ")
 
 ## regex replacements for dictionary
 dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
@@ -246,10 +248,10 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 
 ## pre-process open-ended data and calculate similarity
 anes2012sim <- mftSimilarity(opend = anes2012opend[-1], id = anes2012opend$caseid
-                             , dict = dict, regex = dict_df)
+                             , dict = dict, regex = dict_df, dict_list = dict_list)
 
 anes2008sim <- mftSimilarity(opend = anes2008opend[-1], id = anes2008opend$caseid
-                             , dict = dict, regex = dict_df)
+                             , dict = dict, regex = dict_df, dict_list = dict_list)
 
 ## merge ts data and open-ended data and save objects for analyses
 anes2012 <- merge(anes2012, anes2012sim)
@@ -284,14 +286,19 @@ close(pb)
 
 ## combine dictionary and responses in common dfm/tfidf
 media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% 
-  dfm() %>% tfidf(k=1)
+  dfm() %>% tfidf(normalize=T)
+media2012_tfidf <- media2012_tfidf[names(docs2012@texts),dict_df[,2]]
 
-## calculate cosine similarity b/w dictionaries and documents
-media2012_sim <- similarity(media2012_tfidf, selection = names(dict)
-                            , margin = "documents", method = "cosine") %>% 
-  as.matrix() %>% data.frame() %>%
-  mutate(general = apply(.,1,sum), id = gsub("\\.txt","",rownames(.))) %>%
-  filter(general != 1) %>% arrange(id) %>% select(id, everything())
+## count relative tfidf weights for each media source
+media2012_sim <- data.frame(
+  authority = apply(media2012_tfidf[,dict_list$authority],1,sum)
+  , fairness = apply(media2012_tfidf[,dict_list$fairness],1,sum)
+  , harm = apply(media2012_tfidf[,dict_list$harm],1,sum)
+  , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum)
+  , purity = apply(media2012_tfidf[,dict_list$purity],1,sum)
+  )
+media2012_sim$general <- apply(media2012_sim,1,sum)
+media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
 
 ## create scaled variable for moral foundations
 media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x)))
