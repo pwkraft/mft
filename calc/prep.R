@@ -367,7 +367,7 @@ for(d in (length(dict)+1):nrow(media2012_dfm)){
 
 ## initialize object to store similarity results
 tmp <- tmp_s <- array(dim=c(length(docs2012@texts),5,nboot)
-                      , dimnames = list(docs = rownames(media2012_dfm)[(length(dict)+1):(length(dict)+nrow(dict_df))]
+                      , dimnames = list(docs = rownames(media2012_dfm)[(length(dict)+1):(length(dict)+length(docs2012@texts))]
                                         , mft = names(dict), iter = 1:nboot))
 
 ## compute similarity for bootstrapped dfms
@@ -395,6 +395,21 @@ for(m in 1:dim(tmp)[2]){
   colnames(tmp_res) <- paste(names(tmp[1,,1])[m],c("lo","hi"),sep="_")
   media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
 }
+
+
+### tests
+
+cosine <- function(x,y){
+  x %*% y / (sqrt(sum(x^2)) * sqrt(sum(y^2)))
+}
+
+a <- c(1,2,3,4,5,0,0,0,0,0)
+b <- c(1,2,3,4,5,1,1,1,1,1)
+c <- c(1,2,3,4,5,5,0,0,0,0)
+
+cosine(a,b)
+cosine(a,c)
+cosine(b,c)
 
 
 
