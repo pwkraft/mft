@@ -22,10 +22,18 @@ N <- nrow(data)
 nt <- apply(data,2,function(x) sum(x>0))
 idf <- log10(N/nt)
 idfe <- log(N/nt)
+idfs <- log10(1+N/nt)
+idfk <- log10(N/(nt+1))
 wdoc <- apply(data,1,sum)
 
 data %>% as.dfm() %>% tfidf()
 t(t(data)*idf)
+
+data %>% as.dfm() %>% tfidf(smooth=1)
+t(t(data)*idfs)
+
+data %>% as.dfm() %>% tfidf(k=1)
+t(t(data)*idfk)
 
 data %>% as.dfm() %>% tfidf(normalize = T)
 t(t(data/wdoc)*idf)

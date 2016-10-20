@@ -194,7 +194,6 @@ m3[[9]] <- vglm(general_s ~ letter + relig + educ + age + female + black + lwc +
 m3[[10]] <- vglm(general_s ~ pastvote + protest + petition + button + letter
                 + relig + educ + age + female + black + lwc + wordsum + mode
                 , tobit(Lower = 0), data=anes2012)
-
 lapply(m3, summary)
 
 ## simulation of predicted probabilities / first differences

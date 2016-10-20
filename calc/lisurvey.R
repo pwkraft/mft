@@ -164,7 +164,7 @@ m2res$var <- rep(4:1, each=2)
 ggplot(m2res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  ggtitle("Change in Predicted Emphasis on Moral Foundation (LI Survey Replication)") +
+  ggtitle("Change in Predicted Emphasis on Moral Foundation (Replication)") +
   labs(y = "Dependent Variable: Moral Foundation"
        , x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
