@@ -195,3 +195,20 @@ m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
                 , tobit(Lower = 0), data = dat_con)
 lapply(m2, summary)
 
+
+####################################
+### Summary of independent variables
+
+desc <- list(NULL)
+plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+desc[[1]] <- ggplot(dat, aes(x=ideol)) + geom_bar(stat="count") + labs(y="Count", x="Ideology") + plot_default
+desc[[2]] <- ggplot(dat, aes(x=age)) + geom_bar(stat="count") + labs(y="Count", x="Age") + plot_default
+desc[[3]] <- ggplot(dat, aes(x=factor(female,labels=c("Male","Female")))) + geom_bar(stat="count") + labs(y="Count", x="Sex") + plot_default
+desc[[4]] <- ggplot(dat, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + geom_bar(stat="count") + labs(y="Count", x="Race/Ethnicity") + plot_default
+desc[[5]] <- ggplot(dat, aes(x=relig)) + geom_bar(stat="count") + labs(y="Count", x="Church Attendance") + plot_default
+desc[[6]] <- ggplot(dat, aes(x=factor(educ, labels=c("No College","College")))) + geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
+desc[[7]] <- ggplot(dat, aes(x=wc)) + geom_histogram(binwidth = 5) + labs(y="Count", x="Word Count") + plot_default
+desc[[8]] <- ggplot(dat, aes(x=lwc)) + geom_histogram(binwidth = .2) + labs(y="Count", x="log(Word Count)") + plot_default
+pdf("fig/app_lidesc.pdf", width=5, height=7)
+grid.arrange(grobs=desc,ncol=2)
+dev.off()

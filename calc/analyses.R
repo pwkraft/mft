@@ -472,14 +472,14 @@ cbind(gather(select(media2012, id, authority_s:ingroup_s), mft, score, -id)
                       , labels = gsub("\\n","", rev(mftLabs)))) %>%
   ggplot(aes(y=reorder(id, score), x=score,xmin=score_lo,xmax=score_hi)) + 
   geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
-  facet_grid(.~mft) +
+  facet_grid(.~mft) + ggtitle("Moral Content of Media Sources (October 2012)") +
   xlab("MFT Score (rescaled)") + ylab("News Source") +
   geom_vline(xintercept=0, col="lightgrey")
 ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## influence of media content
 m4_cont <- list(NULL)
-m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + relig + educ + age + female + black + 
+m4_cont[[1]] <- vglm(harm_s ~ media_harm_s + + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 m4_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + relig + educ + age + female + black + 
                        lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
