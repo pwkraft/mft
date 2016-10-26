@@ -175,7 +175,7 @@ m3_res <- rbind(sim(m3[[1]], iv=data.frame(polknow=range(anes2008$polknow, na.rm
                 , sim(m3[[6]], iv=data.frame(poldisc=range(anes2008$poldisc, na.rm = T))))
 m3_res$cond <- rep(c("No", "Yes"), each=6)
 m3_res$var <- rep(c(3:1,3:1),each=2)
-m3_res$year <- "2012"
+m3_res$year <- "2008"
 
 ## generate plot
 ggplot(m3_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
