@@ -26,6 +26,7 @@ mftSimilarity <- function(opend, id, dict, regex, dict_list){
     x <- gsub("\\s+"," ", x)
     x <- gsub("(^\\s+|\\s+$)","", x)
     x[x %in% c("1 inapplicable","7 refused","n a","no","none","43042","i am","nome"
+               ,"i refuse", "i rwfuse to disclose", "refuse to disclose"
                ,"dk","skip","no5","don t know","same","not really"
                ,"no idea", "can t say","no comment","no views","nope","not at all"
                ,"no i can t","no i cant", "i don t know","iguess not","i dont know"
