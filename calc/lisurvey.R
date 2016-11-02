@@ -88,11 +88,11 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 }) %>% do.call("rbind", .)
 
 ## pre-process open-ended data and calculate similarity
-lisim <- mftSimilarity(opend = select(raw, deslib,deslibb,descon,desconb)
+lisim <- mftScore(opend = select(raw, deslib,deslibb,descon,desconb)
                        , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
-lisim_lib <- mftSimilarity(opend = select(raw, deslib,deslibb)
+lisim_lib <- mftScore(opend = select(raw, deslib,deslibb)
                            , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
-lisim_con <- mftSimilarity(opend = select(raw, descon,desconb)
+lisim_con <- mftScore(opend = select(raw, descon,desconb)
                        , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
 
 apply(lisim_lib[-2],2,function(x) mean(as.numeric(x))) - apply(lisim_con[-2],2,function(x) mean(as.numeric(x)))

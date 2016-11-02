@@ -13,7 +13,7 @@ rm(pkg)
 
 ### function to pre-process open-ended responses and calculate cosine similarity
 
-mftSimilarity <- function(opend, id, dict, regex, dict_list){
+mftScore <- function(opend, id, dict, regex, dict_list){
   if(nrow(opend) != length(id))         stop("ID vector must be equal to number of observations/documents")
   if(length(unique(id)) != length(id))  stop("IDs are not unique")
   

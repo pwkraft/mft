@@ -247,10 +247,10 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 }) %>% do.call("rbind", .)
 
 ## pre-process open-ended data and calculate similarity
-anes2012sim <- mftSimilarity(opend = anes2012opend[-1], id = anes2012opend$caseid
+anes2012sim <- mftScore(opend = anes2012opend[-1], id = anes2012opend$caseid
                              , dict = dict, regex = dict_df, dict_list = dict_list)
 
-anes2008sim <- mftSimilarity(opend = anes2008opend[-1], id = anes2008opend$caseid
+anes2008sim <- mftScore(opend = anes2008opend[-1], id = anes2008opend$caseid
                              , dict = dict, regex = dict_df, dict_list = dict_list)
 
 ## merge ts data and open-ended data and save objects for analyses
