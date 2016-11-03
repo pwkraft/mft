@@ -12,10 +12,9 @@ setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 ### Install required packages
 
 pkg <- c("tidyverse","readstata13","car","quanteda","stargazer"
-         ,"xtable","VGAM","gridExtra","devtools")
+         ,"xtable","VGAM","gridExtra","MASS", "sandwich")
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
-if(!"pmisc" %in% installed.packages()) install_github("pwkraft/pmisc")
 rm(pkg,inst)
 
 

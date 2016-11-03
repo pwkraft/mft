@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM","pmisc")
+pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -18,8 +18,7 @@ setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 source("func.R")
 
 ## load recoded dataset
-load("out/analyses_anes.RData")
-
+load("out/prep_anes.RData")
 
 
 ######################################
@@ -39,7 +38,9 @@ rownames(tab_mis) <- c("Spanish Interview", "No Responses")
 ## export table
 print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
              , caption = "Missing open-ended responses"
-             , label="tab:app_mis"),file="tab/app_mis.tex")
+             , label="tab:app_mis")
+      , table.placement="ht", caption.placement="top"
+      , file="tab/app_mis.tex")
 
 
 ### Fig B.1: Individual open-ended response lengths (for wc>0!)
@@ -145,6 +146,10 @@ ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ##################################################
 ### Additional Model Results and Robustness Checks
+
+
+## load model results
+load("out/analyses_anes.RData")
 
 
 ### Fig C.1: Participation and general moral reasoning (tobit)
@@ -262,4 +267,286 @@ ggplot(tobit_ideol_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, sha
   scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/tobit_ideol_difdif.pdf", width = 4, height = 5)
 
+
+
+#############################
+### Tables of Model Estimates
+
+
+### Fig 2: Ideological differences in moral foundations (tobit)
+
+## print summary
+lapply(tobit_ideol, summary)
+
+## create labels
+varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideology (Moderate)"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol, caption="Tobit models predicting MFT score for each foundation based 
+           on ideology. Positive coefficients indicate stronger emphasis on the respective 
+           foundation. Standard errors in parentheses. Estimates are used for Figure 
+           \\ref{fig:tobit_ideol} in the main text."
+           , label="tab:tobit_ideol", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 3: Moral foundations and feeling thermometer differentials (ols)
+
+## print summary
+lapply(ols_feel, summary)
+
+## create labels
+varlabs = list(harm_s="Harm", fairness_s="Fairness", ingroup_s="Ingroup", authority_s="Authority"
+               , pid_dem="PID (Democrat)", pid_rep="PID (Republican)"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept)"="Intercept")
+mlabs <- c("Party (1)", "Party (2)", "Cand. (1)", "Cand. (2)")
+
+## create table
+latexTable(ols_feel, caption="OLS models predicting feeling thermometer differentials based on
+           MFT score for each foundation. Positive coefficients indicate more favorable evaluation 
+           of Democratic candidate/party than the Republican candidate/party, and vice versa. 
+           Standard errors in parentheses. Estimates are used for Figure \\ref{fig:ols_feel} 
+           in the main text."
+           , label="tab:ols_feel", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/ols_feel.tex"
+           , table.placement="h", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 4: Moral foundations and democratic vote (logit)
+
+## print summary
+lapply(logit_vote, summary)
+
+## create labels
+varlabs = list(harm_s="Harm", fairness_s="Fairness", ingroup_s="Ingroup", authority_s="Authority"
+               , pid_dem="PID (Democrat)", pid_rep="PID (Republican)"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept)"="Intercept")
+mlabs <- NULL
+
+## create table
+latexTable(logit_vote, caption="Logit models predicting democratic vote choice based on
+           MFT score for each foundation. Positive coefficients indicate higher likelihood
+           to vote for the Democratic candidate than the Republican candidate. Standard errors 
+           in parentheses. Estimates are used for Figure \\ref{fig:logit_vote} in the main text."
+           , label="tab:logit_vote", align="lcc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/logit_vote.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 5: Knoledge/media/discussion and general moral reasoning (tobit)
+
+## print summary
+lapply(tobit_learn, summary)
+
+## create labels
+varlabs = list(polknow="Political Knowledge", polmedia="Political Media Exposure"
+               , poldisc="Political\nDiscussions"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- NULL
+
+## create table
+latexTable(tobit_learn, caption="Tobit models predicting overall reliance on moral foundations
+           (sum of MFT scores) based on political knowledge, media exposure, and frequency of 
+           political discussions. Positive coefficients indicate stronger emphasis on any foundation.
+           Standard errors in parentheses. Estimates are used for Figure \\ref{fig:tobit_learn} in 
+           the main text."
+           , label="tab:tobit_learn", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_learn.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 6: Knowledge and ideological differences in moral foundations (tobit)
+
+## print summary
+lapply(tobit_ideol_know, summary)
+
+## create labels
+varlabs = list(polknow_c="Political Knowledge", ideolConservative="Ideology (Conservative)"
+               , "ideolConservative:polknow_c"="Knowledge * Conservative"
+               , ideolModerate="Ideology (Moderate)"
+               , "ideolModerate:polknow_c"="Knowledge * Moderate"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol_know, caption="Tobit models predicting MFT score for each foundation based 
+           on political knowledge (mean-centered) and ideology. Positive coefficients indicate stronger 
+           emphasis on the respective foundation. Standard errors in parentheses. Estimates are used 
+           for Figure \\ref{fig:tobit_ideol_know} in the main text."
+           , label="tab:tobit_ideol_know", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol_know.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 7: Media exposure and ideological differences in moral foundations (tobit)
+
+## print summary
+lapply(tobit_ideol_media, summary)
+
+## create labels
+varlabs = list(polmedia_c="Political Media Exposure", ideolConservative="Ideology (Conservative)"
+               , "ideolConservative:polmedia_c"="Media * Conservative"
+               , ideolModerate="Ideology (Moderate)"
+               , "ideolModerate:polmedia_c"="Media * Moderate"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol_media, caption="Tobit models predicting MFT score for each foundation based 
+           on political media exposure (mean-centered) and ideology. Positive coefficients indicate 
+           stronger emphasis on the respective foundation. Standard errors in parentheses. Estimates 
+           are used for Figure \\ref{fig:tobit_ideol_media} in the main text."
+           , label="tab:tobit_ideol_media", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol_media.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 8: Political discussion and ideological differences in moral foundations (tobit)
+
+## print summary
+lapply(tobit_ideol_disc, summary)
+
+## create labels
+varlabs = list(poldisc_c="Political Discussion", ideolConservative="Ideology (Conservative)"
+               , "ideolConservative:poldisc_c"="Discussion * Conservative"
+               , ideolModerate="Ideology (Moderate)"
+               , "ideolModerate:poldisc_c"="Discussion * Moderate"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol_disc, caption="Tobit models predicting MFT score for each foundation based 
+           on political discussion frequency (mean-centered) and ideology. Positive coefficients 
+           indicate stronger emphasis on the respective foundation. Standard errors in parentheses. 
+           Estimates are used for Figure \\ref{fig:tobit_ideol_disc} in the main text."
+           , label="tab:tobit_ideol_disc", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol_disc.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig 9: Media content and moral foundations (tobit)
+
+## print summary
+lapply(tobit_cont, summary)
+
+## create labels
+varlabs = list(media_harm_s="Media MFT score (harm)"
+               , media_fairness_s="Media MFT score (fairness)"
+               , media_ingroup_s="Media MFT score (ingroup)"
+               , media_authority_s="Media MFT score (authority)"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_cont, caption="Tobit models predicting MFT score for each foundation based 
+           on moral content of individual media environments. Positive coefficients 
+           indicate stronger emphasis on the respective foundation. Standard errors in parentheses. 
+           Estimates are used for Figure \\ref{fig:tobit_cont} in the main text."
+           , label="tab:tobit_cont", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_cont.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig C.1: Participation and general moral reasoning (tobit)
+
+## print summary
+lapply(tobit_part, summary)
+
+## create labels
+varlabs = list(pastvote="Voted in 2008", protest="Protest", petition="Petition"
+               , button="Button", letter="Letter"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- NULL
+
+## create table
+latexTable(tobit_part, caption="Tobit models predicting overall reliance on moral foundations
+           (sum of MFT scores) based on political participation. Positive coefficients indicate 
+           stronger emphasis on any foundation. Standard errors in parentheses. Estimates are 
+           used for Figure \\ref{fig:tobit_part} in the appendix."
+           , label="tab:tobit_part", align="lcccccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_part.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
+
+
+### Fig C.2: Knowledge/media/discussion and ideological differences in moral foundations (tobit, did)
+
+## print summary
+lapply(tobit_ideol_all, summary)
+
+## create labels
+varlabs = list(polknow_c="Political Knowledge", polmedia_c="Political Media Exposure"
+               , poldisc_c="Political Discussion"
+               , ideolConservative="Ideology (Conservative)"
+               , "ideolConservative:polknow_c"="Knowledge * Conservative"
+               , "ideolConservative:polmedia_c"="Media * Conservative"
+               , "ideolConservative:poldisc_c"="Discussion * Conservative"
+               , ideolModerate="Ideology (Moderate)"
+               , "ideolModerate:polknow_c"="Knowledge * Moderate"
+               , "ideolModerate:polmedia_c"="Media * Moderate"
+               , "ideolModerate:poldisc_c"="Discussion * Moderate"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)", wordsum="Wordsum Score",mode="Survey Mode (Online)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol_all, caption="Tobit models predicting MFT score for each foundation based 
+           on political knowledge, media exposure, and discussion frequency (all mean-centered)
+           as well as ideology. Positive coefficients indicate stronger emphasis on the respective
+           foundation. Standard errors in parentheses. Estimates are used for Figure
+           \\ref{fig:tobit_ideol_difdif} in the appendix."
+           , label="tab:tobit_ideol_difdif", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol_difdif.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
 

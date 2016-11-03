@@ -9,7 +9,7 @@
 
 ## packages
 pkg <- c("tidyverse","foreign","car","quanteda",
-         "gridExtra","stargazer","xtable","VGAM","pmisc")
+         "gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -24,11 +24,6 @@ datsrc <- "~/Dropbox/Uni/Data/"
 
 ## load recoded dataset
 load("out/analyses_lisurvey.RData")
-
-## drop empty responses
-lidat <- lidat[lidat$wc != 0, ]
-lidat_lib <- lidat_lib[lidat_lib$wc != 0, ]
-lidat_con <- lidat_con[lidat_con$wc != 0, ]
 
 
 
@@ -59,5 +54,35 @@ desc[[8]] <- ggplot(lidat, aes(x=lwc)) + geom_histogram(binwidth = .2) +
 pdf("fig/app_lidesc.pdf", width=5, height=7)
 grid.arrange(grobs=desc,ncol=2)
 dev.off()
+
+
+
+#############################
+### Tables of Model Estimates
+
+
+### Fig 10: Ideological differences in moral foundations (tobit, LI survey data)
+
+## print summary
+lapply(tobit_ideol_li, summary)
+
+## create labels
+varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideology (Moderate)"
+               , relig="Church Attendance", educ="Education (College Degree)"
+               , age="Age", female1="Sex (Female)", black="Race (African American)"
+               , lwc="Word Count (log)"
+               , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
+mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+## create table
+latexTable(tobit_ideol_li, caption="Tobit models predicting MFT score for each foundation based 
+           on ideology (telephone survey replication). Positive coefficients indicate stronger emphasis on the respective 
+           foundation. Standard errors in parentheses. Estimates are used for Figure 
+           \\ref{fig:tobit_ideol_lisurvey} in the main text."
+           , label="tab:tobit_ideol_lisurvey", align="lcccc"
+           , varlabs=varlabs, mlabs=mlabs
+           , file="tab/tobit_ideol_lisurvey.tex"
+           , table.placement="ht", caption.placement="top"
+           , size="footnotesize")
 
 

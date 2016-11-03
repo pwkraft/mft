@@ -8,7 +8,7 @@
 
 ## packages
 pkg <- c("tidyverse","foreign","car","quanteda",
-         "gridExtra","stargazer","xtable","VGAM","pmisc")
+         "gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -34,23 +34,24 @@ lidat_con <- lidat_con[lidat_con$wc != 0, ]
 ### Fig 10: Ideological differences in moral foundations (tobit, LI survey data)
 
 ## model estimation
-m2 <- list(NULL)
-m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat)
-m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat)
-m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat)
-m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat)
-lapply(m2, summary)
+tobit_ideol_li <- list(NULL)
+tobit_ideol_li[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
+                            , tobit(Lower = 0), data = lidat)
+tobit_ideol_li[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
+                            , tobit(Lower = 0), data = lidat)
+tobit_ideol_li[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
+                            , tobit(Lower = 0), data = lidat)
+tobit_ideol_li[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
+                            , tobit(Lower = 0), data = lidat)
+lapply(tobit_ideol_li, summary)
 
 ## simulated expected values / marginal effects
-m2res <- sim(m2, iv=data.frame(ideolModerate = c(0,0), ideolConservative = c(1,0)))
-m2res$var <- rep(4:1, each=2)
+tobit_ideol_li_res <- sim(tobit_ideol_li
+                          , iv=data.frame(ideolModerate = c(0,0), ideolConservative = c(1,0)))
+tobit_ideol_li_res$var <- rep(4:1, each=2)
 
 ## generate plot
-ggplot(m2res, aes(x = mean, y = var)) +
+ggplot(tobit_ideol_li_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
   ggtitle("Change in Predicted Emphasis on Moral Foundation (Replication)") +
@@ -65,28 +66,28 @@ ggsave(filename = "fig/tobit_ideol_lisurvey.pdf", width = 5, height = 2.5)
 ##  - difference is most pronounced when talking about foundation relevant to group
 
 ## model estimation
-m2 <- list(NULL)
-m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_lib)
-m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_lib)
-m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_lib)
-m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_lib)
-lapply(m2, summary)
+tobit_ideol_lilib <- list(NULL)
+tobit_ideol_lilib[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_lib)
+tobit_ideol_lilib[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_lib)
+tobit_ideol_lilib[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_lib)
+tobit_ideol_lilib[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_lib)
+lapply(tobit_ideol_lilib, summary)
 
 ## model estimation
-m2 <- list(NULL)
-m2[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_con)
-m2[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_con)
-m2[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_con)
-m2[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
-                , tobit(Lower = 0), data = lidat_con)
-lapply(m2, summary)
+tobit_ideol_licon <- list(NULL)
+tobit_ideol_licon[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_con)
+tobit_ideol_licon[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_con)
+tobit_ideol_licon[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_con)
+tobit_ideol_licon[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_con)
+lapply(tobit_ideol_licon, summary)
 
 
 

@@ -8,7 +8,7 @@
 
 ## packages
 pkg <- c("tidyverse","foreign","car","quanteda",
-         "gridExtra","stargazer","xtable","VGAM","pmisc")
+         "gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 

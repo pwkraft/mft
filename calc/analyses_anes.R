@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM","pmisc")
+pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
@@ -58,7 +58,6 @@ tobit_ideol[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black
                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
 tobit_ideol[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black
                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
-lapply(tobit_ideol, summary)
 
 ## simulate expected values / marginal effects
 tobit_ideol_res <- sim(tobit_ideol, iv=data.frame(ideolModerate = c(0,0)
@@ -182,7 +181,6 @@ tobit_learn[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + bla
 tobit_learn[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
                          + relig + educ + age + female + black + lwc + wordsum + mode
                          , tobit(Lower = 0), data=anes2012)
-lapply(tobit_learn, summary)
 
 ## simulate expected values / marginal effects
 tobit_learn_res <- rbind(sim(tobit_learn[[1]]
@@ -345,7 +343,6 @@ tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + relig + educ + age + femal
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 tobit_cont[[4]] <- vglm(authority_s ~ media_authority_s + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-lapply(tobit_cont, summary)
 
 ## simulate expected values / marginal effects
 tobit_cont_res <- rbind(sim(models = tobit_cont[[1]]
@@ -369,7 +366,7 @@ ggplot(tobit_cont_res, aes(x = mean, y = var)) +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   facet_grid(.~value) + 
   scale_y_discrete(limits = rev(levels(tobit_cont_res$var)))
-ggsave("fig/tobit_media.pdf", width = 5, height = 2.5)
+ggsave("fig/tobit_cont.pdf", width = 5, height = 2.5)
 
 
 
