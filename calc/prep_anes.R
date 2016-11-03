@@ -1,10 +1,10 @@
-###########################################################################################
+###############################################################################################
 ## Project:  Moral Foundations of Political Reasoning
-## File:     prep.R
+## File:     prep_anes.R
 ## Overview: prepares open-ended survey responses in the 2012 ANES as well as the original
-##           time series datasets for subsequent analyses in analyses.R
+##           time series datasets for subsequent analyses in analyses_anes.R
 ## Author:   Patrick Kraft
-###########################################################################################
+###############################################################################################
 
 ## packages
 pkg <- c("readstata13","car","dplyr","quanteda")
@@ -105,8 +105,8 @@ anes2008$polmedia_c <- scale(anes2008$polmedia, scale=F)
 
 ## political knowledge (factual knowledge questions, pre-election)
 anes2012$polknow <- with(raw2012, ((preknow_prestimes==2) + (preknow_sizedef==1)
-                                           + (preknow_senterm==6) + (preknow_medicare==1)
-                                           + (preknow_leastsp==1))/5)
+                                   + (preknow_senterm==6) + (preknow_medicare==1)
+                                   + (preknow_leastsp==1))/5)
 anes2008$polknow <- recode(raw2008$V085119a, "-2=NA; 5=1; else=0")
 
 ## political knowledge (mean centered)
@@ -228,7 +228,8 @@ anes2012opend <- read.csv(paste0(datsrc,"anes2012/anes2012TS_openends.csv"), as.
   select(caseid, candlik_likewhatdpc, candlik_dislwhatdpc, candlik_likewhatrpc, candlik_dislwhatrpc
          , ptylik_lwhatdp, ptylik_dwhatdp, ptylik_lwhatrp, ptylik_dwhatrp)
 
-anes2008opend <- read.csv(paste0(datsrc,"anes2008/anes2008TSopenends_redacted_Dec2012Revision.csv"), as.is = T) %>%
+anes2008opend <- read.csv(paste0(datsrc,"anes2008/anes2008TSopenends_redacted_Dec2012Revision.csv")
+                          , as.is = T) %>%
   select(caseid, DemPC_like, DemPC_dislike, RepPC_like, RepPC_dislike
          , DemParty_like, DemParty_dislike, RepParty_like, RepParty_dislike)
 
@@ -248,10 +249,10 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 
 ## pre-process open-ended data and calculate similarity
 anes2012sim <- mftScore(opend = anes2012opend[-1], id = anes2012opend$caseid
-                             , dict = dict, regex = dict_df, dict_list = dict_list)
+                        , dict = dict, regex = dict_df, dict_list = dict_list)
 
 anes2008sim <- mftScore(opend = anes2008opend[-1], id = anes2008opend$caseid
-                             , dict = dict, regex = dict_df, dict_list = dict_list)
+                        , dict = dict, regex = dict_df, dict_list = dict_list)
 
 ## merge ts data and open-ended data and save objects for analyses
 anes2012 <- merge(anes2012, anes2012sim)
@@ -285,7 +286,8 @@ for(i in 1:nrow(dict_df)){
 close(pb)
 
 ## combine dictionary and responses in common dfm/tfidf
-media2012_tfidf <- corpus(c(dict, docs2012@texts), docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
+media2012_tfidf <- corpus(c(dict, docs2012@texts)
+                          , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
 media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(normalize=T,k=1)
 media2012_tfidf <- media2012_tfidf[,dict_df[,2]]
 
@@ -296,7 +298,7 @@ media2012_sim <- data.frame(
   , harm = apply(media2012_tfidf[,dict_list$harm],1,sum)
   , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum)
   , purity = apply(media2012_tfidf[,dict_list$purity],1,sum)
-  )
+)
 media2012_sim$general <- apply(media2012_sim,1,sum)
 media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
 
@@ -312,14 +314,20 @@ media2012 <- cbind(media2012_sim, media2012_sim_s, media2012_sim_d)
 ## recode anes media usage data
 anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
                             , INET_MSNBC_com = raw2012$medsrc_websites_10==1
-                            , INET_TheNewYorkTimes = raw2012$medsrc_websites_11==1 | raw2012$medsrc_printnews_01==1 | raw2012$medsrc_inetnews_01==1
-                            , INET_USAToday = raw2012$medsrc_websites_13==1 | raw2012$medsrc_printnews_02==1 | raw2012$medsrc_inetnews_02==1
-                            , INET_Washingtonpost_com = raw2012$medsrc_websites_14==1 | raw2012$medsrc_inetnews_04==1
+                            , INET_TheNewYorkTimes = (raw2012$medsrc_websites_11==1
+                                                      | raw2012$medsrc_printnews_01==1
+                                                      | raw2012$medsrc_inetnews_01==1)
+                            , INET_USAToday = (raw2012$medsrc_websites_13==1 
+                                               | raw2012$medsrc_printnews_02==1 
+                                               | raw2012$medsrc_inetnews_02==1)
+                            , INET_Washingtonpost_com = (raw2012$medsrc_websites_14==1 
+                                                         | raw2012$medsrc_inetnews_04==1)
                             , NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
                             , NPR_FreshAir = raw2012$medsrc_radio_04==1
                             , NPR_MorningEdition = raw2012$medsrc_radio_08==1
                             , PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
-                            , PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1 | raw2012$medsrc_inetnews_03==1
+                            , PRINT_WallStreetJournal_Abstracts = (raw2012$medsrc_printnews_03==1 
+                                                                   | raw2012$medsrc_inetnews_03==1)
                             , TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
                             , TV_ABC_GoodMorningAmerica = raw2012$medsrc_tvprog_24==1
                             , TV_ABC_ThisWeek = raw2012$medsrc_tvprog_45==1
@@ -338,7 +346,7 @@ anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
                             , TV_NBC_NightlyNews = raw2012$medsrc_tvprog_34==1
                             , TV_NBC_RockCenter = raw2012$medsrc_tvprog_39==1
                             , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
-                            ) %>% apply(2,as.numeric)
+) %>% apply(2,as.numeric)
 
 ## combine media usage with mft similarity scores and add to anes
 tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
@@ -353,22 +361,21 @@ anes2012$media <- apply(anes2012media,1,sum)>0
 
 ## combine dictionary and responses in common dfm
 media2012_dfm <- corpus(c(dict, docs2012@texts)
-                         , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
+                        , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
 media2012_dfm <- media2012_dfm[names(docs2012@texts),] %>% as.matrix()
 
 ## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
 nboot <- 500
 media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
-             , dimnames = list(docs = rownames(media2012_dfm)
-                               , features = colnames(media2012_dfm)
-                               , iter = 1:nboot))
+                        , dimnames = list(docs = rownames(media2012_dfm)
+                                          , features = colnames(media2012_dfm)
+                                          , iter = 1:nboot))
 
 ## parametric bootstrap, create dfms
 for(d in 1:nrow(media2012_dfm)){
   media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
-                                   #, prob = (media2012_dfm[d,]+1)/(sum(media2012_dfm[d,])+length(media2012_dfm[d,]))
                                    , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
-                                   )
+  )
 }
 
 ## initialize object to store similarity results
@@ -390,7 +397,7 @@ for(i in 1:nboot){
     , ingroup = apply(tmp_tfidf[,dict_list$ingroup],1,sum)
     , purity = apply(tmp_tfidf[,dict_list$purity],1,sum)
   ) %>% as.matrix()
-
+  
   ## create scaled variable for moral foundations
   tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
   
@@ -410,4 +417,5 @@ for(m in 1:dim(tmp)[2]){
 ### save output for analyses.R
 
 
-save(anes2012, anes2012opend, anes2008, anes2008opend, media2012, file="out/anes.RData")
+save(anes2012, anes2012opend, anes2008, anes2008opend, media2012
+     , mftLabs, polLabs, covLabs, file="out/prep_anes.RData")

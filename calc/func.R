@@ -11,10 +11,19 @@ invisible(lapply(pkg, library, character.only = TRUE))
 rm(pkg)
 
 
+### global labels for plots
+
+mftLabs <- c("Authority / \nRespect", "Ingroup / \nLoyalty"
+             , "Fairness / \nReciprocity", "Harm / \nCare")
+polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
+covLabs <- c("Church Attendance","Education (College Degree)","Age","Sex (Female)"
+             ,"Race (African American)","Number of Words")
+
+
 ### function to pre-process open-ended responses and calculate cosine similarity
 
 mftScore <- function(opend, id, dict, regex, dict_list){
-  if(nrow(opend) != length(id))         stop("ID vector must be equal to number of observations/documents")
+  if(nrow(opend) != length(id)) stop("ID vector must be equal to number of observations/documents")
   if(length(unique(id)) != length(id))  stop("IDs are not unique")
   
   ## minor pre-processing
@@ -65,7 +74,7 @@ mftScore <- function(opend, id, dict, regex, dict_list){
   ## replace incorrect words
   for(i in 1:nrow(spellCheck)){
     spell[spellCheck$Line[i],] <- gsub(spellCheck$Original[i], unlist(spellCheck$Suggestions[i])[1]
-                                          , spell[spellCheck$Line[i],])
+                                       , spell[spellCheck$Line[i],])
   }
   
   ## meta-info: overall response length
@@ -90,7 +99,7 @@ mftScore <- function(opend, id, dict, regex, dict_list){
   spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% dfm()
   spell_tfidf <- spell_tfidf[names(spell),] %>% tfidf(normalize=T,k=1)
   spell_tfidf <- spell_tfidf[,regex[,2]]
-
+  
   ## count relative tfidf weights for each media source
   sim <- data.frame(
     authority = apply(spell_tfidf[,dict_list$authority],1,sum)
@@ -101,7 +110,7 @@ mftScore <- function(opend, id, dict, regex, dict_list){
   )
   sim$general <- apply(sim,1,sum)
   sim$id <- gsub("\\.txt","",rownames(sim))
-
+  
   ## create scaled variable for moral foundations
   sim_s <- apply(select(sim,-id), 2, function(x) x/sd(x[wc>0]))
   colnames(sim_s) <- paste0(colnames(sim_s),"_s")
@@ -120,50 +129,4 @@ mftScore <- function(opend, id, dict, regex, dict_list){
 }
 
 
-### function to plot proportions
 
-prop_plot <- function(data, title, mftvarnames, groupvarname, legendname, file = NULL
-                    , width = par("din")[1], height = par("din")[2], lim = c(0, 0.6)){
-    ## prepare dataset
-    ci <- function(x){1.96 * sd(x, na.rm=T)/sqrt(sum(!is.na(x)))}
-
-    prop_df <- NULL
-    for(i in 1:length(data)){
-        tmp <-  cbind(melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
-                                    ,by=list(groupvar = data[[i]][,groupvarname]),FUN=mean,na.rm=T))
-                    , melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
-                                    ,by=list(groupvar = data[[i]][,groupvarname])
-                                    ,FUN=function(x){mean(x, na.rm=T) - ci(x)}))[,3]
-                    , melt(aggregate(data[[i]][,mftvarnames]#*data[[i]]$weight
-                                    ,by=list(groupvar = data[[i]][,groupvarname])
-                                    ,FUN=function(x){mean(x, na.rm=T) + ci(x)}))[,3]
-                      )
-        tmp$year <- unique(data[[i]]$year)[1]
-        prop_df <- rbind(prop_df, tmp)
-        rm(tmp)
-    }
-    colnames(prop_df) <- c("groupvar", "mft", "Proportion", "cilo", "cihi","year")
-
-
-    ## create plot
-    out <- ggplot(prop_df, aes(x = Proportion, y = as.numeric(mft)+.4-.2*as.numeric(groupvar)
-                             , shape=groupvar, color = groupvar)) +
-        geom_point() + geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
-        scale_color_manual(values=c("royalblue", "forestgreen", "firebrick")) +
-        labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-        ggtitle(title) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-        geom_hline(yintercept = seq(1.5,4.5,1), col = "lightgrey") +
-        guides(color=guide_legend(title=legendname), shape=guide_legend(title=legendname)) +
-        scale_x_continuous(limits = lim) + theme(legend.position="bottom") +
-        scale_y_continuous(breaks=1:5, labels=c("Purity / \nSanctity", "Authority / \nRespect"
-                                              , "Ingroup / \nLoyalty", "Fairness / \nReciprocity"
-                                              , "Harm / \nCare"))
-    if(length(data)>1) out <- out + facet_grid(year ~ .)
-
-    ## save plot
-    if(!is.null(file)){
-        ggsave(filename = file, plot = out, width = width, height = height)
-    }
-
-    out
-}
