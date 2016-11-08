@@ -418,4 +418,4 @@ for(m in 1:dim(tmp)[2]){
 
 
 save(anes2012, anes2012opend, anes2008, anes2008opend, media2012
-     , mftLabs, polLabs, covLabs, file="out/prep_anes.RData")
+     , mftLabs, polLabs, file="out/prep_anes.RData")

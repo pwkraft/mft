@@ -115,4 +115,4 @@ lidat %>% group_by(ideol) %>%
 #######################################
 ### save output for analyses_lisurvey.R
 
-save(lidat, lidat_lib, lidat_con, mftLabs, polLabs, covLabs, file="out/prep_lisurvey.RData")
+save(lidat, lidat_lib, lidat_con, mftLabs, polLabs, file="out/prep_lisurvey.RData")
