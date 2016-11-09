@@ -98,7 +98,7 @@ One way to address this problem using conventional methods would be to revise th
 \begin{equation}\label{eq:tfidf}
 \text{MFT}_{if} = \dfrac{1}{W_i} \sum_{t \in \mathcal{D}_f} \left[ w_{it} * \log_{10}\left( \dfrac{N}{n_t+1}\right) \right],
 \end{equation}
-where $N$ denotes the total number of documents, and $n_t$ is the number of documents in which the term $t$ appears. The weight represents the inverse of the proportion of documents in which the target term appears.\footnote{This specification is usually referred to as tf-idf weighting and is commonly used in quantitative text analyses. The acronym tf-idf stands for ``term frequency - inverse document frequency,'' which refers to the rationale that the frequency of specific terms are weighted by the inverse of the frequency of occurrence across documents. See \citet[ch. 6]{manning2008introduction} for an introduction.} As such, terms that are ubiquitous across the entire corpus receive a lower weight, and terms that appear in only few documents receive a higher weight. The denominator in \eqref{eq:tfidf} includes $+1$ to ensure that it does not equal zero if a dictionary term does not appear in any of the documents.
+where $N$ denotes the total number of documents, and $n_t$ is the number of documents in which the term $t$ appears. The weight represents the inverse of the proportion of documents in which the target term appears.\footnote{This specification is usually referred to as tf-idf weighting and is commonly used in quantitative text analyses. The acronym tf-idf stands for ``term frequency - inverse document frequency,'' which refers to the rationale that the frequency of specific terms are weighted by the inverse of the frequency of occurrence across documents. See \citet[ch. 6]{manning2008introduction} for an introduction.} As such, terms that are ubiquitous across the entire corpus receive a lower weight, and terms that appear in only few documents receive a higher weight. The denominator in equation \eqref{eq:tfidf} includes $+1$ to ensure that it does not equal zero if a dictionary term does not appear in any of the documents.
 
 The MFT score is a continuous measure that has a lower bound of 0 (document does not contain any dictionary terms) and is independent of document length (since it is based on relative occurrences). Higher scores imply larger proportions of dictionary terms in a document. Most importantly, however, words that appear in nearly all open-ended remarks affect MFT scores less than the words mentioned only by few respondents because ubiquitous words convey less information about differences across individuals. Overall, the MFT score provides a correction for potential distortions due to suboptimal terms in the dictionary while leaving its exact content outside of the researcher's discretion. Since the MFT score's nominal values above zero do not have a substantive interpretation, they are rescaled to unit variance.
 
@@ -110,7 +110,7 @@ The analyses presented here are based on the 2012 American National Election Stu
 
 The major dependent variables (i.e., the MFT scores described above) are based on open-ended questions in which respondents were asked to report what they \textit{liked} and \textit{disliked} about either presidential candidate as well as the Republican and Democratic parties. More specifically, respondents were asked to list anything in particular that they like/dislike about the Democratic/Republican party as well as anything that might make them vote/not vote for either of the Presidential candidates and were probed by the interviewer asking ``anything else?'' until the respondent answered no. The responses to the eight open-ended like/dislike questions (evaluating both parties and both candidates) were aggregated for each individual and pre-processed by correcting spelling errors using an implementation of the Aspell spell checking algorithm in \texttt{R} (\url{www.aspell.net}).
 
-Respondents were not included in the analysis if they failed to provide an answer to all open-ended items, or if the interview language was Spanish. Table~\ref{tab:app_mis} in the appendix provides an overview over the number of omitted cases. About 4\% of the interviews were held in Spanish and about 7\% of the respondents did not provide any open-ended response. Furthermore, Figure~\ref{fig:appB2num} in the appendix displays histograms of the length of the respondents' answers to all open-ended items. On average, the collection of all open-ended responses consists of about 75 words for each individual.
+Respondents were not included in the analysis if they failed to provide an answer to all open-ended items, or if the interview language was Spanish. Table~\ref{tab:app_mis} in the appendix provides an overview over the number of omitted cases. About 4\% of the interviews were held in Spanish and about 7\% of the respondents did not provide any open-ended response. Furthermore, Figure~\ref{fig:appB2num} in the appendix displays histograms of the length of the respondents' answers to all open-ended items. On average, the collection of all open-ended responses consists of about 75 words for each individual. Table~\ref{tab:sample} in the appendix additionally provides a sample of average-length responses that scored high on each of the moral foundation to illustrate the text processing and scoring method.
 
 Due to the fact that the MFT scores are bound at zero (i.e., none of the words in the dictionary appear in the response), individual response patterns are modeled via Tobit regressions for each of the moral foundations under consideration. The Tobit framework allows us to decompose the estimates into the effect on the probability of mentioning a specific foundation \textit{at all} as well as the degree of emphasis on the foundation given that it was mentioned by a respondent \citep[see][for details on the decomposition of Tobit model estimates]{mcdonald1980uses}.
 
@@ -249,7 +249,9 @@ There is much more to be learned about the relationship between moral foundation
 
 This study utilized open-ended survey responses to investigate the conditionality of MFT in political reasoning. The analyses of open-ended survey responses is valuable in this context because it allows us to evaluate whether citizens make references to moral considerations in a political context that does not induce an explicit connection to morality. As such, it can be directly investigated when and how ideological differences in the emphasis of moral foundations manifest themselves in individual reasoning about political actors. More generally, open-ended survey responses provide a promising and still largely neglected data source to investigate the determinants and structure of ideology and political reasoning. In particular, scholars can directly assess moral reasoning in surveys that do not contain the MFQ or related measures, simply by relying on open-ended survey responses. More broadly, focusing on open-ended measures provides new opportunities to study the role of morality in day-to-day political reasoning, discussions, and social influence.
 
-The empirical analyses presented here extend and qualify previous research on moral foundations and ideology. The results showed systematic patterns in the emphasis on moral considerations among liberals and conservatives consistent with MFT for three out of four foundations. Liberals are more likely to mention considerations related to harm/care and fairness/reciprocity when discussing their political preferences, whereas conservatives are more likely to emphasize the moral foundation of ingroup/loyalty. The second part of the analyses focused on the political relevance of moral reasoning as conceptualized by open-ended survey responses. Here, the results revealed consistent relationships between individual moral foundations and political preferences or voting behavior, which showed that moral reasoning (measured via open-ended survey responses) is a politically meaningful and influential concept. Lastly, political knowledge and exposure to political discourse increase the reliance on moral considerations. The evidence suggests that moral reasoning in political judgment is conditional on multiple individual-level factors and therefore likely to be part of a broader political learning process. At least in some cases, this learning process appears to imply an increased differentiation between liberals and conservatives in terms of the focus on specific foundations as described by MFT.
+The empirical analyses presented here extend and qualify previous research on moral foundations and ideology. The results showed systematic patterns in the emphasis on moral considerations among liberals and conservatives consistent with MFT for three out of four foundations. Liberals are more likely to mention considerations related to harm/care and fairness/reciprocity when discussing their political preferences, whereas conservatives are more likely to emphasize the moral foundation of ingroup/loyalty. The second part of the analyses focused on the political relevance of moral reasoning as conceptualized by open-ended survey responses. Here, the results revealed consistent relationships between individual moral foundations and political preferences or voting behavior, which showed that moral reasoning (measured via open-ended survey responses) is a politically meaningful and influential concept. Lastly, political knowledge and exposure to political discourse increase the reliance on moral considerations. The evidence suggests that moral reasoning in political judgment is conditional on multiple individual-level factors and therefore likely to be part of a broader political learning process. At least in some cases, this learning process implies an increased differentiation between liberals and conservatives in terms of the focus on specific foundations as described by MFT. Whether or not this differentiation occurs, however, is conditional on the moral content of the political discourse and differential individual exposure. 
+
+% ADD: content analyses conclusion
 
 Moral foundations can provide a powerful source of structure in political belief systems. However, we cannot assume that the link between morality and politics is homogeneous across individuals and contexts. The present study therefore reaffirms the importance of moral reasoning in politics but highlights its conditionality. The results clarify instances when moral foundations are indeed influential in shaping ideological differences. Individual-level factors (especially political knowledge) determine whether and how liberals and conservatives evoke moral considerations in political judgment. Ultimately, a deeper understanding of the moderating effects necessitates further analyses of the broader political context that shapes individual information environments (e.g., how the endorsement of moral foundations varies over time and across campaigns). Such an investigation would further illuminate how exposure to political discourse fosters ideological differences in moral reasoning. In times of growing partisan polarization, a better understanding of the antecedents of this ideological divide is essential.
 
@@ -271,11 +273,6 @@ Online appendices for manuscript: \\
 \clearpage
 
 \section{Moral Foundations Dictionary}\label{app:dict}
-\renewcommand\thefigure{\thesection.\arabic{figure}}
-\renewcommand\thetable{\thesection.\arabic{table}}
-\setcounter{figure}{0}
-\setcounter{table}{0}
-
 \textit{Sources:}\\
 \citet{graham2009liberals}, as well as \url{http://www.moralfoundations.org/}
 \vspace{.5cm}
@@ -309,12 +306,14 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 
 \end{flushleft}
 
-\clearpage
+\renewcommand\thefigure{\thesection.\arabic{figure}}
+\renewcommand\thetable{\thesection.\arabic{table}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
 
 \begin{center}
-
 \begin{longtable}{lp{1.5cm}p{5.5cm}p{5.5cm}}
-\caption[Open-Ended Responses]{Sample of Open-Ended Responses in the 2012 American National Election Study. Responses were selected if their length was within 10 words of average responses ($\sim75$ words) and if they scored high on one of the moral foundations (see first column). The second and third column display the item category and the raw response. The last column displays the processed response highlighting all signal words for the respective foundation.} \label{app:sample} \\
+\caption[Open-Ended Responses]{Sample of open-ended responses in the 2012 American National Election Study. Responses were selected if their length was within 10 words of average responses ($\sim75$ words) and if they scored high on one of the moral foundations (see first column). The second and third column display the item category and the raw response. The last column displays the processed response highlighting all signal words for the respective foundation.}\label{tab:sample} \\
 
 \hline
 	\textbf{Foundation} & \textbf{Variable} & Raw Response & Processed Response \\ \hline \endfirsthead
@@ -326,7 +325,7 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 	
 	\hline	\endlastfoot
 	
-	Harm & Obama (like) & supports ending war, supports affordable health care for all, supports the preservation of medicare and social security, looking into energy conservation to preserve our planet for future generations, initiatives to promote education and job growth and much more. & \multirow{8}{5.5cm}{supports ending war supports affordable health care for all supports the preservation of medicare and social secur looking into energy conservation to preserve our planet for future generations initiatives to promote education and job growth and much more imposing a fine if someone does not get a health care plan he supports a strong military anti same sex marriage anti women s choice for abortion not supportive of health care reform act not sensitive to the needs of the very poor and immigra} \\
+	Harm & Obama (like) & supports ending war, supports affordable health care for all, supports the preservation of medicare and social security, looking into energy conservation to preserve our planet for future generations, initiatives to promote education and job growth and much more. & \multirow{8}{5.5cm}{supports ending \textit{war} supports affordable health \textit{care} for all supports the preservation of medicare and social \textit{secur} looking into energy conservation to \textit{preserve} our planet for future generations initiatives to promote education and job growth and much more imposing a fine if someone does not get a health \textit{care} plan he supports a strong military anti same sex marriage anti women s choice for abortion not supportive of health \textit{care} reform act not sensitive to the needs of the very poor and immigra} \\
 		 & Obama (dislike) & imposing a fine if someone does not get a health care plan \\
 		 & Romney (like) & he supports a strong military \\
 		 & Romney (dislike) & anti same sex marriage, anti women's choice for abortion, not supportive of health care reform act, not sensitive to the needs of the very poor and immigrants \\
@@ -335,16 +334,16 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 		 & Reps (like) & -1 Inapplicable \\
 		 & Reps (dislike) & -1 Inapplicable \\ \hline
 	
-	Fairness & Obama (like) & people rights, economy, taxes for working people, understanding of international problems & \multirow{8}{5.5cm}{people rights economy taxes for working people understanding of international problems abortion rights women rights tax breaks for the rich military hawk rude and condescending to president obama economy women s rights gay rights health care tax plan for working class international strategy sometimes they do not fight hard enough against the republicans racist elitist trying to enrich the rich even more by hurt working people international relations health care women rights gay rights} \\
+	Fairness & Obama (like) & people rights, economy, taxes for working people, understanding of international problems & \multirow{8}{5.5cm}{people \textit{rights} economy taxes for working people understanding of international problems abortion \textit{rights} women \textit{rights} tax breaks for the rich military hawk rude and condescending to president obama economy women s \textit{rights} gay \textit{rights} health care tax plan for working class international strategy sometimes they do not fight hard enough against the republicans racist elitist trying to enrich the rich even more by hurt working people international relations health care women \textit{rights} gay \textit{rights}} \\
 	 & Obama (dislike) & -1 Inapplicable \\
 	 & Romney (like) & -1 Inapplicable \\
 	 & Romney (dislike) & abortion rights, women rights, tax breaks for the rich, military hawk, rude and condescending to President Obama \\
 	 & Dems (like) & economy, women's rights, gay rights, health care, tax plan for working class, international strategy. \\
 	 & Dems (dislike) & sometimes they do not fight hard enough against the republicans. \\
 	 & Reps (like) & -1 Inapplicable \\
-	 & Reps (dislike) & racist, elitist, trying to enrich the rich even more by hurting working people, international relations, health care, women rights, gay rights \\ \hline
+	 & Reps (dislike) & racist, elitist, trying to enrich the rich even more by hurting working people, international relations, health care, women rights, gay rights \\ \hline	
 	
-	Ingroup & Obama (like) &  & \multirow{8}{5.5cm}{he dozen t do enough about keeping us safe from our foreign enem he s too iffy about isle too favorable about homosexuality abortion like his close family ties good ideas about keeping us safe from foreign countries strong on israel they support same sex marriage they won t bend i like the people that are their leader i vie nevier been disappointed in their positions on most things} \\
+	Ingroup & Obama (like) &  & \multirow{8}{5.5cm}{he dozen t do enough about keeping us safe from our \textit{foreign} \textit{enem} he s too iffy about isle too favorable about homosexuality abortion like his close \textit{family} ties good ideas about keeping us safe from \textit{foreign} countries strong on israel they support same sex marriage they won t bend i like the people that are their leader i vie nevier been disappointed in their positions on most things} \\
 	 & Obama (dislike) & He doesn't do enough about keeping us safe from our foreign enemies; he's too iffy about Isael; too favorable about homosexuallity, abortion. \\
 	 & Romney (like) & Like his close family ties; good ideas about keeping us safe from foreign countries; strong on Israel; \\
 	 & Romney (dislike) &  \\
@@ -360,9 +359,8 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 	 	 & Dems (like) & -1 Inapplicable \\
 	 	 & Dems (dislike) & -1 Inapplicable \\
 	 	 & Reps (like) & -1 Inapplicable \\
-	 	 & Reps (dislike) & -1 Inapplicable \\ \hline
+	 	 & Reps (dislike) & -1 Inapplicable \\
 \end{longtable}
-
 \end{center}
 
 
