@@ -17,6 +17,8 @@ Type 'demo()' for some demos, 'help()' for on-line help, or
 'help.start()' for an HTML browser interface to help.
 Type 'q()' to quit R.
 
+[Previously saved workspace restored]
+
 > ###########################################################################################
 > ## Project:  Moral Foundations of Political Reasoning
 > ## File:     MASTER.R
@@ -329,7 +331,7 @@ Creating a dfm from a corpus ...
    ... indexing features: 12,852 feature types
    ... created a 5919 x 12853 sparse dfm
    ... complete. 
-Elapsed time: 0.558 seconds.
+Elapsed time: 0.579 seconds.
 
 > anes2008sim <- mftScore(opend = anes2008opend[-1], 
 +     id = anes2008opend$caseid, dict = dict, regex = dict_df, 
@@ -341,7 +343,7 @@ Creating a dfm from a corpus ...
    ... indexing features: 6,376 feature types
    ... created a 2327 x 6377 sparse dfm
    ... complete. 
-Elapsed time: 0.135 seconds.
+Elapsed time: 0.134 seconds.
 
 > anes2012 <- merge(anes2012, anes2012sim)
 
@@ -379,7 +381,7 @@ Creating a dfm from a corpus ...
    ... indexing features: 59,769 feature types
    ... created a 33 x 59770 sparse dfm
    ... complete. 
-Elapsed time: 10.2 seconds.
+Elapsed time: 10.7 seconds.
 
 > media2012_tfidf <- media2012_tfidf[names(docs2012@texts), 
 +     ] %>% tfidf(normalize = T, k = 1)
@@ -458,7 +460,7 @@ Creating a dfm from a corpus ...
    ... indexing features: 59,769 feature types
    ... created a 33 x 59770 sparse dfm
    ... complete. 
-Elapsed time: 6.18 seconds.
+Elapsed time: 6 seconds.
 
 > media2012_dfm <- media2012_dfm[names(docs2012@texts), 
 +     ] %>% as.matrix()
@@ -507,8 +509,3327 @@ Elapsed time: 6.18 seconds.
 + }
 
 > save(anes2012, anes2012opend, anes2008, anes2008opend, 
-+     media2012, mftLabs, polLabs, covLabs, file = "out/prep_anes.RData")
-Error in save(anes2012, anes2012opend, anes2008, anes2008opend, media2012,  : 
-  object ‘covLabs’ not found
-Calls: source -> withVisible -> eval -> eval -> save
-Execution halted
++     media2012, mftLabs, polLabs, file = "out/prep_anes.RData")
+> 
+> ## run main analyses
+> source("analyses_anes.R", echo=T, max.deparse.length=10000)
+
+> pkg <- c("tidyverse", "gridExtra", "stargazer", "xtable", 
++     "VGAM")
+
+> invisible(lapply(pkg, library, character.only = TRUE))
+Loading tidyverse: tibble
+Loading tidyverse: tidyr
+Loading tidyverse: readr
+Loading tidyverse: purrr
+Conflicts with tidy packages ---------------------------------------------------
+filter():   dplyr, stats
+lag():      dplyr, stats
+smiths():   tidyr, reshape2
+some():     purrr, car
+tokenize(): readr, quanteda
+
+Attaching package: ‘gridExtra’
+
+The following object is masked from ‘package:dplyr’:
+
+    combine
+
+
+Please cite as: 
+
+ Hlavac, Marek (2015). stargazer: Well-Formatted Regression and Summary Statistics Tables.
+ R package version 5.2. http://CRAN.R-project.org/package=stargazer 
+
+Loading required package: stats4
+Loading required package: splines
+
+Attaching package: ‘VGAM’
+
+The following object is masked from ‘package:tidyr’:
+
+    fill
+
+The following object is masked from ‘package:car’:
+
+    logit
+
+
+> rm(list = ls())
+
+> setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
+
+> source("func.R")
+
+> load("out/prep_anes.RData")
+
+> anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 
++     0, ]
+
+> plot_df <- anes2012 %>% select(purity_d, authority_d, 
++     ingroup_d, fairness_d, harm_d) %>% apply(2, function(x) c(mean(x, 
++     na.rm = T), sd(x, na.rm = T)/sqrt(sum(!is.na(x))))) %>% t() %>% 
++     data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
+
+> ggplot(plot_df, aes(x = X1, xmin = X1 - 1.96 * X2, 
++     xmax = X1 + 1.96 * X2, y = varnum)) + geom_point() + geom_errorbarh(height = 0) + 
++     xlim(0, 0.5) + labs(y = "Moral Foundation", x = "Proportion of Respondents") + 
++     ggtitle("Moral Reasoning in Open-Ended Responses") + theme_classic(base_size = 8) + 
++     theme(panel.border = element_rect(fill = NA)) + scale_y_discrete(labels = c("Purity / \nSanctity", 
++     mftLabs))
+
+> ggsave(file = "fig/prop_mft.pdf", width = 5, height = 2)
+
+> tobit_ideol <- list(NULL)
+
+> tobit_ideol[[1]] <- vglm(harm_s ~ ideol + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol[[2]] <- vglm(fairness_s ~ ideol + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol[[3]] <- vglm(ingroup_s ~ ideol + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol[[4]] <- vglm(authority_s ~ ideol + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol_res <- sim(tobit_ideol, iv = data.frame(ideolModerate = c(0, 
++     0), ideolConservative = c(1, 0)))
+
+> tobit_ideol_res$var <- rep(4:1, each = 2)
+
+> ggplot(tobit_ideol_res, aes(x = mean, y = var)) + 
++     geom_vline(xintercept = 0, col = "lightgrey") + geom_point() + 
++     geom_errorbarh(aes(xmax = cilo, xmin = cihi), height = 0) + 
++     ggtitle("Change in Predicted Emphasis on Moral Foundation") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     scale_y_continuous(breaks = 1:4, labels = mftLabs) + facet_grid(~value)
+
+> ggsave(filename = "fig/tobit_ideol.pdf", width = 5, 
++     height = 2.5)
+
+> ols_feel <- NULL
+
+> ols_feel[[1]] <- lm(eval_party ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + relig + educ + age + female + black + 
++     lwc + wordsum + mode, data = anes2012)
+
+> ols_feel[[2]] <- lm(eval_party ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + pid_dem + pid_rep + relig + educ + 
++     age + female + black + lwc + wordsum + mode, data = anes2012)
+
+> ols_feel[[3]] <- lm(eval_cand ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + relig + educ + age + female + black + 
++     lwc + wordsum + mode, data = anes2012)
+
+> ols_feel[[4]] <- lm(eval_cand ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + pid_dem + pid_rep + relig + educ + 
++     age + female + black + lwc + wordsum + mode, data = anes2012)
+
+> ols_feel_res <- rbind(sim(ols_feel, iv = data.frame(harm_s = min(anes2012$harm_s) + 
++     c(0, 1)), robust = T), sim(ols_feel, iv = data.frame(fairness_s = min(anes2012$fairness_s) + 
++     c(0, 1)), robust = T), sim(ols_feel, iv = data.frame(ingroup_s = min(anes2012$ingroup_s) + 
++     c(0, 1)), robust = T), sim(ols_feel, iv = data.frame(authority_s = min(anes2012$authority_s) + 
++     c(0, 1)), robust = T))
+
+> ols_feel_res$cond <- rep(c("No", "Yes"), 8)
+
+> ols_feel_res$var <- rep(4:1, each = 4)
+
+> ols_feel_res$year <- "2012"
+
+> levels(ols_feel_res$dv) <- c("Party Evaluation", "Candidate Evaluation")
+
+> ggplot(ols_feel_res, aes(x = mean, y = var + 0.1 - 
++     0.2 * (cond == "Yes"), col = cond, shape = cond)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cihi, 
++     xmin = cilo), height = 0) + labs(y = "Independent Variable: Moral Foundation", 
++     x = "Change in Feeling Thermometer (Democrat - Republican)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     ggtitle("Change in Feeling Thermometer Differentials") + 
++     guides(col = guide_legend(title = "Control for Party Identification"), 
++         shape = guide_legend(title = "Control for Party Identification")) + 
++     theme(legend.position = "bottom", legend.box = "horizontal") + 
++     scale_y_continuous(breaks = 1:4, labels = mftLabs) + facet_wrap(~dv) + 
++     scale_color_grey(start = 0, end = 0.5)
+
+> ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
+
+> logit_vote <- NULL
+
+> logit_vote[[1]] <- glm(vote_dem ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + relig + educ + age + female + black + 
++     lwc + wordsum + mode, data = anes2012, family = binomial("logit"))
+
+> logit_vote[[2]] <- glm(vote_dem ~ harm_s + fairness_s + 
++     ingroup_s + authority_s + pid_dem + pid_rep + relig + educ + 
++     age + female + black + lwc + wordsum + mode, data = anes2012, 
++     family = binomial("logit"))
+
+> logit_vote_res <- rbind(sim(logit_vote, iv = data.frame(harm_s = c(0, 
++     1))), sim(logit_vote, iv = data.frame(fairness_s = c(0, 1))), 
++     sim(logit_vote, iv = data.frame(ingroup_s = c(0, 1))), sim(logit_vote, 
++         iv = data.frame(authority_s = c(0, 1))))
+
+> logit_vote_res$cond <- rep(c("No", "Yes"), 4)
+
+> logit_vote_res$var <- rep(4:1, each = 2)
+
+> logit_vote_res$year <- "2012"
+
+> ggplot(logit_vote_res, aes(x = mean, y = var + 0.1 - 
++     0.2 * (cond == "Yes"), col = cond, shape = cond)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cihi, 
++     xmin = cilo), height = 0) + labs(y = "Independent Variable: Moral Foundation", 
++     x = "Change in Probability") + theme_classic(base_size = 8) + 
++     theme(panel.border = element_rect(fill = NA)) + scale_y_continuous(breaks = 1:4, 
++     labels = mftLabs) + ggtitle("Change in Predicted Probabilities to\nVote for Democratic Candidate") + 
++     guides(col = guide_legend(title = "Control for Party Identification"), 
++         shape = guide_legend(title = "Control for Party Identification")) + 
++     theme(legend.position = "bottom", legend.box = "horizontal") + 
++     scale_color_grey(start = 0, end = 0.5)
+
+> ggsave(filename = "fig/logit_vote.pdf", width = 3, 
++     height = 3)
+
+> tobit_learn <- list(NULL)
+
+> tobit_learn[[1]] <- vglm(general_s ~ polknow + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_learn[[2]] <- vglm(general_s ~ polmedia + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_learn[[3]] <- vglm(general_s ~ poldisc + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_learn[[4]] <- vglm(general_s ~ polknow + polmedia + 
++     poldisc + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_learn_res <- rbind(sim(tobit_learn[[1]], iv = data.frame(polknow = range(anes2012$polknow, 
++     na.rm = T))), sim(tobit_learn[[2]], iv = data.frame(polmedia = range(anes2012$polmedia, 
++     na.rm = T))), sim(tobit_learn[[3]], iv = data.frame(poldisc = range(anes2012$poldisc, 
++     na.rm = T))), sim(tobit_learn[[4]], iv = data.frame(polknow = range(anes2012$polknow, 
++     na.rm = T))), sim(tobit_learn[[4]], iv = data.frame(polmedia = range(anes2012$polmedia, 
++     na.rm = T))), sim(tobit_learn[[4]], iv = data.frame(poldisc = range(anes2012$poldisc, 
++     na.rm = T))))
+
+> tobit_learn_res$cond <- rep(c("No", "Yes"), each = 6)
+
+> tobit_learn_res$var <- rep(c(3:1, 3:1), each = 2)
+
+> tobit_learn_res$year <- "2012"
+
+> ggplot(tobit_learn_res, aes(x = mean, y = var + 0.1 - 
++     0.2 * (cond == "Yes"), col = cond, shape = cond)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cihi, 
++     xmin = cilo), height = 0) + labs(y = "Independent Variable", 
++     x = "Marginal Effect") + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     scale_y_continuous(breaks = 3:1, labels = polLabs) + ggtitle("Change in Predicted Emphasis on any Moral Foundation") + 
++     guides(col = guide_legend(title = "Control for remaining variables"), 
++         shape = guide_legend(title = "Control for remaining variables")) + 
++     theme(legend.position = "bottom", legend.box = "horizontal") + 
++     scale_color_grey(start = 0, end = 0.5) + facet_grid(~value)
+
+> ggsave(filename = "fig/tobit_learn.pdf", width = 5, 
++     height = 3)
+
+> tobit_ideol_know <- list(NULL)
+
+> tobit_ideol_know[[1]] <- vglm(harm_s ~ ideol * polknow_c + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_know[[2]] <- vglm(fairness_s ~ ideol * 
++     polknow_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_know[[3]] <- vglm(ingroup_s ~ ideol * 
++     polknow_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_know[[4]] <- vglm(authority_s ~ ideol * 
++     polknow_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_res <- rbind(sim(models = tobit_ideol_know, 
++     iv = data.frame(polknow_c = min(anes2012$polknow_c, na.rm = T), 
++         ideolModerate = c(0, 0), ideolConservative = c(1, 0))), 
++     sim(models = tobit_ideol_know, iv = data.frame(polknow_c = max(anes2012$polknow_c, 
++         na.rm = T), ideolModerate = c(0, 0), ideolConservative = c(1, 
++         0))))
+
+> tobit_ideol_res$var <- factor(tobit_ideol_res$dv)
+
+> levels(tobit_ideol_res$dv) <- rev(mftLabs)
+
+> tobit_ideol_res$cond <- rep(c("Low Knowledge", "High Knowledge"), 
++     each = 8)
+
+> ggplot(tobit_ideol_res, aes(x = mean, y = dv)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cilo, 
++     xmin = cihi), height = 0) + ggtitle("Change in Predicted Emphasis on Moral Foundation") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     facet_grid(cond ~ value) + scale_y_discrete(limits = rev(levels(tobit_ideol_res$dv)))
+
+> ggsave(filename = "fig/tobit_ideol_know.pdf", width = 4, 
++     height = 3)
+
+> tobit_ideol_media <- list(NULL)
+
+> tobit_ideol_media[[1]] <- vglm(harm_s ~ ideol * polmedia_c + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_media[[2]] <- vglm(fairness_s ~ ideol * 
++     polmedia_c + relig + educ + age + female + black + lwc + 
++     wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_media[[3]] <- vglm(ingroup_s ~ ideol * 
++     polmedia_c + relig + educ + age + female + black + lwc + 
++     wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_media[[4]] <- vglm(authority_s ~ ideol * 
++     polmedia_c + relig + educ + age + female + black + lwc + 
++     wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_res <- rbind(sim(models = tobit_ideol_media, 
++     iv = data.frame(polmedia_c = min(anes2012$polmedia_c, na.rm = T), 
++         ideolModerate = c(0, 0), ideolConservative = c(1, 0))), 
++     sim(models = tobit_ideol_media, iv = data.frame(polmedia_c = max(anes2012$polmedia_c, 
++         na.rm = T), ideolModerate = c(0, 0), ideolConservative = c(1, 
++         0))))
+
+> tobit_ideol_res$var <- factor(tobit_ideol_res$dv)
+
+> levels(tobit_ideol_res$dv) <- rev(mftLabs)
+
+> tobit_ideol_res$cond <- rep(c("Low Media Exposure", 
++     "High Media Exposure"), each = 8)
+
+> ggplot(tobit_ideol_res, aes(x = mean, y = dv)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cilo, 
++     xmin = cihi), height = 0) + ggtitle("Change in Predicted Emphasis on Moral Foundation") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     facet_grid(cond ~ value) + scale_y_discrete(limits = rev(levels(tobit_ideol_res$dv)))
+
+> ggsave(filename = "fig/tobit_ideol_media.pdf", width = 4, 
++     height = 3)
+
+> tobit_ideol_disc <- list(NULL)
+
+> tobit_ideol_disc[[1]] <- vglm(harm_s ~ ideol * poldisc_c + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_disc[[2]] <- vglm(fairness_s ~ ideol * 
++     poldisc_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_disc[[3]] <- vglm(ingroup_s ~ ideol * 
++     poldisc_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_disc[[4]] <- vglm(authority_s ~ ideol * 
++     poldisc_c + relig + educ + age + female + black + lwc + wordsum + 
++     mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_ideol_res <- rbind(sim(models = tobit_ideol_disc, 
++     iv = data.frame(poldisc_c = min(anes2012$poldisc_c, na.rm = T), 
++         ideolModerate = c(0, 0), ideolConservative = c(1, 0))), 
++     sim(models = tobit_ideol_disc, iv = data.frame(poldisc_c = max(anes2012$poldisc_c, 
++         na.rm = T), ideolModerate = c(0, 0), ideolConservative = c(1, 
++         0))))
+
+> tobit_ideol_res$var <- factor(tobit_ideol_res$dv)
+
+> levels(tobit_ideol_res$dv) <- rev(mftLabs)
+
+> tobit_ideol_res$cond <- rep(c("Low Discussion Frequency", 
++     "High Discussion Frequency"), each = 8)
+
+> ggplot(tobit_ideol_res, aes(x = mean, y = dv)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cilo, 
++     xmin = cihi), height = 0) + ggtitle("Change in Predicted Emphasis on Moral Foundation") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     facet_grid(cond ~ value) + scale_y_discrete(limits = rev(levels(tobit_ideol_res$dv)))
+
+> ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, 
++     height = 3)
+
+> tobit_cont <- list(NULL)
+
+> tobit_cont[[1]] <- vglm(harm_s ~ media_harm_s + +relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_cont[[4]] <- vglm(authority_s ~ media_authority_s + 
++     relig + educ + age + female + black + lwc + wordsum + mode, 
++     tobit(Lower = 0), data = anes2012)
+
+> tobit_cont_res <- rbind(sim(models = tobit_cont[[1]], 
++     iv = data.frame(media_harm_s = range(anes2012$media_harm_s))), 
++     sim(models = tobit_cont[[2]], iv = data.frame(media_fairness_s = range(anes2012$media_fairness_s))), 
++     sim(models = tobit_cont[[3]], iv = data.frame(media_ingroup_s = range(anes2012$media_ingroup_s))), 
++     sim(models = tobit_cont[[4]], iv = data.frame(media_authority_s = range(anes2012$media_authority_s))))
+
+> tobit_cont_res$var <- factor(tobit_cont_res$dv)
+
+> levels(tobit_cont_res$var) <- rev(mftLabs)
+
+> ggplot(tobit_cont_res, aes(x = mean, y = var)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cilo, 
++     xmin = cihi), height = 0) + ggtitle("Change in Predicted Emphasis on Moral Foundation") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (MFT Media Content)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     facet_grid(. ~ value) + scale_y_discrete(limits = rev(levels(tobit_cont_res$var)))
+
+> ggsave("fig/tobit_cont.pdf", width = 5, height = 2.5)
+
+> save.image(file = "out/analyses_anes.RData")
+> 
+> ## run analyses for appendix
+> source("appendix_anes.R", echo=T, max.deparse.length=10000)
+
+> pkg <- c("tidyverse", "gridExtra", "stargazer", "xtable", 
++     "VGAM")
+
+> invisible(lapply(pkg, library, character.only = TRUE))
+
+> rm(list = ls())
+
+> setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
+
+> source("func.R")
+
+> load("out/prep_anes.RData")
+
+> tab_mis <- rbind(c(table(anes2012$spanish)[2], table(anes2012$spanish)[2] * 
++     100/sum(table(anes2012$spanish))), c(table(anes2012$wc == 
++     0)[2], table(anes2012$wc == 0)[2] * 100/sum(table(anes2012$wc == 
++     0))))
+
+> colnames(tab_mis) <- c("N", "Percent")
+
+> rownames(tab_mis) <- c("Spanish Interview", "No Responses")
+
+> print(xtable(tab_mis, align = "lcc", digits = c(0, 
++     0, 2), caption = "Missing open-ended responses", label = "tab:app_mis"), 
++     table.placement = "ht", caption.placement = "top", file = "tab/app_mis.tex")
+
+> anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 
++     0, ]
+
+> wc_mean = mean(anes2012$wc)
+
+> p1 <- ggplot(anes2012, aes(wc)) + geom_histogram(fill = "grey", 
++     binwidth = 25) + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     geom_vline(xintercept = wc_mean, linetype = 3) + ylab("Number of Respondents") + 
++     xlab("Word Count")
+
+> lwc_mean = mean(anes2012$lwc)
+
+> p2 <- ggplot(anes2012, aes(lwc, ..density..)) + geom_histogram(binwidth = 0.2, 
++     fill = "grey") + geom_density() + theme_classic(base_size = 8) + 
++     theme(panel.border = element_rect(fill = NA)) + geom_vline(xintercept = lwc_mean, 
++     linetype = 3) + ylab("Density") + xlab("log(Word Count)")
+
+> pdf("fig/app_wc.pdf", width = 7, height = 3)
+
+> grid.arrange(p1, p2, ncol = 2)
+
+> dev.off()
+pdf 
+  2 
+
+> desc <- list(NULL)
+
+> plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA))
+
+> desc[[1]] <- ggplot(anes2012, aes(x = ideol)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Ideology") + plot_default
+
+> desc[[2]] <- ggplot(anes2012, aes(x = polknow)) + 
++     geom_bar(stat = "count") + labs(y = "Count", x = "Political Knowledge") + 
++     plot_default
+
+> desc[[3]] <- ggplot(anes2012, aes(x = polmedia)) + 
++     geom_bar(stat = "count") + labs(y = "Count", x = "Political Media Exposure") + 
++     plot_default
+
+> desc[[4]] <- ggplot(anes2012, aes(x = poldisc)) + 
++     geom_bar(stat = "count") + labs(y = "Count", x = "Political Discussions") + 
++     plot_default
+
+> desc[[5]] <- ggplot(anes2012, aes(x = eval_cand)) + 
++     geom_histogram(binwidth = 20) + labs(y = "Count", x = "Feeling Thermometer (Candidates)") + 
++     plot_default
+
+> desc[[6]] <- ggplot(anes2012, aes(x = eval_party)) + 
++     geom_histogram(binwidth = 20) + labs(y = "Count", x = "Feeling Thermometer (Parties)") + 
++     plot_default
+
+> desc[[7]] <- ggplot(anes2012, aes(x = factor(vote, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Voted in 2012") + plot_default
+
+> desc[[8]] <- ggplot(anes2012, aes(x = factor(vote_dem, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Voted for Democratic Candidate") + plot_default
+
+> desc[[9]] <- ggplot(anes2012, aes(x = factor(pastvote, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Voted in 2008") + plot_default
+
+> desc[[10]] <- ggplot(anes2012, aes(x = factor(protest, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Participated in Protest") + plot_default
+
+> desc[[11]] <- ggplot(anes2012, aes(x = factor(letter, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Letter to Congressmen/Senator") + plot_default
+
+> desc[[12]] <- ggplot(anes2012, aes(x = factor(petition, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Signed Petition") + plot_default
+
+> desc[[13]] <- ggplot(anes2012, aes(x = factor(button, 
++     labels = c("No", "Yes")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Wearing Campaign Button") + plot_default
+
+> desc[[14]] <- ggplot(anes2012, aes(x = age)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Age") + plot_default
+
+> desc[[15]] <- ggplot(anes2012, aes(x = factor(female, 
++     labels = c("Male", "Female")))) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Sex") + plot_default
+
+> desc[[16]] <- ggplot(anes2012, aes(x = factor(black, 
++     labels = c("Other", "Black non-Hispanic")))) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Race/Ethnicity") + plot_default
+
+> desc[[17]] <- ggplot(anes2012, aes(x = relig)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Church Attendance") + plot_default
+
+> desc[[18]] <- ggplot(anes2012, aes(x = factor(educ, 
++     labels = c("No College", "College")))) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Education") + plot_default
+
+> desc[[19]] <- ggplot(anes2012, aes(x = pid)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Party Identification") + plot_default
+
+> desc[[20]] <- ggplot(anes2012, aes(x = factor(mode, 
++     labels = c("Face-to-Face", "Online")))) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Survey Mode") + plot_default
+
+> desc[[21]] <- ggplot(anes2012, aes(x = wordsum)) + 
++     geom_bar(stat = "count") + labs(y = "Count", x = "Wordsum Literacy Test") + 
++     plot_default
+
+> pdf("fig/app_desc.pdf", width = 7, height = 9)
+
+> grid.arrange(grobs = desc, ncol = 3)
+
+> dev.off()
+pdf 
+  2 
+
+> plot_df <- cbind(gather(select(media2012, id, authority_s:ingroup_s), 
++     mft, score, -id), gather(select(media2012, id, authority_lo, 
++     fairness_lo, harm_lo, ingroup_lo), mft_lo, score_lo, -id)[, 
++     -1], gather(select(media2012, id, authority_hi, fairness_hi, 
++     harm_hi, ingroup_hi), mft_hi, score_hi, -id)[, -1]) %>% mutate(mft = factor(mft, 
++     levels = rev(c("authority_s", "ingroup_s", "fairness_s", 
++         "harm_s")), labels = gsub("\\n", "", rev(mftLabs))))
+
+> ggplot(plot_df, aes(y = reorder(id, score), x = score, 
++     xmin = score_lo, xmax = score_hi)) + geom_point() + geom_errorbarh(height = 0) + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     facet_grid(. ~ mft) + ggtitle("Moral Content of Media Sources (October 2012)") + 
++     xlab("MFT Score (rescaled)") + ylab("News Source") + geom_vline(xintercept = 0, 
++     col = "lightgrey")
+
+> ggsave("fig/media_desc.pdf", width = 7, height = 4)
+
+> load("out/analyses_anes.RData")
+
+> tobit_part <- list(NULL)
+
+> tobit_part[[1]] <- vglm(general_s ~ pastvote + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_part[[2]] <- vglm(general_s ~ protest + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_part[[3]] <- vglm(general_s ~ petition + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_part[[4]] <- vglm(general_s ~ button + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_part[[5]] <- vglm(general_s ~ letter + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_part[[6]] <- vglm(general_s ~ pastvote + protest + 
++     petition + button + letter + relig + educ + age + female + 
++     black + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+> tobit_part_res <- rbind(sim(tobit_part[[1]], iv = data.frame(pastvote = range(anes2012$pastvote, 
++     na.rm = T))), sim(tobit_part[[2]], iv = data.frame(protest = range(anes2012$protest, 
++     na.rm = T))), sim(tobit_part[[3]], iv = data.frame(petition = range(anes2012$petition, 
++     na.rm = T))), sim(tobit_part[[4]], iv = data.frame(button = range(anes2012$button, 
++     na.rm = T))), sim(tobit_part[[5]], iv = data.frame(letter = range(anes2012$letter, 
++     na.rm = T))), sim(tobit_part[[6]], iv = data.frame(pastvote = range(anes2012$pastvote, 
++     na.rm = T))), sim(tobit_part[[6]], iv = data.frame(protest = range(anes2012$protest, 
++     na.rm = T))), sim(tobit_part[[6]], iv = data.frame(petition = range(anes2012$petition, 
++     na.rm = T))), sim(tobit_part[[6]], iv = data.frame(button = range(anes2012$button, 
++     na.rm = T))), sim(tobit_part[[6]], iv = data.frame(letter = range(anes2012$letter, 
++     na.rm = T))))
+
+> tobit_part_res$cond <- rep(c("No", "Yes"), each = 10)
+
+> tobit_part_res$var <- rep(c(5:1, 5:1), each = 2)
+
+> tobit_part_res$year <- "2012"
+
+> ggplot(tobit_part_res, aes(x = mean, y = var + 0.1 - 
++     0.2 * (cond == "Yes"), col = cond, shape = cond)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cihi, 
++     xmin = cilo), height = 0) + labs(y = "Independent Variable", 
++     x = "Marginal Effect") + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     scale_y_continuous(breaks = 5:1, labels = c("Voted in 2008", 
++         "Protest", "Petition", "Button", "Letter")) + ggtitle("Change in Predicted Emphasis on any Moral Foundation") + 
++     guides(col = guide_legend(title = "Control for remaining variables"), 
++         shape = guide_legend(title = "Control for remaining variables")) + 
++     theme(legend.position = "bottom", legend.box = "horizontal") + 
++     scale_color_grey(start = 0, end = 0.5) + facet_grid(~value)
+
+> ggsave(filename = "fig/tobit_part.pdf", width = 5, 
++     height = 3)
+
+> tobit_ideol_all <- list(NULL)
+
+> tobit_ideol_all[[1]] <- vglm(harm_s ~ ideol * polknow_c + 
++     ideol * polmedia_c + ideol * poldisc_c + relig + educ + age + 
++     female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol_all[[2]] <- vglm(fairness_s ~ ideol * 
++     polknow_c + ideol * polmedia_c + ideol * poldisc_c + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol_all[[3]] <- vglm(ingroup_s ~ ideol * polknow_c + 
++     ideol * polmedia_c + ideol * poldisc_c + relig + educ + age + 
++     female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol_all[[4]] <- vglm(authority_s ~ ideol * 
++     polknow_c + ideol * polmedia_c + ideol * poldisc_c + relig + 
++     educ + age + female + black + lwc + wordsum + mode, tobit(Lower = 0), 
++     data = anes2012)
+
+> tobit_ideol_res <- rbind(sim(models = tobit_ideol_know, 
++     iv = data.frame(polknow_c = rep(range(anes2012$polknow_c, 
++         na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++         1, 0, 1))), sim(models = tobit_ideol_media, iv = data.frame(polmedia_c = rep(range(anes2012$polmedia_c, 
++     na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++     1, 0, 1))), sim(models = tobit_ideol_disc, iv = data.frame(poldisc_c = rep(range(anes2012$poldisc_c, 
++     na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++     1, 0, 1))), sim(models = tobit_ideol_all, iv = data.frame(polknow_c = rep(range(anes2012$polknow_c, 
++     na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++     1, 0, 1))), sim(models = tobit_ideol_all, iv = data.frame(polmedia_c = rep(range(anes2012$polmedia_c, 
++     na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++     1, 0, 1))), sim(models = tobit_ideol_all, iv = data.frame(poldisc_c = rep(range(anes2012$poldisc_c, 
++     na.rm = T), each = 2), ideolModerate = rep(0, 4), ideolConservative = c(0, 
++     1, 0, 1))))
+
+> tobit_ideol_res$mod <- factor(rep(rep(1:3, each = 8), 
++     2), labels = gsub("\n", " ", polLabs))
+
+> tobit_ideol_res$var <- rep(c(4:1, 4:1), each = 2)
+
+> tobit_ideol_res$cond <- rep(c("No", "Yes"), each = 24)
+
+> tobit_ideol_res$year <- "2012"
+
+> ggplot(tobit_ideol_res, aes(x = mean, y = var + 0.1 - 
++     0.2 * (cond == "Yes"), col = cond, shape = cond)) + geom_vline(xintercept = 0, 
++     col = "lightgrey") + geom_point() + geom_errorbarh(aes(xmax = cihi, 
++     xmin = cilo), height = 0) + labs(y = "Moderating Variable", 
++     x = "Change in Effect of Ideology (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     scale_y_continuous(breaks = 1:4, labels = mftLabs) + ggtitle("Change in Effect of Ideology on the\nEmphasis of each Moral Foundation") + 
++     guides(col = guide_legend(title = "Control for remaining variables"), 
++         shape = guide_legend(title = "Control for remaining variables")) + 
++     theme(legend.position = "bottom", legend.box = "horizontal") + 
++     facet_grid(mod ~ value) + scale_color_grey(start = 0, end = 0.5)
+
+> ggsave(filename = "fig/tobit_ideol_difdif.pdf", width = 4, 
++     height = 5)
+
+> lapply(tobit_ideol, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median       3Q      Max
+mu       -1137.94 -0.6986 -0.5183  0.96278    2.164
+loge(sd)    -1.16 -0.8798 -0.1492 -0.05307 1165.383
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -2.004371   0.177043 -11.321  < 2e-16 ***
+(Intercept):2      0.500530   0.020001  25.026  < 2e-16 ***
+ideolModerate     -0.135554   0.075461  -1.796 0.072441 .  
+ideolConservative -0.243669   0.074601  -3.266 0.001090 ** 
+relig             -0.044088   0.086121  -0.512 0.608695    
+educ              -0.063075   0.065211  -0.967 0.333423    
+age               -0.001607   0.001817  -0.884 0.376508    
+female             0.167601   0.058805   2.850 0.004371 ** 
+black              0.026428   0.084461   0.313 0.754350    
+lwc                0.313853   0.030575  10.265  < 2e-16 ***
+wordsum            0.553103   0.154166   3.588 0.000334 ***
+mode              -0.102100   0.070350  -1.451 0.146691    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5113.444 on 9356 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -691.221 -0.4763 -0.3609 -0.2015   2.957
+loge(sd)   -1.101 -0.2415 -0.2351 -0.2113 353.882
+
+Coefficients:
+                    Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -4.7460905  0.3629356 -13.077  < 2e-16 ***
+(Intercept):2      1.0246331  0.0270277  37.910  < 2e-16 ***
+ideolModerate     -0.5114165  0.1457175  -3.510 0.000449 ***
+ideolConservative -0.6969905  0.1434214  -4.860 1.18e-06 ***
+relig              0.1101752  0.1666849   0.661 0.508626    
+educ               0.2358627  0.1247254   1.891 0.058617 .  
+age                0.0006794  0.0035283   0.193 0.847302    
+female             0.0770318  0.1138415   0.677 0.498623    
+black             -0.1240904  0.1663952  -0.746 0.455814    
+lwc                0.5272380  0.0606394   8.695  < 2e-16 ***
+wordsum            0.6615174  0.3015249   2.194 0.028242 *  
+mode               0.2060215  0.1379949   1.493 0.135446    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -3960.335 on 9356 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -158.623 -0.6013 -0.4009  0.5963   2.479
+loge(sd)   -1.102 -0.2317 -0.2106 -0.1337 120.962
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -4.867113   0.297629 -16.353  < 2e-16 ***
+(Intercept):2      0.868187   0.022708  38.232  < 2e-16 ***
+ideolModerate      0.101278   0.120761   0.839  0.40166    
+ideolConservative  0.365969   0.115491   3.169  0.00153 ** 
+relig              0.248227   0.131790   1.884  0.05963 .  
+educ               0.307054   0.099163   3.096  0.00196 ** 
+age               -0.007086   0.002821  -2.512  0.01201 *  
+female            -0.246265   0.091115  -2.703  0.00688 ** 
+black             -0.216901   0.135092  -1.606  0.10837    
+lwc                0.774521   0.050692  15.279  < 2e-16 ***
+wordsum            0.600810   0.241400   2.489  0.01282 *  
+mode               0.149482   0.109552   1.364  0.17242    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4567.612 on 9356 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median       3Q     Max
+mu       -89.488 -0.6975 -0.4820  0.84328   2.065
+loge(sd)  -1.115 -0.4498 -0.1735 -0.05231 120.354
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -3.624296   0.226771 -15.982  < 2e-16 ***
+(Intercept):2      0.684528   0.020356  33.628  < 2e-16 ***
+ideolModerate     -0.059911   0.092570  -0.647 0.517508    
+ideolConservative -0.135006   0.090828  -1.486 0.137174    
+relig             -0.123585   0.104815  -1.179 0.238368    
+educ               0.103958   0.078952   1.317 0.187935    
+age                0.002699   0.002223   1.214 0.224772    
+female            -0.096365   0.071656  -1.345 0.178677    
+black              0.338661   0.101419   3.339 0.000840 ***
+lwc                0.585110   0.038812  15.076  < 2e-16 ***
+wordsum            0.323258   0.187995   1.719 0.085524 .  
+mode               0.300991   0.087191   3.452 0.000556 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5044.255 on 9356 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(ideolConservative = "Ideology (Conservative)", 
++     ideolModerate = "Ideology (Moderate)", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol, caption = "Tobit models predicting MFT score for each foundation based \n           on ideology. Positive coefficients indicate stronger emphasis on the respective \n           foundation. Standard errors in parentheses. Estimates are used for Figure \n           \\ref{fig:tobit_ideol} in the main text.", 
++     label = "tab:tobit_ideol", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(ols_feel, summary)
+[[1]]
+
+Call:
+lm(formula = eval_party ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    relig + educ + age + female + black + lwc + wordsum + mode, 
+    data = anes2012)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-159.463  -31.299   -0.892   33.118  118.121 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   8.12917    3.35183   2.425 0.015330 *  
+harm_s        2.45388    0.71569   3.429 0.000611 ***
+fairness_s    1.83141    0.62336   2.938 0.003319 ** 
+ingroup_s    -2.91070    0.64636  -4.503 6.84e-06 ***
+authority_s   2.24904    0.66889   3.362 0.000778 ***
+relig       -27.67772    1.82056 -15.203  < 2e-16 ***
+educ          0.28443    1.46397   0.194 0.845956    
+age          -0.10730    0.03943  -2.721 0.006528 ** 
+female        7.46146    1.27960   5.831 5.84e-09 ***
+black        52.95427    1.73936  30.445  < 2e-16 ***
+lwc           2.31679    0.63707   3.637 0.000279 ***
+wordsum      -0.85110    3.29756  -0.258 0.796340    
+mode         -5.82768    1.51139  -3.856 0.000117 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 45.32 on 5122 degrees of freedom
+  (151 observations deleted due to missingness)
+Multiple R-squared:  0.2124,	Adjusted R-squared:  0.2106 
+F-statistic: 115.1 on 12 and 5122 DF,  p-value: < 2.2e-16
+
+
+[[2]]
+
+Call:
+lm(formula = eval_party ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    lwc + wordsum + mode, data = anes2012)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-142.800  -19.840   -0.319   21.531  145.270 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   4.58406    2.38868   1.919  0.05503 .  
+harm_s        0.87400    0.50016   1.747  0.08062 .  
+fairness_s    0.69132    0.43514   1.589  0.11219    
+ingroup_s    -0.89870    0.45193  -1.989  0.04680 *  
+authority_s   0.52447    0.46737   1.122  0.26185    
+pid_dem      44.59720    1.07329  41.552  < 2e-16 ***
+pid_rep     -44.70983    1.18928 -37.594  < 2e-16 ***
+relig       -11.45010    1.29600  -8.835  < 2e-16 ***
+educ          1.29988    1.02287   1.271  0.20385    
+age          -0.11901    0.02756  -4.318  1.6e-05 ***
+female        2.92603    0.89724   3.261  0.00112 ** 
+black        20.98126    1.29435  16.210  < 2e-16 ***
+lwc           1.11138    0.44518   2.496  0.01258 *  
+wordsum       2.54670    2.30887   1.103  0.27008    
+mode         -1.97455    1.06016  -1.863  0.06259 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 31.61 on 5108 degrees of freedom
+  (163 observations deleted due to missingness)
+Multiple R-squared:  0.6176,	Adjusted R-squared:  0.6166 
+F-statistic: 589.3 on 14 and 5108 DF,  p-value: < 2.2e-16
+
+
+[[3]]
+
+Call:
+lm(formula = eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    relig + educ + age + female + black + lwc + wordsum + mode, 
+    data = anes2012)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-172.900  -43.585    2.621   41.897  134.657 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  21.42811    4.00894   5.345 9.43e-08 ***
+harm_s        2.63172    0.85698   3.071  0.00215 ** 
+fairness_s    3.09084    0.74750   4.135 3.61e-05 ***
+ingroup_s    -4.00603    0.77685  -5.157 2.61e-07 ***
+authority_s   2.25064    0.79549   2.829  0.00468 ** 
+relig       -35.90599    2.18050 -16.467  < 2e-16 ***
+educ          1.33489    1.75656   0.760  0.44732    
+age          -0.30578    0.04717  -6.482 9.89e-11 ***
+female        9.26962    1.53234   6.049 1.56e-09 ***
+black        63.12909    2.08006  30.350  < 2e-16 ***
+lwc           1.75729    0.76269   2.304  0.02126 *  
+wordsum       0.58039    3.95571   0.147  0.88336    
+mode         -8.68888    1.80872  -4.804 1.60e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 54.35 on 5138 degrees of freedom
+  (135 observations deleted due to missingness)
+Multiple R-squared:  0.2253,	Adjusted R-squared:  0.2235 
+F-statistic: 124.5 on 12 and 5138 DF,  p-value: < 2.2e-16
+
+
+[[4]]
+
+Call:
+lm(formula = eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    lwc + wordsum + mode, data = anes2012)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-137.767  -27.287    0.957   27.018  156.621 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  19.16557    3.06099   6.261 4.13e-10 ***
+harm_s        0.95462    0.64264   1.485  0.13748    
+fairness_s    1.79006    0.55993   3.197  0.00140 ** 
+ingroup_s    -1.77056    0.58267  -3.039  0.00239 ** 
+authority_s   0.36634    0.59638   0.614  0.53907    
+pid_dem      47.20699    1.37505  34.331  < 2e-16 ***
+pid_rep     -52.27736    1.52706 -34.234  < 2e-16 ***
+relig       -17.64098    1.66545 -10.592  < 2e-16 ***
+educ          2.51475    1.31690   1.910  0.05624 .  
+age          -0.31547    0.03538  -8.918  < 2e-16 ***
+female        4.37278    1.15245   3.794  0.00015 ***
+black        28.20854    1.65856  17.008  < 2e-16 ***
+lwc           0.35045    0.57211   0.613  0.54019    
+wordsum       4.10533    2.97142   1.382  0.16715    
+mode         -4.45993    1.36157  -3.276  0.00106 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 40.68 on 5125 degrees of freedom
+  (146 observations deleted due to missingness)
+Multiple R-squared:  0.5665,	Adjusted R-squared:  0.5653 
+F-statistic: 478.4 on 14 and 5125 DF,  p-value: < 2.2e-16
+
+
+
+> varlabs = list(harm_s = "Harm", fairness_s = "Fairness", 
++     ingroup_s = "Ingroup", authority_s = "Authority", pid_dem = "PID (Democrat)", 
++     pid_rep = "PID (Republican)", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept)` = "Intercept")
+
+> mlabs <- c("Party (1)", "Party (2)", "Cand. (1)", 
++     "Cand. (2)")
+
+> latexTable(ols_feel, caption = "OLS models predicting feeling thermometer differentials based on\n           MFT score for each foundation. Positive coefficients indicate more favorable evaluation \n           of Democratic candidate/party than the Republican candidate/party, and vice versa. \n           Standard errors in parentheses. Estimates are used for Figure \\ref{fig:ols_feel} \n           in the main text.", 
++     label = "tab:ols_feel", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/ols_feel.tex", table.placement = "h", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(logit_vote, summary)
+[[1]]
+
+Call:
+glm(formula = vote_dem ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    relig + educ + age + female + black + lwc + wordsum + mode, 
+    family = binomial("logit"), data = anes2012)
+
+Deviance Residuals: 
+    Min       1Q   Median       3Q      Max  
+-3.1923  -0.9735   0.1610   0.9871   2.6429  
+
+Coefficients:
+             Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  0.536651   0.216611   2.477 0.013231 *  
+harm_s       0.262876   0.063570   4.135 3.55e-05 ***
+fairness_s   0.197933   0.054575   3.627 0.000287 ***
+ingroup_s   -0.175737   0.042361  -4.149 3.35e-05 ***
+authority_s  0.071049   0.041343   1.719 0.085697 .  
+relig       -1.636530   0.111647 -14.658  < 2e-16 ***
+educ         0.174873   0.083768   2.088 0.036835 *  
+age         -0.009046   0.002386  -3.791 0.000150 ***
+female       0.259088   0.076746   3.376 0.000736 ***
+black        4.239199   0.262176  16.169  < 2e-16 ***
+lwc          0.107836   0.039419   2.736 0.006226 ** 
+wordsum     -0.038294   0.205583  -0.186 0.852233    
+mode        -0.361073   0.094068  -3.838 0.000124 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5197.5  on 3826  degrees of freedom
+Residual deviance: 4046.0  on 3814  degrees of freedom
+  (1459 observations deleted due to missingness)
+AIC: 4072
+
+Number of Fisher Scoring iterations: 6
+
+
+[[2]]
+
+Call:
+glm(formula = vote_dem ~ harm_s + fairness_s + ingroup_s + authority_s + 
+    pid_dem + pid_rep + relig + educ + age + female + black + 
+    lwc + wordsum + mode, family = binomial("logit"), data = anes2012)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-3.05589  -0.35466   0.08647   0.39389   2.89147  
+
+Coefficients:
+            Estimate Std. Error z value Pr(>|z|)    
+(Intercept)  0.85538    0.29435   2.906  0.00366 ** 
+harm_s       0.24187    0.09082   2.663  0.00774 ** 
+fairness_s   0.17041    0.06970   2.445  0.01449 *  
+ingroup_s   -0.07209    0.04999  -1.442  0.14927    
+authority_s  0.01303    0.05650   0.231  0.81758    
+pid_dem      2.56984    0.13262  19.378  < 2e-16 ***
+pid_rep     -2.63627    0.15038 -17.530  < 2e-16 ***
+relig       -1.38955    0.15500  -8.965  < 2e-16 ***
+educ         0.37413    0.11655   3.210  0.00133 ** 
+age         -0.01565    0.00336  -4.657 3.21e-06 ***
+female       0.13114    0.10528   1.246  0.21292    
+black        3.26084    0.28597  11.403  < 2e-16 ***
+lwc          0.04902    0.05324   0.921  0.35721    
+wordsum      0.07025    0.28165   0.249  0.80304    
+mode        -0.38208    0.12836  -2.977  0.00292 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 5186.8  on 3818  degrees of freedom
+Residual deviance: 2383.3  on 3804  degrees of freedom
+  (1467 observations deleted due to missingness)
+AIC: 2413.3
+
+Number of Fisher Scoring iterations: 6
+
+
+
+> varlabs = list(harm_s = "Harm", fairness_s = "Fairness", 
++     ingroup_s = "Ingroup", authority_s = "Authority", pid_dem = "PID (Democrat)", 
++     pid_rep = "PID (Republican)", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept)` = "Intercept")
+
+> mlabs <- NULL
+
+> latexTable(logit_vote, caption = "Logit models predicting democratic vote choice based on\n           MFT score for each foundation. Positive coefficients indicate higher likelihood\n           to vote for the Democratic candidate than the Republican candidate. Standard errors \n           in parentheses. Estimates are used for Figure \\ref{fig:logit_vote} in the main text.", 
++     label = "tab:logit_vote", align = "lcc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/logit_vote.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_learn, summary)
+[[1]]
+
+Call:
+vglm(formula = general_s ~ polknow + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min     1Q  Median     3Q     Max
+mu       -107.120 -1.006  0.1321 0.5524   2.068
+loge(sd)   -1.065 -0.909 -0.7723 0.3121 471.386
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.4014619  0.0995590  -4.032 5.52e-05 ***
+(Intercept):2  0.2094798  0.0136037  15.399  < 2e-16 ***
+polknow        0.2600523  0.0981430   2.650  0.00806 ** 
+relig         -0.0201663  0.0524982  -0.384  0.70088    
+educ           0.0792413  0.0425415   1.863  0.06251 .  
+age           -0.0008044  0.0011465  -0.702  0.48290    
+female         0.0181512  0.0373888   0.485  0.62734    
+black          0.1090169  0.0503280   2.166  0.03030 *  
+lwc            0.0991009  0.0185461   5.344 9.12e-08 ***
+wordsum        0.2808329  0.0998854   2.812  0.00493 ** 
+mode           0.0417623  0.0441493   0.946  0.34418    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -7131.953 on 10335 degrees of freedom
+
+Number of iterations: 10 
+
+[[2]]
+
+Call:
+vglm(formula = general_s ~ polmedia + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+            Min      1Q  Median     3Q     Max
+mu       -99.46 -0.9973  0.1363 0.5600   2.246
+loge(sd)  -1.08 -0.9095 -0.7651 0.3058 463.982
+
+Coefficients:
+               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.380309   0.097443  -3.903 9.50e-05 ***
+(Intercept):2  0.208931   0.013613  15.348  < 2e-16 ***
+polmedia       0.368830   0.088301   4.177 2.95e-05 ***
+relig         -0.022402   0.052529  -0.426 0.669764    
+educ           0.079185   0.042321   1.871 0.061337 .  
+age           -0.001919   0.001196  -1.604 0.108750    
+female         0.015600   0.037049   0.421 0.673709    
+black          0.087753   0.050156   1.750 0.080189 .  
+lwc            0.097065   0.018457   5.259 1.45e-07 ***
+wordsum        0.353465   0.095682   3.694 0.000221 ***
+mode           0.043176   0.043754   0.987 0.323748    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -7116.968 on 10317 degrees of freedom
+
+Number of iterations: 10 
+
+[[3]]
+
+Call:
+vglm(formula = general_s ~ poldisc + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q     Max
+mu       -115.113 -1.0012  0.1322 0.5568   2.326
+loge(sd)   -1.076 -0.9103 -0.7670 0.2970 476.289
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.3555719  0.1013844  -3.507 0.000453 ***
+(Intercept):2  0.2133580  0.0140724  15.161  < 2e-16 ***
+poldisc        0.2625560  0.0676909   3.879 0.000105 ***
+relig         -0.0058047  0.0545670  -0.106 0.915284    
+educ           0.0967409  0.0437480   2.211 0.027014 *  
+age           -0.0003772  0.0011920  -0.316 0.751688    
+female         0.0171342  0.0384228   0.446 0.655642    
+black          0.0823936  0.0519364   1.586 0.112642    
+lwc            0.0895317  0.0194825   4.595 4.32e-06 ***
+wordsum        0.3226663  0.1002785   3.218 0.001292 ** 
+mode           0.0986450  0.0455003   2.168 0.030158 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6686.521 on 9657 degrees of freedom
+
+Number of iterations: 10 
+
+[[4]]
+
+Call:
+vglm(formula = general_s ~ polknow + polmedia + poldisc + relig + 
+    educ + age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median     3Q     Max
+mu       -90.995 -0.9873  0.1387 0.5685   2.374
+loge(sd)  -1.082 -0.9084 -0.7645 0.2902 452.627
+
+Coefficients:
+               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.446179   0.104791  -4.258 2.06e-05 ***
+(Intercept):2  0.212131   0.014079  15.068  < 2e-16 ***
+polknow        0.236205   0.102726   2.299  0.02148 *  
+polmedia       0.271994   0.094808   2.869  0.00412 ** 
+poldisc        0.201885   0.070054   2.882  0.00395 ** 
+relig         -0.009528   0.054564  -0.175  0.86137    
+educ           0.070238   0.044408   1.582  0.11373    
+age           -0.001766   0.001258  -1.404  0.16032    
+female         0.040833   0.039033   1.046  0.29551    
+black          0.090869   0.052341   1.736  0.08254 .  
+lwc            0.080181   0.019662   4.078 4.54e-05 ***
+wordsum        0.257329   0.104293   2.467  0.01361 *  
+mode           0.061278   0.046541   1.317  0.18796    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6671.562 on 9641 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(polknow = "Political Knowledge", polmedia = "Political Media Exposure", 
++     poldisc = "Political\nDiscussions", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- NULL
+
+> latexTable(tobit_learn, caption = "Tobit models predicting overall reliance on moral foundations\n           (sum of MFT scores) based on political knowledge, media exposure, and frequency of \n           political discussions. Positive coefficients indicate stronger emphasis on any foundation.\n           Standard errors in parentheses. Estimates are used for Figure \\ref{fig:tobit_learn} in \n           the main text.", 
++     label = "tab:tobit_learn", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_learn.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_ideol_know, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol * polknow_c + relig + educ + age + 
+    female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+               Min      1Q Median       3Q      Max
+mu       -1063.549 -0.6982 -0.515  0.95336    2.152
+loge(sd)    -1.161 -0.8696 -0.150 -0.05527 1139.878
+
+Coefficients:
+                             Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -1.885467   0.185902 -10.142  < 2e-16 ***
+(Intercept):2                0.499300   0.019998  24.967  < 2e-16 ***
+ideolModerate               -0.110533   0.076278  -1.449  0.14731    
+ideolConservative           -0.206423   0.077368  -2.668  0.00763 ** 
+polknow_c                    0.689918   0.250856   2.750  0.00595 ** 
+relig                       -0.038738   0.086078  -0.450  0.65268    
+educ                        -0.087987   0.065993  -1.333  0.18244    
+age                         -0.002130   0.001832  -1.162  0.24506    
+female                       0.186539   0.059717   3.124  0.00179 ** 
+black                        0.047889   0.084767   0.565  0.57211    
+lwc                          0.302827   0.030820   9.826  < 2e-16 ***
+wordsum                      0.451305   0.160330   2.815  0.00488 ** 
+mode                        -0.125307   0.071001  -1.765  0.07759 .  
+ideolModerate:polknow_c     -0.398323   0.335165  -1.188  0.23466    
+ideolConservative:polknow_c -0.608792   0.324187  -1.878  0.06039 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5109.1 on 9353 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol * polknow_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -656.859 -0.4768 -0.3615 -0.2006   3.239
+loge(sd)   -1.101 -0.2415 -0.2350 -0.2111 345.787
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -4.7154009  0.3801458 -12.404  < 2e-16 ***
+(Intercept):2                1.0239857  0.0270235  37.892  < 2e-16 ***
+ideolModerate               -0.5110554  0.1469657  -3.477 0.000506 ***
+ideolConservative           -0.7421109  0.1505746  -4.929 8.29e-07 ***
+polknow_c                    0.0030486  0.4692713   0.006 0.994817    
+relig                        0.1065048  0.1666480   0.639 0.522758    
+educ                         0.2276677  0.1262569   1.803 0.071355 .  
+age                          0.0005406  0.0035610   0.152 0.879329    
+female                       0.0832543  0.1157362   0.719 0.471928    
+black                       -0.1228034  0.1670732  -0.735 0.462323    
+lwc                          0.5258152  0.0612146   8.590  < 2e-16 ***
+wordsum                      0.6493558  0.3134236   2.072 0.038283 *  
+mode                         0.1966888  0.1393443   1.412 0.158088    
+ideolModerate:polknow_c     -0.3853891  0.6449251  -0.598 0.550126    
+ideolConservative:polknow_c  0.5430091  0.6251171   0.869 0.385038    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -3959.24 on 9353 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol * polknow_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -160.507 -0.6019 -0.4006  0.5872   2.427
+loge(sd)   -1.099 -0.2317 -0.2103 -0.1338 119.144
+
+Coefficients:
+                             Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -4.743814   0.309984 -15.303  < 2e-16 ***
+(Intercept):2                0.867671   0.022707  38.211  < 2e-16 ***
+ideolModerate                0.089477   0.122333   0.731  0.46452    
+ideolConservative            0.324270   0.120916   2.682  0.00732 ** 
+polknow_c                    0.025489   0.398686   0.064  0.94902    
+relig                        0.246978   0.131805   1.874  0.06096 .  
+educ                         0.287608   0.100369   2.866  0.00416 ** 
+age                         -0.007574   0.002848  -2.659  0.00784 ** 
+female                      -0.222043   0.092613  -2.398  0.01651 *  
+black                       -0.202250   0.135605  -1.491  0.13584    
+lwc                          0.766835   0.051070  15.015  < 2e-16 ***
+wordsum                      0.520475   0.250645   2.077  0.03784 *  
+mode                         0.130882   0.110655   1.183  0.23689    
+ideolModerate:polknow_c      0.285419   0.539003   0.530  0.59644    
+ideolConservative:polknow_c  0.522630   0.501815   1.041  0.29765    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4566.221 on 9353 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol * polknow_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+            Min      1Q  Median       3Q     Max
+mu       -93.12 -0.6950 -0.4823  0.83966   2.121
+loge(sd)  -1.13 -0.4321 -0.1751 -0.05236 122.231
+
+Coefficients:
+                             Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -3.523693   0.237261 -14.852  < 2e-16 ***
+(Intercept):2                0.682979   0.020352  33.558  < 2e-16 ***
+ideolModerate               -0.015312   0.094029  -0.163 0.870645    
+ideolConservative           -0.094368   0.095176  -0.992 0.321440    
+polknow_c                    0.904144   0.310219   2.915 0.003562 ** 
+relig                       -0.119997   0.104715  -1.146 0.251820    
+educ                         0.072092   0.079909   0.902 0.366964    
+age                          0.002150   0.002243   0.959 0.337639    
+female                      -0.077506   0.072810  -1.064 0.287107    
+black                        0.359878   0.101817   3.535 0.000408 ***
+lwc                          0.574597   0.039090  14.699  < 2e-16 ***
+wordsum                      0.231170   0.195378   1.183 0.236731    
+mode                         0.273241   0.087957   3.107 0.001893 ** 
+ideolModerate:polknow_c     -1.066190   0.412835  -2.583 0.009806 ** 
+ideolConservative:polknow_c -0.619156   0.397528  -1.558 0.119348    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5039.335 on 9353 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(polknow_c = "Political Knowledge", 
++     ideolConservative = "Ideology (Conservative)", `ideolConservative:polknow_c` = "Knowledge * Conservative", 
++     ideolModerate = "Ideology (Moderate)", `ideolModerate:polknow_c` = "Knowledge * Moderate", 
++     relig = "Church Attendance", educ = "Education (College Degree)", 
++     age = "Age", female = "Sex (Female)", black = "Race (African American)", 
++     lwc = "Word Count (log)", wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol_know, caption = "Tobit models predicting MFT score for each foundation based \n           on political knowledge (mean-centered) and ideology. Positive coefficients indicate stronger \n           emphasis on the respective foundation. Standard errors in parentheses. Estimates are used \n           for Figure \\ref{fig:tobit_ideol_know} in the main text.", 
++     label = "tab:tobit_ideol_know", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol_know.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_ideol_media, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol * polmedia_c + relig + educ + age + 
+    female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+               Min      1Q  Median       3Q      Max
+mu       -1080.532 -0.6976 -0.5172  0.95309    2.179
+loge(sd)    -1.161 -0.8739 -0.1492 -0.05295 1144.748
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -1.936606   0.181937 -10.644  < 2e-16 ***
+(Intercept):2                 0.500149   0.020008  24.997  < 2e-16 ***
+ideolModerate                -0.125051   0.075841  -1.649 0.099179 .  
+ideolConservative            -0.223343   0.075456  -2.960 0.003077 ** 
+polmedia_c                    0.498012   0.244741   2.035 0.041866 *  
+relig                        -0.047904   0.086178  -0.556 0.578296    
+educ                         -0.077760   0.065647  -1.185 0.236205    
+age                          -0.002610   0.001932  -1.351 0.176639    
+female                        0.174773   0.059166   2.954 0.003137 ** 
+black                         0.014316   0.084702   0.169 0.865787    
+lwc                           0.308946   0.030693  10.066  < 2e-16 ***
+wordsum                       0.553263   0.154186   3.588 0.000333 ***
+mode                         -0.112407   0.070608  -1.592 0.111385    
+ideolModerate:polmedia_c     -0.280307   0.326407  -0.859 0.390470    
+ideolConservative:polmedia_c -0.514092   0.316913  -1.622 0.104763    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5106.182 on 9341 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol * polmedia_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q    Max
+mu       -689.304 -0.4762 -0.3624 -0.1965   3.17
+loge(sd)   -1.101 -0.2414 -0.2347 -0.2109 353.56
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -4.620910   0.371583 -12.436  < 2e-16 ***
+(Intercept):2                 1.024312   0.027037  37.886  < 2e-16 ***
+ideolModerate                -0.507245   0.146354  -3.466 0.000529 ***
+ideolConservative            -0.731506   0.146265  -5.001  5.7e-07 ***
+polmedia_c                    0.114492   0.459906   0.249 0.803401    
+relig                         0.113285   0.167058   0.678 0.497699    
+educ                          0.225283   0.125551   1.794 0.072757 .  
+age                          -0.001184   0.003770  -0.314 0.753400    
+female                        0.100860   0.114655   0.880 0.379032    
+black                        -0.120431   0.166630  -0.723 0.469834    
+lwc                           0.520144   0.060908   8.540  < 2e-16 ***
+wordsum                       0.651076   0.301671   2.158 0.030910 *  
+mode                          0.190188   0.138579   1.372 0.169932    
+ideolModerate:polmedia_c      0.038168   0.629114   0.061 0.951622    
+ideolConservative:polmedia_c  0.809639   0.605701   1.337 0.181322    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -3954.621 on 9341 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol * polmedia_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -160.118 -0.6014 -0.3989  0.5838   2.486
+loge(sd)   -1.102 -0.2317 -0.2105 -0.1336 121.545
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -4.768793   0.304670 -15.652  < 2e-16 ***
+(Intercept):2                 0.867500   0.022718  38.186  < 2e-16 ***
+ideolModerate                 0.122742   0.121699   1.009  0.31318    
+ideolConservative             0.378723   0.117429   3.225  0.00126 ** 
+polmedia_c                    0.683532   0.393740   1.736  0.08256 .  
+relig                         0.249786   0.131898   1.894  0.05825 .  
+educ                          0.292137   0.099746   2.929  0.00340 ** 
+age                          -0.008865   0.003014  -2.942  0.00327 ** 
+female                       -0.233158   0.091679  -2.543  0.01098 *  
+black                        -0.218689   0.135310  -1.616  0.10605    
+lwc                           0.765996   0.050839  15.067  < 2e-16 ***
+wordsum                       0.620352   0.241463   2.569  0.01020 *  
+mode                          0.132560   0.109931   1.206  0.22788    
+ideolModerate:polmedia_c     -0.512306   0.525287  -0.975  0.32942    
+ideolConservative:polmedia_c -0.388419   0.491081  -0.791  0.42898    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4560.858 on 9341 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol * polmedia_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median       3Q     Max
+mu       -89.656 -0.6955 -0.4780  0.84767   2.163
+loge(sd)  -1.124 -0.4426 -0.1738 -0.05222 120.590
+
+Coefficients:
+                               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -3.4850225  0.2320219 -15.020  < 2e-16 ***
+(Intercept):2                 0.6835956  0.0203654  33.567  < 2e-16 ***
+ideolModerate                -0.0342376  0.0932673  -0.367  0.71355    
+ideolConservative            -0.1255291  0.0925860  -1.356  0.17516    
+polmedia_c                    0.7717642  0.3019860   2.556  0.01060 *  
+relig                        -0.1246399  0.1049310  -1.188  0.23490    
+educ                          0.0769150  0.0794440   0.968  0.33296    
+age                           0.0003007  0.0023653   0.127  0.89883    
+female                       -0.0703322  0.0720818  -0.976  0.32920    
+black                         0.3219197  0.1016063   3.168  0.00153 ** 
+lwc                           0.5769068  0.0389356  14.817  < 2e-16 ***
+wordsum                       0.3201870  0.1879318   1.704  0.08843 .  
+mode                          0.2839651  0.0874964   3.245  0.00117 ** 
+ideolModerate:polmedia_c     -0.6906931  0.4022084  -1.717  0.08593 .  
+ideolConservative:polmedia_c -0.1655024  0.3873515  -0.427  0.66919    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5032.753 on 9341 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(polmedia_c = "Political Media Exposure", 
++     ideolConservative = "Ideology (Conservative)", `ideolConservative:polmedia_c` = "Media * Conservative", 
++     ideolModerate = "Ideology (Moderate)", `ideolModerate:polmedia_c` = "Media * Moderate", 
++     relig = "Church Attendance", educ = "Education (College Degree)", 
++     age = "Age", female = "Sex (Female)", black = "Race (African American)", 
++     lwc = "Word Count (log)", wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol_media, caption = "Tobit models predicting MFT score for each foundation based \n           on political media exposure (mean-centered) and ideology. Positive coefficients indicate \n           stronger emphasis on the respective foundation. Standard errors in parentheses. Estimates \n           are used for Figure \\ref{fig:tobit_ideol_media} in the main text.", 
++     label = "tab:tobit_ideol_media", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol_media.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_ideol_disc, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol * poldisc_c + relig + educ + age + 
+    female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+               Min      1Q  Median       3Q      Max
+mu       -1082.634 -0.7010 -0.5176  0.95950    2.194
+loge(sd)    -1.161 -0.8871 -0.1528 -0.05612 1130.228
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -1.9722921  0.1882178 -10.479  < 2e-16 ***
+(Intercept):2                0.5088111  0.0206648  24.622  < 2e-16 ***
+ideolModerate               -0.1565997  0.0791489  -1.979 0.047867 *  
+ideolConservative           -0.2829943  0.0791093  -3.577 0.000347 ***
+poldisc_c                    0.1489177  0.1817810   0.819 0.412664    
+relig                        0.0007412  0.0898892   0.008 0.993421    
+educ                        -0.0738477  0.0680692  -1.085 0.277970    
+age                         -0.0020407  0.0019119  -1.067 0.285815    
+female                       0.1579164  0.0614663   2.569 0.010195 *  
+black                        0.0031161  0.0880092   0.035 0.971755    
+lwc                          0.3114530  0.0325567   9.566  < 2e-16 ***
+wordsum                      0.5300160  0.1620028   3.272 0.001069 ** 
+mode                        -0.0790099  0.0741992  -1.065 0.286950    
+ideolModerate:poldisc_c     -0.3562771  0.2701025  -1.319 0.187154    
+ideolConservative:poldisc_c  0.1315953  0.2375271   0.554 0.579564    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4811.881 on 8739 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol * poldisc_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -697.520 -0.4789 -0.3539 -0.1979   3.083
+loge(sd)   -1.101 -0.2421 -0.2352 -0.2105 351.668
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -4.6053505  0.3832504 -12.017  < 2e-16 ***
+(Intercept):2                1.0332597  0.0278892  37.049  < 2e-16 ***
+ideolModerate               -0.4971800  0.1525813  -3.258  0.00112 ** 
+ideolConservative           -0.7267053  0.1529898  -4.750 2.03e-06 ***
+poldisc_c                    0.1816558  0.3408481   0.533  0.59407    
+relig                        0.1263188  0.1740965   0.726  0.46810    
+educ                         0.2224026  0.1300899   1.710  0.08734 .  
+age                         -0.0001812  0.0037187  -0.049  0.96115    
+female                       0.1241931  0.1190976   1.043  0.29705    
+black                       -0.1347953  0.1734758  -0.777  0.43714    
+lwc                          0.4739890  0.0641303   7.391 1.46e-13 ***
+wordsum                      0.6984293  0.3172078   2.202  0.02768 *  
+mode                         0.2505064  0.1454677   1.722  0.08506 .  
+ideolModerate:poldisc_c      0.7294280  0.5071493   1.438  0.15035    
+ideolConservative:poldisc_c  0.6827022  0.4495142   1.519  0.12882    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -3726.776 on 8739 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol * poldisc_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -157.265 -0.5960 -0.3943  0.5879   2.447
+loge(sd)   -1.107 -0.2311 -0.2115 -0.1337 122.359
+
+Coefficients:
+                             Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -4.669972   0.308357 -15.145  < 2e-16 ***
+(Intercept):2                0.856307   0.023392  36.606  < 2e-16 ***
+ideolModerate                0.090457   0.123864   0.730  0.46521    
+ideolConservative            0.276140   0.120469   2.292  0.02189 *  
+poldisc_c                    0.177772   0.282419   0.629  0.52905    
+relig                        0.265081   0.134968   1.964  0.04953 *  
+educ                         0.307589   0.101268   3.037  0.00239 ** 
+age                         -0.007084   0.002912  -2.433  0.01499 *  
+female                      -0.239540   0.093391  -2.565  0.01032 *  
+black                       -0.228477   0.137942  -1.656  0.09766 .  
+lwc                          0.729596   0.052520  13.892  < 2e-16 ***
+wordsum                      0.549773   0.248537   2.212  0.02696 *  
+mode                         0.218679   0.113295   1.930  0.05358 .  
+ideolModerate:poldisc_c      0.575979   0.409647   1.406  0.15971    
+ideolConservative:poldisc_c  0.716585   0.356459   2.010  0.04440 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4271.252 on 8739 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol * poldisc_c + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median       3Q     Max
+mu       -81.051 -0.7030 -0.4828  0.84282   2.063
+loge(sd)  -1.122 -0.4672 -0.1698 -0.04255 119.825
+
+Coefficients:
+                             Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1               -3.526272   0.233773 -15.084  < 2e-16 ***
+(Intercept):2                0.665157   0.020871  31.870  < 2e-16 ***
+ideolModerate               -0.090175   0.094476  -0.954 0.339842    
+ideolConservative           -0.121875   0.093603  -1.302 0.192900    
+poldisc_c                    0.222359   0.215911   1.030 0.303074    
+relig                       -0.148617   0.106224  -1.399 0.161787    
+educ                         0.118994   0.079862   1.490 0.136225    
+age                          0.003172   0.002271   1.397 0.162433    
+female                      -0.069836   0.072657  -0.961 0.336466    
+black                        0.338441   0.102609   3.298 0.000973 ***
+lwc                          0.556844   0.039948  13.939  < 2e-16 ***
+wordsum                      0.342243   0.191804   1.784 0.074369 .  
+mode                         0.282851   0.089018   3.177 0.001486 ** 
+ideolModerate:poldisc_c     -0.547020   0.322243  -1.698 0.089595 .  
+ideolConservative:poldisc_c  0.242438   0.279534   0.867 0.385780    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4725.779 on 8739 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(poldisc_c = "Political Discussion", 
++     ideolConservative = "Ideology (Conservative)", `ideolConservative:poldisc_c` = "Discussion * Conservative", 
++     ideolModerate = "Ideology (Moderate)", `ideolModerate:poldisc_c` = "Discussion * Moderate", 
++     relig = "Church Attendance", educ = "Education (College Degree)", 
++     age = "Age", female = "Sex (Female)", black = "Race (African American)", 
++     lwc = "Word Count (log)", wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol_disc, caption = "Tobit models predicting MFT score for each foundation based \n           on political discussion frequency (mean-centered) and ideology. Positive coefficients \n           indicate stronger emphasis on the respective foundation. Standard errors in parentheses. \n           Estimates are used for Figure \\ref{fig:tobit_ideol_disc} in the main text.", 
++     label = "tab:tobit_ideol_disc", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol_disc.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_cont, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ media_harm_s + +relig + educ + age + 
+    female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median       3Q      Max
+mu       -1220.60 -0.7100 -0.5256  0.94214    2.018
+loge(sd)    -1.16 -0.8781 -0.1411 -0.04475 1231.703
+
+Coefficients:
+               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -2.025221   0.151841 -13.338  < 2e-16 ***
+(Intercept):2  0.481196   0.018880  25.487  < 2e-16 ***
+media_harm_s   0.030444   0.016437   1.852 0.064002 .  
+relig         -0.128177   0.077679  -1.650 0.098924 .  
+educ          -0.062542   0.062521  -1.000 0.317150    
+age           -0.002055   0.001697  -1.211 0.225900    
+female         0.196266   0.054975   3.570 0.000357 ***
+black          0.161434   0.073423   2.199 0.027900 *  
+lwc            0.303981   0.028208  10.776  < 2e-16 ***
+wordsum        0.518695   0.142850   3.631 0.000282 ***
+mode          -0.117445   0.063719  -1.843 0.065305 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5650.439 on 10335 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ media_fairness_s + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -858.262 -0.4655 -0.3520 -0.2034   2.967
+loge(sd)   -1.105 -0.2406 -0.2344 -0.2124 400.609
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1    -5.413972   0.330760 -16.368   <2e-16 ***
+(Intercept):2     1.010669   0.026256  38.493   <2e-16 ***
+media_fairness_s  0.051306   0.024203   2.120   0.0340 *  
+relig            -0.028918   0.152316  -0.190   0.8494    
+educ              0.238914   0.122040   1.958   0.0503 .  
+age               0.001643   0.003486   0.471   0.6375    
+female            0.153130   0.108529   1.411   0.1583    
+black            -0.019588   0.149809  -0.131   0.8960    
+lwc               0.559869   0.057548   9.729   <2e-16 ***
+wordsum           0.679410   0.288465   2.355   0.0185 *  
+mode              0.321987   0.128142   2.513   0.0120 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4222.391 on 10335 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ media_ingroup_s + relig + educ + age + 
+    female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -152.423 -0.5871 -0.3946  0.5142   2.403
+loge(sd)   -1.103 -0.2323 -0.2132 -0.1420 117.336
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1   -4.9446748  0.2691630 -18.371  < 2e-16 ***
+(Intercept):2    0.8790339  0.0220127  39.933  < 2e-16 ***
+media_ingroup_s  0.0005692  0.0294749   0.019 0.984592    
+relig            0.3568939  0.1237602   2.884 0.003930 ** 
+educ             0.3450868  0.0986081   3.500 0.000466 ***
+age             -0.0041635  0.0027497  -1.514 0.129981    
+female          -0.3075767  0.0880665  -3.493 0.000478 ***
+black           -0.2719759  0.1234454  -2.203 0.027580 *  
+lwc              0.7976853  0.0491518  16.229  < 2e-16 ***
+wordsum          0.4516015  0.2331770   1.937 0.052778 .  
+mode             0.2482612  0.1040501   2.386 0.017034 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4935.651 on 10335 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ media_authority_s + relig + educ + 
+    age + female + black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median       3Q     Max
+mu       -84.494 -0.6952 -0.4815  0.84872   2.095
+loge(sd)  -1.118 -0.4587 -0.1737 -0.05433 116.143
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -3.534536   0.200565 -17.623  < 2e-16 ***
+(Intercept):2      0.691020   0.019418  35.587  < 2e-16 ***
+media_authority_s  0.000774   0.017374   0.045 0.964465    
+relig             -0.114596   0.097315  -1.178 0.238962    
+educ               0.109721   0.078552   1.397 0.162478    
+age                0.000559   0.002168   0.258 0.796586    
+female            -0.091666   0.069046  -1.328 0.184310    
+black              0.383221   0.091754   4.177 2.96e-05 ***
+lwc                0.587967   0.037066  15.863  < 2e-16 ***
+wordsum            0.254604   0.180891   1.407 0.159280    
+mode               0.268232   0.080954   3.313 0.000922 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -5581.153 on 10335 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(media_harm_s = "Media MFT score (harm)", 
++     media_fairness_s = "Media MFT score (fairness)", media_ingroup_s = "Media MFT score (ingroup)", 
++     media_authority_s = "Media MFT score (authority)", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_cont, caption = "Tobit models predicting MFT score for each foundation based \n           on moral content of individual media environments. Positive coefficients \n           indicate stronger emphasis on the respective foundation. Standard errors in parentheses. \n           Estimates are used for Figure \\ref{fig:tobit_cont} in the main text.", 
++     label = "tab:tobit_cont", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_cont.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_part, summary)
+[[1]]
+
+Call:
+vglm(formula = general_s ~ pastvote + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q     Max
+mu       -114.807 -1.0054  0.1297 0.5568   2.086
+loge(sd)   -1.065 -0.9099 -0.7744 0.3110 479.592
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.3534204  0.0972196  -3.635 0.000278 ***
+(Intercept):2  0.2087589  0.0136259  15.321  < 2e-16 ***
+pastvote       0.0962900  0.0516480   1.864 0.062273 .  
+relig         -0.0323828  0.0527866  -0.613 0.539568    
+educ           0.0850953  0.0425051   2.002 0.045284 *  
+age           -0.0009035  0.0011726  -0.770 0.441007    
+female         0.0024577  0.0368938   0.067 0.946888    
+black          0.0891171  0.0503661   1.769 0.076829 .  
+lwc            0.1028317  0.0184924   5.561 2.69e-08 ***
+wordsum        0.3389008  0.0961502   3.525 0.000424 ***
+mode           0.0534591  0.0439960   1.215 0.224332    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -7108.357 on 10303 degrees of freedom
+
+Number of iterations: 10 
+
+[[2]]
+
+Call:
+vglm(formula = general_s ~ protest + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median     3Q     Max
+mu       -114.85 -1.0055  0.1305 0.5502   2.138
+loge(sd)   -1.06 -0.9101 -0.7774 0.3066 474.721
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.3850749  0.1011347  -3.808 0.000140 ***
+(Intercept):2  0.2150395  0.0140593  15.295  < 2e-16 ***
+protest        0.0759424  0.0762766   0.996 0.319436    
+relig          0.0014654  0.0545467   0.027 0.978567    
+educ           0.1025276  0.0437890   2.341 0.019212 *  
+age            0.0001114  0.0011859   0.094 0.925167    
+female         0.0107792  0.0384288   0.280 0.779095    
+black          0.0879673  0.0519407   1.694 0.090340 .  
+lwc            0.1052718  0.0191239   5.505  3.7e-08 ***
+wordsum        0.3486516  0.1000250   3.486 0.000491 ***
+mode           0.0798472  0.0452599   1.764 0.077700 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6708.767 on 9681 degrees of freedom
+
+Number of iterations: 10 
+
+[[3]]
+
+Call:
+vglm(formula = general_s ~ petition + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q     Max
+mu       -116.925 -1.0018  0.1261 0.5548   2.167
+loge(sd)   -1.065 -0.9088 -0.7734 0.2967 476.614
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -3.624e-01  1.016e-01  -3.566 0.000362 ***
+(Intercept):2  2.152e-01  1.408e-02  15.280  < 2e-16 ***
+petition       1.218e-01  4.095e-02   2.974 0.002942 ** 
+relig          1.022e-03  5.464e-02   0.019 0.985076    
+educ           9.543e-02  4.394e-02   2.172 0.029860 *  
+age            9.916e-05  1.189e-03   0.083 0.933517    
+female         9.925e-03  3.844e-02   0.258 0.796278    
+black          9.019e-02  5.206e-02   1.732 0.083195 .  
+lwc            9.681e-02  1.937e-02   4.999 5.77e-07 ***
+wordsum        3.124e-01  1.011e-01   3.089 0.002008 ** 
+mode           6.960e-02  4.553e-02   1.529 0.126351    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6687.75 on 9655 degrees of freedom
+
+Number of iterations: 10 
+
+[[4]]
+
+Call:
+vglm(formula = general_s ~ button + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q     Max
+mu       -117.772 -1.0019  0.1326 0.5487   2.064
+loge(sd)   -1.062 -0.9099 -0.7757 0.3005 478.168
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -3.762e-01  1.011e-01  -3.721 0.000198 ***
+(Intercept):2  2.143e-01  1.406e-02  15.244  < 2e-16 ***
+button         1.347e-01  5.088e-02   2.647 0.008132 ** 
+relig         -7.163e-03  5.456e-02  -0.131 0.895551    
+educ           1.080e-01  4.371e-02   2.470 0.013505 *  
+age           -9.936e-05  1.186e-03  -0.084 0.933209    
+female         1.029e-02  3.834e-02   0.268 0.788493    
+black          6.870e-02  5.246e-02   1.310 0.190334    
+lwc            1.032e-01  1.909e-02   5.406 6.46e-08 ***
+wordsum        3.496e-01  9.989e-02   3.499 0.000466 ***
+mode           7.311e-02  4.526e-02   1.615 0.106216    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6708.701 on 9687 degrees of freedom
+
+Number of iterations: 10 
+
+[[5]]
+
+Call:
+vglm(formula = general_s ~ letter + relig + educ + age + female + 
+    black + lwc + wordsum + mode, family = tobit(Lower = 0), 
+    data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q    Max
+mu       -114.944 -1.0069  0.1334 0.5519   2.16
+loge(sd)   -1.059 -0.9109 -0.7762 0.3044 475.26
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -3.579e-01  1.020e-01  -3.510 0.000448 ***
+(Intercept):2  2.145e-01  1.406e-02  15.258  < 2e-16 ***
+letter         9.018e-02  4.789e-02   1.883 0.059701 .  
+relig         -3.675e-03  5.459e-02  -0.067 0.946331    
+educ           9.524e-02  4.402e-02   2.164 0.030487 *  
+age           -6.886e-05  1.187e-03  -0.058 0.953735    
+female         1.451e-02  3.847e-02   0.377 0.705923    
+black          9.240e-02  5.194e-02   1.779 0.075254 .  
+lwc            1.006e-01  1.932e-02   5.206 1.92e-07 ***
+wordsum        3.384e-01  1.001e-01   3.381 0.000722 ***
+mode           6.945e-02  4.556e-02   1.524 0.127409    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6708.582 on 9683 degrees of freedom
+
+Number of iterations: 10 
+
+[[6]]
+
+Call:
+vglm(formula = general_s ~ pastvote + protest + petition + button + 
+    letter + relig + educ + age + female + black + lwc + wordsum + 
+    mode, family = tobit(Lower = 0), data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median     3Q     Max
+mu       -113.724 -0.9929  0.1308 0.5527   2.142
+loge(sd)   -1.081 -0.9098 -0.7726 0.2909 474.879
+
+Coefficients:
+                Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1 -0.3642983  0.1027948  -3.544 0.000394 ***
+(Intercept):2  0.2134240  0.0141092  15.127  < 2e-16 ***
+pastvote       0.0913235  0.0541667   1.686 0.091802 .  
+protest       -0.0015593  0.0798874  -0.020 0.984427    
+petition       0.0906049  0.0440897   2.055 0.039878 *  
+button         0.1063140  0.0524636   2.026 0.042720 *  
+letter         0.0404284  0.0513322   0.788 0.430941    
+relig         -0.0232265  0.0550679  -0.422 0.673186    
+educ           0.0855711  0.0445725   1.920 0.054881 .  
+age           -0.0005727  0.0012299  -0.466 0.641482    
+female         0.0143983  0.0386240   0.373 0.709311    
+black          0.0707723  0.0529541   1.336 0.181391    
+lwc            0.0907516  0.0196107   4.628  3.7e-06 ***
+wordsum        0.2989464  0.1014492   2.947 0.003211 ** 
+mode           0.0557444  0.0462567   1.205 0.228161    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -6656.765 on 9617 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(pastvote = "Voted in 2008", protest = "Protest", 
++     petition = "Petition", button = "Button", letter = "Letter", 
++     relig = "Church Attendance", educ = "Education (College Degree)", 
++     age = "Age", female = "Sex (Female)", black = "Race (African American)", 
++     lwc = "Word Count (log)", wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- NULL
+
+> latexTable(tobit_part, caption = "Tobit models predicting overall reliance on moral foundations\n           (sum of MFT scores) based on political participation. Positive coefficients indicate \n           stronger emphasis on any foundation. Standard errors in parentheses. Estimates are \n           used for Figure \\ref{fig:tobit_part} in the appendix.", 
++     label = "tab:tobit_part", align = "lcccccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_part.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+
+> lapply(tobit_ideol_all, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol * polknow_c + ideol * polmedia_c + 
+    ideol * poldisc_c + relig + educ + age + female + black + 
+    lwc + wordsum + mode, family = tobit(Lower = 0), data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -928.465 -0.7003 -0.5102  0.9523    2.24
+loge(sd)   -1.166 -0.8871 -0.1544 -0.0559 1074.93
+
+Coefficients:
+                               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -1.7999164  0.1994010  -9.027  < 2e-16 ***
+(Intercept):2                 0.5069700  0.0206684  24.529  < 2e-16 ***
+ideolModerate                -0.1331421  0.0800683  -1.663  0.09634 .  
+ideolConservative            -0.2406582  0.0817361  -2.944  0.00324 ** 
+polknow_c                     0.6680016  0.2624453   2.545  0.01092 *  
+polmedia_c                    0.4120822  0.2664913   1.546  0.12203    
+poldisc_c                     0.0336149  0.1899695   0.177  0.85955    
+relig                        -0.0002001  0.0898862  -0.002  0.99822    
+educ                         -0.1115942  0.0692188  -1.612  0.10692    
+age                          -0.0032154  0.0020320  -1.582  0.11355    
+female                        0.1785069  0.0625822   2.852  0.00434 ** 
+black                         0.0199320  0.0886084   0.225  0.82202    
+lwc                           0.2978413  0.0327771   9.087  < 2e-16 ***
+wordsum                       0.4314498  0.1682018   2.565  0.01032 *  
+mode                         -0.1158870  0.0753460  -1.538  0.12403    
+ideolModerate:polknow_c      -0.4062292  0.3547458  -1.145  0.25216    
+ideolConservative:polknow_c  -0.4680867  0.3480722  -1.345  0.17869    
+ideolModerate:polmedia_c     -0.0771412  0.3561038  -0.217  0.82850    
+ideolConservative:polmedia_c -0.6569029  0.3534268  -1.859  0.06307 .  
+ideolModerate:poldisc_c      -0.3042755  0.2801312  -1.086  0.27740    
+ideolConservative:poldisc_c   0.3067954  0.2500603   1.227  0.21987    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4800.524 on 8723 degrees of freedom
+
+Number of iterations: 12 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol * polknow_c + ideol * polmedia_c + 
+    ideol * poldisc_c + relig + educ + age + female + black + 
+    lwc + wordsum + mode, family = tobit(Lower = 0), data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -662.035 -0.4795 -0.3551 -0.1988   3.517
+loge(sd)   -1.102 -0.2420 -0.2350 -0.2107 343.211
+
+Coefficients:
+                               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -4.6287199  0.4063933 -11.390  < 2e-16 ***
+(Intercept):2                 1.0329253  0.0278977  37.025  < 2e-16 ***
+ideolModerate                -0.4945195  0.1539412  -3.212  0.00132 ** 
+ideolConservative            -0.7736266  0.1597685  -4.842 1.28e-06 ***
+polknow_c                    -0.1909263  0.4921214  -0.388  0.69804    
+polmedia_c                   -0.0318394  0.5016117  -0.063  0.94939    
+poldisc_c                     0.1998201  0.3562419   0.561  0.57486    
+relig                         0.1236593  0.1743774   0.709  0.47823    
+educ                          0.2265645  0.1324321   1.711  0.08712 .  
+age                          -0.0004692  0.0039710  -0.118  0.90594    
+female                        0.1262003  0.1214922   1.039  0.29892    
+black                        -0.1360876  0.1746303  -0.779  0.43581    
+lwc                           0.4778653  0.0647721   7.378 1.61e-13 ***
+wordsum                       0.7395282  0.3296553   2.243  0.02488 *  
+mode                          0.2476063  0.1479431   1.674  0.09420 .  
+ideolModerate:polknow_c      -0.3648532  0.6851653  -0.533  0.59438    
+ideolConservative:polknow_c   0.5256259  0.6712644   0.783  0.43360    
+ideolModerate:polmedia_c      0.0130563  0.6903550   0.019  0.98491    
+ideolConservative:polmedia_c  0.4286978  0.6753639   0.635  0.52558    
+ideolModerate:poldisc_c       0.7372571  0.5264187   1.401  0.16136    
+ideolConservative:poldisc_c   0.5367162  0.4740242   1.132  0.25753    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -3722.188 on 8723 degrees of freedom
+
+Number of iterations: 14 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol * polknow_c + ideol * polmedia_c + 
+    ideol * poldisc_c + relig + educ + age + female + black + 
+    lwc + wordsum + mode, family = tobit(Lower = 0), data = anes2012)
+
+Pearson residuals:
+              Min      1Q  Median      3Q     Max
+mu       -151.748 -0.5939 -0.3907  0.5886   2.381
+loge(sd)   -1.099 -0.2310 -0.2105 -0.1345 118.822
+
+Coefficients:
+                              Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -4.504938   0.323700 -13.917  < 2e-16 ***
+(Intercept):2                 0.855021   0.023388  36.559  < 2e-16 ***
+ideolModerate                 0.077463   0.125563   0.617  0.53729    
+ideolConservative             0.260032   0.125255   2.076  0.03789 *  
+polknow_c                    -0.096026   0.407034  -0.236  0.81350    
+polmedia_c                    0.604106   0.417359   1.447  0.14777    
+poldisc_c                     0.059201   0.294641   0.201  0.84076    
+relig                         0.255816   0.135030   1.895  0.05816 .  
+educ                          0.286547   0.102938   2.784  0.00537 ** 
+age                          -0.008113   0.003106  -2.612  0.00900 ** 
+female                       -0.213010   0.095121  -2.239  0.02513 *  
+black                        -0.212817   0.138752  -1.534  0.12508    
+lwc                           0.719990   0.052836  13.627  < 2e-16 ***
+wordsum                       0.475672   0.257648   1.846  0.06486 .  
+mode                          0.183845   0.115036   1.598  0.11001    
+ideolModerate:polknow_c       0.781913   0.560822   1.394  0.16325    
+ideolConservative:polknow_c   0.513754   0.524492   0.980  0.32732    
+ideolModerate:polmedia_c     -0.593901   0.562036  -1.057  0.29065    
+ideolConservative:polmedia_c -0.777208   0.533568  -1.457  0.14522    
+ideolModerate:poldisc_c       0.658855   0.425591   1.548  0.12160    
+ideolConservative:poldisc_c   0.852918   0.374803   2.276  0.02287 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4266.815 on 8723 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol * polknow_c + ideol * polmedia_c + 
+    ideol * poldisc_c + relig + educ + age + female + black + 
+    lwc + wordsum + mode, family = tobit(Lower = 0), data = anes2012)
+
+Pearson residuals:
+             Min      1Q  Median       3Q     Max
+mu       -83.626 -0.6999 -0.4799  0.84892   2.132
+loge(sd)  -1.133 -0.4600 -0.1711 -0.04115 121.260
+
+Coefficients:
+                               Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1                -3.3662137  0.2466109 -13.650  < 2e-16 ***
+(Intercept):2                 0.6639226  0.0208821  31.794  < 2e-16 ***
+ideolModerate                -0.0381267  0.0961829  -0.396 0.691811    
+ideolConservative            -0.0686912  0.0977869  -0.702 0.482394    
+polknow_c                     0.7891035  0.3152490   2.503 0.012311 *  
+polmedia_c                    0.5857300  0.3195904   1.833 0.066839 .  
+poldisc_c                     0.0780236  0.2259104   0.345 0.729813    
+relig                        -0.1461649  0.1063539  -1.374 0.169341    
+educ                          0.0744756  0.0812752   0.916 0.359489    
+age                           0.0009258  0.0024169   0.383 0.701672    
+female                       -0.0408147  0.0741015  -0.551 0.581774    
+black                         0.3468521  0.1033933   3.355 0.000795 ***
+lwc                           0.5466856  0.0402391  13.586  < 2e-16 ***
+wordsum                       0.2870354  0.1991947   1.441 0.149591    
+mode                          0.2434994  0.0904614   2.692 0.007108 ** 
+ideolModerate:polknow_c      -0.9480935  0.4250283  -2.231 0.025704 *  
+ideolConservative:polknow_c  -0.7009325  0.4127373  -1.698 0.089460 .  
+ideolModerate:polmedia_c     -0.3517825  0.4269711  -0.824 0.409995    
+ideolConservative:polmedia_c -0.1599262  0.4180663  -0.383 0.702062    
+ideolModerate:poldisc_c      -0.4168486  0.3341190  -1.248 0.212176    
+ideolConservative:poldisc_c   0.3033756  0.2943347   1.031 0.302674    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -4713.309 on 8723 degrees of freedom
+
+Number of iterations: 10 
+
+
+> varlabs = list(polknow_c = "Political Knowledge", 
++     polmedia_c = "Political Media Exposure", poldisc_c = "Political Discussion", 
++     ideolConservative = "Ideology (Conservative)", `ideolConservative:polknow_c` = "Knowledge * Conservative", 
++     `ideolConservative:polmedia_c` = "Media * Conservative", 
++     `ideolConservative:poldisc_c` = "Discussion * Conservative", 
++     ideolModerate = "Ideology (Moderate)", `ideolModerate:polknow_c` = "Knowledge * Moderate", 
++     `ideolModerate:polmedia_c` = "Media * Moderate", `ideolModerate:poldisc_c` = "Discussion * Moderate", 
++     relig = "Church Attendance", educ = "Education (College Degree)", 
++     age = "Age", female = "Sex (Female)", black = "Race (African American)", 
++     lwc = "Word Count (log)", wordsum = "Wordsum Score", mode = "Survey Mode (Online)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol_all, caption = "Tobit models predicting MFT score for each foundation based \n           on political knowledge, media exposure, and discussion frequency (all mean-centered)\n           as well as ideology. Positive coefficients indicate stronger emphasis on the respective\n           foundation. Standard errors in parentheses. Estimates are used for Figure\n           \\ref{fig:tobit_ideol_difdif} in the appendix.", 
++     label = "tab:tobit_ideol_difdif", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol_difdif.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+Warning messages:
+1: Removed 10 rows containing non-finite values (stat_count). 
+2: Removed 353 rows containing non-finite values (stat_count). 
+3: Removed 24 rows containing non-finite values (stat_bin). 
+4: Removed 41 rows containing non-finite values (stat_bin). 
+5: Removed 50 rows containing non-finite values (stat_count). 
+6: Removed 8 rows containing non-finite values (stat_count). 
+7: In if (class(x[[1]]) == "vglm") { :
+  the condition has length > 1 and only the first element will be used
+8: In if (class(x[[1]]) == "lm") { :
+  the condition has length > 1 and only the first element will be used
+> 
+> 
+> ### LI survey analyses
+> 
+> ## prepare dataset
+> source("prep_lisurvey.R", echo=T, max.deparse.length=10000)
+
+> pkg <- c("tidyverse", "foreign", "car", "quanteda", 
++     "gridExtra", "stargazer", "xtable", "VGAM")
+
+> invisible(lapply(pkg, library, character.only = TRUE))
+
+> rm(list = ls())
+
+> setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
+
+> source("func.R")
+
+> datsrc <- "~/Dropbox/Uni/Data/"
+
+> raw <- read.dta(paste0(datsrc, "lisurvey/combined123.dta"))
+
+> raw$id <- rownames(raw)
+
+> lidat <- data.frame(id = raw$id)
+
+> lidat$ideol <- recode(raw$ideol, "'liberal' = 'Liberal'; 'moderate'='Moderate'\n                      ; 'conservative'='Conservative'; else=NA")
+
+> lidat$ideol <- factor(lidat$ideol, levels = c("Liberal", 
++     "Moderate", "Conservative"))
+
+> lidat$follow <- (4 - recode(as.numeric(raw$follow), 
++     "5=NA"))/3
+
+> lidat$polact <- ((recode(raw$polact1, "'no answer'=NA") == 
++     "yes") + (recode(raw$polact2, "'no answer'=NA") == "yes") + 
++     (recode(raw$polact3, "'no answer'=NA") == "yes") + (recode(raw$polact4, 
++     "'no answer'=NA") == "yes"))/4
+
+> lidat$vote98 <- recode(raw$vote98, "'yes'=1; 'no'=0; else=NA")
+
+> lidat$age <- recode(raw$age, "111=NA")
+
+> lidat$female <- recode(raw$gender, "'female'=1; 'male'=0; else=NA")
+
+> lidat$black <- recode(as.numeric(raw$race), "c(2,7)=1; c(9,10)=NA; else=0")
+
+> lidat$relig <- (recode(as.numeric(raw$relattnd), "c(7,8)=NA") - 
++     1)/5
+
+> lidat$educ <- as.numeric(recode(as.numeric(raw$educ), 
++     "c(15,16)=NA") >= 11)
+
+> dict_list <- sapply(c("authority", "fairness", "harm", 
++     "ingroup", "purity"), function(x) {
++     read.csv(paste0("in/graham/", x, "_noregex.csv"), stringsAsFactors = F)
++ })
+
+> names(dict_list) <- gsub("\\..*", "", names(dict_list))
+
+> dict <- sapply(dict_list, paste, collapse = " ")
+
+> dict_df <- sapply(c("authority", "fairness", "harm", 
++     "ingroup", "purity"), function(x) {
++     cbind(read.csv(paste0("in/graham/", x, ".csv"), allowEscapes = T, 
++         stringsAsFactors = F)[[1]], read.csv(paste0("in/graham/", 
++         x, "_noregex.csv"), stringsAsFactors = F)[[1]])
++ }) %>% do.call("rbind", .)
+
+> lisim <- mftScore(opend = select(raw, deslib, deslibb, 
++     descon, desconb), id = raw$id, dict = dict, regex = dict_df, 
++     dict_list = dict_list)
+Creating a dfm from a corpus ...
+   ... lowercasing
+   ... tokenizing
+   ... indexing documents: 599 documents
+   ... indexing features: 2,061 feature types
+   ... created a 599 x 2062 sparse dfm
+   ... complete. 
+Elapsed time: 0.031 seconds.
+
+> lisim_lib <- mftScore(opend = select(raw, deslib, 
++     deslibb), id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
+Creating a dfm from a corpus ...
+   ... lowercasing
+   ... tokenizing
+   ... indexing documents: 599 documents
+   ... indexing features: 1,451 feature types
+   ... created a 599 x 1452 sparse dfm
+   ... complete. 
+Elapsed time: 0.019 seconds.
+
+> lisim_con <- mftScore(opend = select(raw, descon, 
++     desconb), id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
+Creating a dfm from a corpus ...
+   ... lowercasing
+   ... tokenizing
+   ... indexing documents: 599 documents
+   ... indexing features: 1,444 feature types
+   ... created a 599 x 1445 sparse dfm
+   ... complete. 
+Elapsed time: 0.019 seconds.
+
+> lidat_lib <- merge(lidat, lisim_lib) %>% mutate(year = "liberals") %>% 
++     filter(wc > 0)
+
+> lidat_lib %>% group_by(ideol) %>% summarise_each(authority_s, 
++     fairness_s, harm_s, ingroup_s, purity_s, funs = "mean")
+Source: local data frame [4 x 6]
+
+         ideol authority_s fairness_s    harm_s ingroup_s  purity_s
+        <fctr>       <dbl>      <dbl>     <dbl>     <dbl>     <dbl>
+1      Liberal   0.2102614  0.4674771 0.4688558 0.3202388 0.0000000
+2     Moderate   0.2247107  0.1374705 0.1320282 0.1030911 0.0000000
+3 Conservative   0.1748933  0.0344797 0.1636466 0.2562073 0.2458724
+4           NA   0.3005283  0.0000000 0.0000000 0.0000000 0.0000000
+
+> lidat_con <- merge(lidat, lisim_con) %>% mutate(year = "conservatives") %>% 
++     filter(wc > 0)
+
+> lidat_con %>% group_by(ideol) %>% summarise_each(authority_s, 
++     fairness_s, harm_s, ingroup_s, purity_s, funs = "mean")
+Source: local data frame [4 x 6]
+
+         ideol authority_s fairness_s    harm_s  ingroup_s  purity_s
+        <fctr>       <dbl>      <dbl>     <dbl>      <dbl>     <dbl>
+1      Liberal   0.4389468 0.13766039 0.3120303 0.17220798 0.0000000
+2     Moderate   0.1403311 0.19278600 0.1848241 0.11953237 0.0000000
+3 Conservative   0.1980832 0.08139214 0.1117349 0.45051808 0.1762704
+4           NA   0.3803163 0.09180671 0.2448019 0.07836672 0.0000000
+
+> lidat <- merge(lidat, lisim) %>% mutate(year = "all responses") %>% 
++     filter(wc > 0)
+
+> lidat %>% group_by(ideol) %>% summarise_each(authority_s, 
++     fairness_s, harm_s, ingroup_s, purity_s, funs = "mean")
+Source: local data frame [4 x 6]
+
+         ideol authority_s fairness_s    harm_s  ingroup_s  purity_s
+        <fctr>       <dbl>      <dbl>     <dbl>      <dbl>     <dbl>
+1      Liberal   0.4570686 0.22166219 0.5237179 0.28242074 0.0000000
+2     Moderate   0.2429331 0.19917930 0.2658214 0.15162304 0.0000000
+3 Conservative   0.2634193 0.04777141 0.1762352 0.45764920 0.2309954
+4           NA   0.3933976 0.05316781 0.2703514 0.06423066 0.0000000
+
+> save(lidat, lidat_lib, lidat_con, mftLabs, polLabs, 
++     file = "out/prep_lisurvey.RData")
+Warning messages:
+1: In `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels) else paste0(labels,  :
+  duplicated levels in factors are deprecated
+2: In `levels<-`(`*tmp*`, value = if (nl == nL) as.character(labels) else paste0(labels,  :
+  duplicated levels in factors are deprecated
+> 
+> ## run main analyses
+> source("analyses_lisurvey.R", echo=T, max.deparse.length=10000)
+
+> pkg <- c("tidyverse", "foreign", "car", "quanteda", 
++     "gridExtra", "stargazer", "xtable", "VGAM")
+
+> invisible(lapply(pkg, library, character.only = TRUE))
+
+> rm(list = ls())
+
+> setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
+
+> source("func.R")
+
+> load("out/prep_lisurvey.RData")
+
+> lidat <- lidat[lidat$wc != 0, ]
+
+> lidat_lib <- lidat_lib[lidat_lib$wc != 0, ]
+
+> lidat_con <- lidat_con[lidat_con$wc != 0, ]
+
+> tobit_ideol_li <- list(NULL)
+
+> tobit_ideol_li[[1]] <- vglm(harm_s ~ ideol + relig + 
++     educ + age + female + black + lwc, tobit(Lower = 0), data = lidat)
+
+> tobit_ideol_li[[2]] <- vglm(fairness_s ~ ideol + relig + 
++     educ + age + female + black + lwc, tobit(Lower = 0), data = lidat)
+
+> tobit_ideol_li[[3]] <- vglm(ingroup_s ~ ideol + relig + 
++     educ + age + female + black + lwc, tobit(Lower = 0), data = lidat)
+
+> tobit_ideol_li[[4]] <- vglm(authority_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat)
+
+> lapply(tobit_ideol_li, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+            Min      1Q  Median       3Q    Max
+mu       -13.21 -0.3282 -0.1928 -0.08738  2.855
+loge(sd)  -0.91 -0.2572 -0.2216 -0.15934 13.200
+
+Coefficients:
+                    Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -11.758729   2.793928  -4.209 2.57e-05 ***
+(Intercept):2       1.506794   0.121310  12.421  < 2e-16 ***
+ideolModerate      -1.373510   0.875740  -1.568 0.116788    
+ideolConservative  -2.451139   1.101900  -2.224 0.026117 *  
+relig              -0.917619   1.281766  -0.716 0.474051    
+educ                0.810328   0.787290   1.029 0.303356    
+age                -0.001653   0.025880  -0.064 0.949069    
+female1            -0.776679   0.774154  -1.003 0.315735    
+black               0.591165   1.731347   0.341 0.732766    
+lwc                 2.516811   0.671346   3.749 0.000178 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -224.2161 on 780 degrees of freedom
+
+Number of iterations: 15 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+             Min      1Q  Median      3Q    Max
+mu       -48.667 -0.2418 -0.1653 -0.1032  6.333
+loge(sd)  -0.825 -0.2469 -0.2167 -0.1769 41.287
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -7.62263    2.24939  -3.389 0.000702 ***
+(Intercept):2      1.43302    0.13938  10.281  < 2e-16 ***
+ideolModerate     -1.91689    0.85901  -2.232 0.025647 *  
+ideolConservative -3.49655    1.19569  -2.924 0.003452 ** 
+relig              1.36273    1.24961   1.091 0.275482    
+educ               0.48209    0.76186   0.633 0.526878    
+age                0.04449    0.02527   1.760 0.078330 .  
+female1           -0.09724    0.75350  -0.129 0.897322    
+black              1.56294    1.59823   0.978 0.328114    
+lwc                0.26900    0.48132   0.559 0.576245    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -192.2498 on 780 degrees of freedom
+
+Number of iterations: 17 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+              Min      1Q Median      3Q    Max
+mu       -17.4969 -0.3111 -0.192 -0.1034  4.051
+loge(sd)  -0.7392 -0.2599 -0.228 -0.1764 15.289
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -10.26239    2.80343  -3.661 0.000252 ***
+(Intercept):2       1.59508    0.12653  12.606  < 2e-16 ***
+ideolModerate      -1.39413    1.09628  -1.272 0.203483    
+ideolConservative   1.78568    1.12314   1.590 0.111857    
+relig               1.01506    1.37527   0.738 0.460464    
+educ                1.19692    0.88491   1.353 0.176186    
+age                -0.03100    0.02939  -1.055 0.291443    
+female1            -0.70646    0.85251  -0.829 0.407284    
+black              -0.03813    2.10701  -0.018 0.985561    
+lwc                 1.56200    0.64548   2.420 0.015525 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -218.5324 on 780 degrees of freedom
+
+Number of iterations: 14 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+             Min      1Q  Median      3Q    Max
+mu       -9.6446 -0.4055 -0.2749 -0.1564  3.306
+loge(sd) -0.8414 -0.2549 -0.2388 -0.2023 12.403
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -3.80190    1.65183  -2.302  0.02136 *  
+(Intercept):2      1.32468    0.10817  12.246  < 2e-16 ***
+ideolModerate     -1.03010    0.68666  -1.500  0.13357    
+ideolConservative -0.99345    0.80831  -1.229  0.21905    
+relig              1.45451    0.97719   1.488  0.13663    
+educ               1.09985    0.60583   1.815  0.06946 .  
+age               -0.05783    0.02157  -2.681  0.00734 ** 
+female1           -0.39962    0.58659  -0.681  0.49571    
+black              0.38538    1.30469   0.295  0.76770    
+lwc                0.72765    0.39898   1.824  0.06818 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -266.4343 on 780 degrees of freedom
+
+Number of iterations: 11 
+
+
+> tobit_ideol_li_res <- sim(tobit_ideol_li, iv = data.frame(ideolModerate = c(0, 
++     0), ideolConservative = c(1, 0)))
+
+> tobit_ideol_li_res$var <- rep(4:1, each = 2)
+
+> ggplot(tobit_ideol_li_res, aes(x = mean, y = var)) + 
++     geom_vline(xintercept = 0, col = "lightgrey") + geom_point() + 
++     geom_errorbarh(aes(xmax = cilo, xmin = cihi), height = 0) + 
++     ggtitle("Change in Predicted Emphasis on Moral Foundation (Replication)") + 
++     labs(y = "Dependent Variable: Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") + 
++     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA)) + 
++     scale_y_continuous(breaks = 1:4, labels = mftLabs) + facet_grid(~value)
+
+> ggsave(filename = "fig/tobit_ideol_lisurvey.pdf", 
++     width = 5, height = 2.5)
+
+> tobit_ideol_lilib <- list(NULL)
+
+> tobit_ideol_lilib[[1]] <- vglm(harm_s ~ ideol + relig + 
++     educ + age + female + black + lwc, tobit(Lower = 0), data = lidat_lib)
+
+> tobit_ideol_lilib[[2]] <- vglm(fairness_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_lib)
+
+> tobit_ideol_lilib[[3]] <- try(vglm(ingroup_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_lib))
+Error in ans[x < -100] <- -x/(1 - 1/x^2 + 3/x^4) : 
+  NAs are not allowed in subscripted assignments
+
+> tobit_ideol_lilib[[4]] <- vglm(authority_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_lib)
+
+> lapply(tobit_ideol_lilib, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_lib)
+
+Pearson residuals:
+              Min      1Q  Median       3Q    Max
+mu       -29.9787 -0.2354 -0.1312 -0.05048  3.204
+loge(sd)  -0.7497 -0.2517 -0.2011 -0.11857 20.280
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -12.15226    3.57483  -3.399 0.000675 ***
+(Intercept):2       1.73286    0.14986  11.563  < 2e-16 ***
+ideolModerate      -2.37839    1.27957  -1.859 0.063063 .  
+ideolConservative  -3.41699    1.59359  -2.144 0.032016 *  
+relig               1.00887    1.81588   0.556 0.578496    
+educ                1.06138    1.14294   0.929 0.353075    
+age                -0.05936    0.03912  -1.517 0.129156    
+female1            -1.05936    1.12673  -0.940 0.347110    
+black              -0.82706    2.62705  -0.315 0.752894    
+lwc                 3.27621    1.01360   3.232 0.001228 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -168.6775 on 748 degrees of freedom
+
+Number of iterations: 19 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_lib)
+
+Pearson residuals:
+              Min      1Q   Median       3Q    Max
+mu       -32.4126 -0.1610 -0.08892 -0.05129  6.625
+loge(sd)  -0.5222 -0.2199 -0.16672 -0.12130 22.422
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -9.41519    3.27585  -2.874  0.00405 ** 
+(Intercept):2      1.72978    0.17217  10.047  < 2e-16 ***
+ideolModerate     -3.78950    1.40865  -2.690  0.00714 ** 
+ideolConservative -5.73780    2.13443  -2.688  0.00718 ** 
+relig             -2.76277    2.14896  -1.286  0.19857    
+educ               0.38675    1.22798   0.315  0.75280    
+age                0.04866    0.04070   1.196  0.23181    
+female1            0.82831    1.23375   0.671  0.50198    
+black              3.69444    2.23411   1.654  0.09820 .  
+lwc                0.57001    0.78990   0.722  0.47052    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -133.0625 on 748 degrees of freedom
+
+Number of iterations: 15 
+
+[[3]]
+   Length     Class      Mode 
+        1 try-error character 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_lib)
+
+Pearson residuals:
+             Min      1Q  Median       3Q   Max
+mu       -3.0554 -0.1615 -0.1045 -0.05859 5.604
+loge(sd) -0.2864 -0.2300 -0.1854 -0.13371 8.748
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -17.75414    5.86022  -3.030  0.00245 ** 
+(Intercept):2       2.07838    0.19035  10.919  < 2e-16 ***
+ideolModerate      -0.77516    2.04270  -0.379  0.70433    
+ideolConservative  -1.33211    2.46028  -0.541  0.58820    
+relig              -0.97496    2.92991  -0.333  0.73932    
+educ                2.37202    1.87268   1.267  0.20528    
+age                -0.05556    0.06234  -0.891  0.37276    
+female1            -1.62166    1.80668  -0.898  0.36940    
+black               0.88138    3.97000   0.222  0.82431    
+lwc                 3.12564    1.44785   2.159  0.03086 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -123.4882 on 748 degrees of freedom
+
+Number of iterations: 18 
+
+
+> tobit_ideol_licon <- list(NULL)
+
+> tobit_ideol_licon[[1]] <- vglm(harm_s ~ ideol + relig + 
++     educ + age + female + black + lwc, tobit(Lower = 0), data = lidat_con)
+
+> tobit_ideol_licon[[2]] <- try(vglm(fairness_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_con))
+Error in ans[x < -100] <- -x/(1 - 1/x^2 + 3/x^4) : 
+  NAs are not allowed in subscripted assignments
+
+> tobit_ideol_licon[[3]] <- vglm(ingroup_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_con)
+
+> tobit_ideol_licon[[4]] <- vglm(authority_s ~ ideol + 
++     relig + educ + age + female + black + lwc, tobit(Lower = 0), 
++     data = lidat_con)
+
+> lapply(tobit_ideol_licon, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_con)
+
+Pearson residuals:
+             Min      1Q   Median       3Q   Max
+mu       -6.2646 -0.1520 -0.09361 -0.05327 4.905
+loge(sd) -0.4941 -0.2249 -0.17573 -0.12762 8.683
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -17.38498    5.98046  -2.907  0.00365 ** 
+(Intercept):2       2.09988    0.19506  10.766  < 2e-16 ***
+ideolModerate      -1.13529    2.09400  -0.542  0.58771    
+ideolConservative  -2.23278    2.61303  -0.854  0.39284    
+relig              -6.82364    3.53133  -1.932  0.05332 .  
+educ                0.56461    1.87756   0.301  0.76363    
+age                 0.08983    0.06330   1.419  0.15584    
+female1            -2.32048    1.90560  -1.218  0.22333    
+black               3.26906    4.06976   0.803  0.42183    
+lwc                 1.57785    1.38876   1.136  0.25589    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -118.5561 on 752 degrees of freedom
+
+Number of iterations: 19 
+
+[[2]]
+   Length     Class      Mode 
+        1 try-error character 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_con)
+
+Pearson residuals:
+            Min      1Q  Median       3Q    Max
+mu       -7.867 -0.2112 -0.1412 -0.07479  5.924
+loge(sd) -0.739 -0.2477 -0.2108 -0.15113 10.932
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -10.84222    3.53445  -3.068  0.00216 ** 
+(Intercept):2       1.79107    0.15424  11.612  < 2e-16 ***
+ideolModerate      -0.78209    1.57542  -0.496  0.61959    
+ideolConservative   3.72989    1.66717   2.237  0.02527 *  
+relig               0.97003    1.92019   0.505  0.61344    
+educ                2.62625    1.27804   2.055  0.03989 *  
+age                -0.04638    0.04175  -1.111  0.26655    
+female1            -0.56907    1.17067  -0.486  0.62689    
+black              -0.65179    3.22669  -0.202  0.83992    
+lwc                 0.79447    0.85188   0.933  0.35102    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -162.7893 on 752 degrees of freedom
+
+Number of iterations: 11 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat_con)
+
+Pearson residuals:
+             Min      1Q  Median      3Q    Max
+mu       -8.4348 -0.3437 -0.2249 -0.1293  4.273
+loge(sd) -0.9328 -0.2529 -0.2284 -0.1884 17.620
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -2.01354    1.59261  -1.264   0.2061    
+(Intercept):2      1.34209    0.12060  11.129   <2e-16 ***
+ideolModerate     -1.70737    0.76458  -2.233   0.0255 *  
+ideolConservative -1.44644    0.88688  -1.631   0.1029    
+relig              2.45152    1.10115   2.226   0.0260 *  
+educ               1.11100    0.66061   1.682   0.0926 .  
+age               -0.05487    0.02356  -2.329   0.0199 *  
+female1           -0.74558    0.65014  -1.147   0.2515    
+black              0.30268    1.44302   0.210   0.8339    
+lwc               -0.02292    0.43049  -0.053   0.9575    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -225.357 on 752 degrees of freedom
+
+Number of iterations: 12 
+
+
+> save.image(file = "out/analyses_lisurvey.RData")
+> 
+> ## run analyses for appendix
+> source("appendix_lisurvey.R", echo=T, max.deparse.length=10000)
+
+> pkg <- c("tidyverse", "foreign", "car", "quanteda", 
++     "gridExtra", "stargazer", "xtable", "VGAM")
+
+> invisible(lapply(pkg, library, character.only = TRUE))
+
+> rm(list = ls())
+
+> setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
+
+> source("func.R")
+
+> datsrc <- "~/Dropbox/Uni/Data/"
+
+> load("out/analyses_lisurvey.RData")
+
+> desc <- list(NULL)
+
+> plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill = NA))
+
+> desc[[1]] <- ggplot(lidat, aes(x = ideol)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Ideology") + plot_default
+
+> desc[[2]] <- ggplot(lidat, aes(x = age)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Age") + plot_default
+
+> desc[[3]] <- ggplot(lidat, aes(x = factor(female, 
++     labels = c("Male", "Female")))) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Sex") + plot_default
+
+> desc[[4]] <- ggplot(lidat, aes(x = factor(black, labels = c("Other", 
++     "Black non-Hispanic")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Race/Ethnicity") + plot_default
+
+> desc[[5]] <- ggplot(lidat, aes(x = relig)) + geom_bar(stat = "count") + 
++     labs(y = "Count", x = "Church Attendance") + plot_default
+
+> desc[[6]] <- ggplot(lidat, aes(x = factor(educ, labels = c("No College", 
++     "College")))) + geom_bar(stat = "count") + labs(y = "Count", 
++     x = "Education") + plot_default
+
+> desc[[7]] <- ggplot(lidat, aes(x = wc)) + geom_histogram(binwidth = 5) + 
++     labs(y = "Count", x = "Word Count") + plot_default
+
+> desc[[8]] <- ggplot(lidat, aes(x = lwc)) + geom_histogram(binwidth = 0.2) + 
++     labs(y = "Count", x = "log(Word Count)") + plot_default
+
+> pdf("fig/app_lidesc.pdf", width = 5, height = 7)
+
+> grid.arrange(grobs = desc, ncol = 2)
+
+> dev.off()
+pdf 
+  2 
+
+> lapply(tobit_ideol_li, summary)
+[[1]]
+
+Call:
+vglm(formula = harm_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+            Min      1Q  Median       3Q    Max
+mu       -13.21 -0.3282 -0.1928 -0.08738  2.855
+loge(sd)  -0.91 -0.2572 -0.2216 -0.15934 13.200
+
+Coefficients:
+                    Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -11.758729   2.793928  -4.209 2.57e-05 ***
+(Intercept):2       1.506794   0.121310  12.421  < 2e-16 ***
+ideolModerate      -1.373510   0.875740  -1.568 0.116788    
+ideolConservative  -2.451139   1.101900  -2.224 0.026117 *  
+relig              -0.917619   1.281766  -0.716 0.474051    
+educ                0.810328   0.787290   1.029 0.303356    
+age                -0.001653   0.025880  -0.064 0.949069    
+female1            -0.776679   0.774154  -1.003 0.315735    
+black               0.591165   1.731347   0.341 0.732766    
+lwc                 2.516811   0.671346   3.749 0.000178 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -224.2161 on 780 degrees of freedom
+
+Number of iterations: 15 
+
+[[2]]
+
+Call:
+vglm(formula = fairness_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+             Min      1Q  Median      3Q    Max
+mu       -48.667 -0.2418 -0.1653 -0.1032  6.333
+loge(sd)  -0.825 -0.2469 -0.2167 -0.1769 41.287
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -7.62263    2.24939  -3.389 0.000702 ***
+(Intercept):2      1.43302    0.13938  10.281  < 2e-16 ***
+ideolModerate     -1.91689    0.85901  -2.232 0.025647 *  
+ideolConservative -3.49655    1.19569  -2.924 0.003452 ** 
+relig              1.36273    1.24961   1.091 0.275482    
+educ               0.48209    0.76186   0.633 0.526878    
+age                0.04449    0.02527   1.760 0.078330 .  
+female1           -0.09724    0.75350  -0.129 0.897322    
+black              1.56294    1.59823   0.978 0.328114    
+lwc                0.26900    0.48132   0.559 0.576245    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -192.2498 on 780 degrees of freedom
+
+Number of iterations: 17 
+
+[[3]]
+
+Call:
+vglm(formula = ingroup_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+              Min      1Q Median      3Q    Max
+mu       -17.4969 -0.3111 -0.192 -0.1034  4.051
+loge(sd)  -0.7392 -0.2599 -0.228 -0.1764 15.289
+
+Coefficients:
+                   Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -10.26239    2.80343  -3.661 0.000252 ***
+(Intercept):2       1.59508    0.12653  12.606  < 2e-16 ***
+ideolModerate      -1.39413    1.09628  -1.272 0.203483    
+ideolConservative   1.78568    1.12314   1.590 0.111857    
+relig               1.01506    1.37527   0.738 0.460464    
+educ                1.19692    0.88491   1.353 0.176186    
+age                -0.03100    0.02939  -1.055 0.291443    
+female1            -0.70646    0.85251  -0.829 0.407284    
+black              -0.03813    2.10701  -0.018 0.985561    
+lwc                 1.56200    0.64548   2.420 0.015525 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -218.5324 on 780 degrees of freedom
+
+Number of iterations: 14 
+
+[[4]]
+
+Call:
+vglm(formula = authority_s ~ ideol + relig + educ + age + female + 
+    black + lwc, family = tobit(Lower = 0), data = lidat)
+
+Pearson residuals:
+             Min      1Q  Median      3Q    Max
+mu       -9.6446 -0.4055 -0.2749 -0.1564  3.306
+loge(sd) -0.8414 -0.2549 -0.2388 -0.2023 12.403
+
+Coefficients:
+                  Estimate Std. Error z value Pr(>|z|)    
+(Intercept):1     -3.80190    1.65183  -2.302  0.02136 *  
+(Intercept):2      1.32468    0.10817  12.246  < 2e-16 ***
+ideolModerate     -1.03010    0.68666  -1.500  0.13357    
+ideolConservative -0.99345    0.80831  -1.229  0.21905    
+relig              1.45451    0.97719   1.488  0.13663    
+educ               1.09985    0.60583   1.815  0.06946 .  
+age               -0.05783    0.02157  -2.681  0.00734 ** 
+female1           -0.39962    0.58659  -0.681  0.49571    
+black              0.38538    1.30469   0.295  0.76770    
+lwc                0.72765    0.39898   1.824  0.06818 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Number of linear predictors:  2 
+
+Names of linear predictors: mu, loge(sd)
+
+Dispersion Parameter for tobit family:   1
+
+Log-likelihood: -266.4343 on 780 degrees of freedom
+
+Number of iterations: 11 
+
+
+> varlabs = list(ideolConservative = "Ideology (Conservative)", 
++     ideolModerate = "Ideology (Moderate)", relig = "Church Attendance", 
++     educ = "Education (College Degree)", age = "Age", female1 = "Sex (Female)", 
++     black = "Race (African American)", lwc = "Word Count (log)", 
++     `(Intercept):1` = "Intercept", `(Intercept):2` = "log(Sigma)")
+
+> mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+
+> latexTable(tobit_ideol_li, caption = "Tobit models predicting MFT score for each foundation based \n           on ideology (telephone survey replication). Positive coefficients indicate stronger emphasis on the respective \n           foundation. Standard errors in parentheses. Estimates are used for Figure \n           \\ref{fig:tobit_ideol_lisurvey} in the main text.", 
++     label = "tab:tobit_ideol_lisurvey", align = "lcccc", varlabs = varlabs, 
++     mlabs = mlabs, file = "tab/tobit_ideol_lisurvey.tex", table.placement = "ht", 
++     caption.placement = "top", size = "footnotesize")
+Warning messages:
+1: Removed 8 rows containing non-finite values (stat_count). 
+2: Removed 15 rows containing non-finite values (stat_count). 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+556.164   7.180 566.022 

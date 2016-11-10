@@ -27,7 +27,7 @@ source("prep_anes.R", echo=T, max.deparse.length=10000)
 source("analyses_anes.R", echo=T, max.deparse.length=10000)
 
 ## run analyses for appendix
-source("appendix.R_anes", echo=T, max.deparse.length=10000)
+source("appendix_anes.R", echo=T, max.deparse.length=10000)
 
 
 ### LI survey analyses

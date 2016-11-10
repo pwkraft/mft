@@ -71,8 +71,8 @@ tobit_ideol_lilib[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + bl
                                , tobit(Lower = 0), data = lidat_lib)
 tobit_ideol_lilib[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
                                , tobit(Lower = 0), data = lidat_lib)
-tobit_ideol_lilib[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
-                               , tobit(Lower = 0), data = lidat_lib)
+tobit_ideol_lilib[[3]] <- try(vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_lib))
 tobit_ideol_lilib[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
                                , tobit(Lower = 0), data = lidat_lib)
 lapply(tobit_ideol_lilib, summary)
@@ -81,8 +81,8 @@ lapply(tobit_ideol_lilib, summary)
 tobit_ideol_licon <- list(NULL)
 tobit_ideol_licon[[1]] <- vglm(harm_s ~ ideol + relig + educ + age + female + black + lwc
                                , tobit(Lower = 0), data = lidat_con)
-tobit_ideol_licon[[2]] <- vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
-                               , tobit(Lower = 0), data = lidat_con)
+tobit_ideol_licon[[2]] <- try(vglm(fairness_s ~ ideol + relig + educ + age + female + black + lwc
+                               , tobit(Lower = 0), data = lidat_con))
 tobit_ideol_licon[[3]] <- vglm(ingroup_s ~ ideol + relig + educ + age + female + black + lwc
                                , tobit(Lower = 0), data = lidat_con)
 tobit_ideol_licon[[4]] <- vglm(authority_s ~ ideol + relig + educ + age + female + black + lwc
