@@ -335,7 +335,7 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## model estimation
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm_s + + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ media_harm_s + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)

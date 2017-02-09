@@ -1,0 +1,14 @@
+GET FILE="/data/Dropbox/Uni/Projects/2014/mft/calc/in/feinberg/Environment Article Coding.sav".
+
+GET FILE="/data/Dropbox/Uni/Projects/2014/mft/calc/in/feinberg/Environment Article Coding.sav".
+
+FREQUENCIES
+	/VARIABLES= NEWSPAPER
+	/FORMAT=AVALUE TABLE.
+
+GET FILE="/data/Dropbox/Uni/Projects/2014/mft/calc/in/feinberg/Environment Article Coding.sav".
+
+FREQUENCIES
+	/VARIABLES= NEWSPAPER
+	/FORMAT=AVALUE TABLE.
+
