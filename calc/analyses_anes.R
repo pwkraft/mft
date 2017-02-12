@@ -335,14 +335,15 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## model estimation
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm * polmedia + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness * polmedia + relig + educ + age + female + black
+tobit_cont[[2]] <- vglm(fairness_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup * polmedia + relig + educ + age + female + black 
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[4]] <- vglm(authority_s ~ media_authority * polmedia + relig + educ + age + female + black 
+tobit_cont[[4]] <- vglm(authority_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(tobit_cont, summary)
 
 ## simulate expected values / marginal effects
 tobit_cont_res <- rbind(sim(models = tobit_cont[[1]]

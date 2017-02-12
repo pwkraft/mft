@@ -80,10 +80,13 @@ anes2012$pid_str <- abs(anes2012$pid_cont)
 anes2008$pid_str <- abs(anes2008$pid_cont)
 
 ## political media exposure
-anes2012$polmedia <- with(raw2012, car::recode(prmedia_wkinews, "lo:-4=NA; -1=0")
-                          + car::recode(prmedia_wktvnws, "lo:-4=NA; -1=0")
-                          + car::recode(prmedia_wkpaprnws, "lo:-4=NA; -1=0")
-                          + car::recode(prmedia_wkrdnws, "lo:-4=NA; -1=0")) / 28
+anes2012$wkinews <- car::recode(prmedia_wkinews, "lo:-4=NA; -1=0")
+anes2012$wktvnws <- car::recode(prmedia_wktvnws, "lo:-4=NA; -1=0")
+anes2012$wkpaprnws <- car::recode(prmedia_wkpaprnws, "lo:-4=NA; -1=0")
+anes2012$wkrdnws <- car::recode(prmedia_wkrdnws, "lo:-4=NA; -1=0")
+
+anes2012$polmedia <- with(anes2012, (wkinews + wktvnws + wkpaprnws + wkrdnws) / 28)
+
 
 polmedia <- list(c("V083019","V083024"), c("V083021a", "V083025")
                  , c("V083021b", "V083023"), c("V083022", "V083026"))
@@ -361,6 +364,7 @@ colnames(tmp1) <- paste0("media_",colnames(tmp1))
 # take into account media type and relative frequency here
 # question: what about respondents who watch news but none of the ones mentioned above?
 # check the coding w/ media vs. media_s
+# question: binding vs. individualizing foundations?
 
 ## add new variables to anes
 anes2012 <- cbind(anes2012,tmp1,tmp2)
