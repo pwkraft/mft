@@ -335,24 +335,24 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## model estimation
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm_s + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ media_harm * polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness_s + relig + educ + age + female + black
+tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness * polmedia + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup_s + relig + educ + age + female + black 
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup * polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[4]] <- vglm(authority_s ~ media_authority_s + relig + educ + age + female + black 
+tobit_cont[[4]] <- vglm(authority_s ~ media_authority * polmedia + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 
 ## simulate expected values / marginal effects
 tobit_cont_res <- rbind(sim(models = tobit_cont[[1]]
-                            , iv=data.frame(media_harm_s=range(anes2012$media_harm_s)))
+                            , iv=data.frame(media_harm=range(anes2012$media_harm), polmedia = mean(anes2012$polmedia, na.rm = T)))
                         , sim(models = tobit_cont[[2]]
-                              , iv=data.frame(media_fairness_s=range(anes2012$media_fairness_s)))
+                              , iv=data.frame(media_fairness=range(anes2012$media_fairness), polmedia = mean(anes2012$polmedia, na.rm = T)))
                         , sim(models = tobit_cont[[3]]
-                              , iv=data.frame(media_ingroup_s=range(anes2012$media_ingroup_s)))
+                              , iv=data.frame(media_ingroup=range(anes2012$media_ingroup), polmedia = mean(anes2012$polmedia, na.rm = T)))
                         , sim(models = tobit_cont[[4]]
-                              , iv=data.frame(media_authority_s=range(anes2012$media_authority_s))))
+                              , iv=data.frame(media_authority=range(anes2012$media_authority), polmedia = mean(anes2012$polmedia, na.rm = T))))
 tobit_cont_res$var <- factor(tobit_cont_res$dv)
 levels(tobit_cont_res$var) <- rev(mftLabs)
 

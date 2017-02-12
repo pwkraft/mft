@@ -60,7 +60,7 @@ for(i in 1:length(vname)){
   }
 }
 
-png("fig/feinberg.png",height=8,width=4,units="in",res=300)
+png("fig/feinberg.png",height=10,width=5,units="in",res=300)
 grid.arrange(grobs=p, ncol=2)
 dev.off()
 

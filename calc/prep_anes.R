@@ -40,58 +40,58 @@ anes2008 <- data.frame(id=raw2008$V080001, year=2008
                        , mode = 1)
 
 ## ideology (factor/dummies)
-anes2012$ideol <- factor(recode(raw2012$libcpre_self, "1:3=1; 4=2; 5:7=3; else=NA")
+anes2012$ideol <- factor(car::recode(raw2012$libcpre_self, "1:3=1; 4=2; 5:7=3; else=NA")
                          , labels = c("Liberal","Moderate","Conservative"))
 anes2012$ideol_lib <- as.numeric(anes2012$ideol=="Liberal")
 anes2012$ideol_con <- as.numeric(anes2012$ideol=="Conservative")
 
-anes2008$ideol <- factor(recode(raw2008$V083069, "1:3=1; 4=2; 5:7=3; else=NA")
+anes2008$ideol <- factor(car::recode(raw2008$V083069, "1:3=1; 4=2; 5:7=3; else=NA")
                          , labels = c("Liberal","Moderate","Conservative"))
 anes2008$ideol_lib <- as.numeric(anes2008$ideol=="Liberal")
 anes2008$ideol_con <- as.numeric(anes2008$ideol=="Conservative")
 
 ## ideology (continuous, -1 to 1)
-anes2012$ideol_ct <- (recode(raw2012$libcpre_self, "lo:0=NA") - 4)/3
-anes2008$ideol_ct <- (recode(raw2008$V083069, "lo:0=NA") - 4)/3
+anes2012$ideol_ct <- (car::recode(raw2012$libcpre_self, "lo:0=NA") - 4)/3
+anes2008$ideol_ct <- (car::recode(raw2008$V083069, "lo:0=NA") - 4)/3
 
 ## strength of ideology
 anes2012$ideol_str <- abs(anes2012$ideol_ct)
 anes2008$ideol_str <- abs(anes2008$ideol_ct)
 
 ## party identification (factor/dummies)
-anes2012$pid <- factor(recode(raw2012$pid_x
+anes2012$pid <- factor(car::recode(raw2012$pid_x
                               , "1:2=1; c(3,4,5)=2; 6:7=3; else=NA")
                        , labels = c("Democrat","Independent","Republican"))
 anes2012$pid_dem <- as.numeric(anes2012$pid=="Democrat")
 anes2012$pid_rep <- as.numeric(anes2012$pid=="Republican")
 
-anes2008$pid <- factor(recode(raw2008$V083098x
+anes2008$pid <- factor(car::recode(raw2008$V083098x
                               , "0:1=1; c(2,3,4)=2; 5:6=3; else=NA")
                        , labels = c("Democrat","Independent","Republican"))
 anes2008$pid_dem <- as.numeric(anes2008$pid=="Democrat")
 anes2008$pid_rep <- as.numeric(anes2008$pid=="Republican")
 
 ## pid continuous
-anes2012$pid_cont <- (recode(raw2012$pid_x, "lo:0=NA") - 4)/3
-anes2008$pid_cont <- (recode(raw2008$V083098x, "lo:-1=NA") - 3)/3
+anes2012$pid_cont <- (car::recode(raw2012$pid_x, "lo:0=NA") - 4)/3
+anes2008$pid_cont <- (car::recode(raw2008$V083098x, "lo:-1=NA") - 3)/3
 
 ## strength of partisanship
 anes2012$pid_str <- abs(anes2012$pid_cont)
 anes2008$pid_str <- abs(anes2008$pid_cont)
 
 ## political media exposure
-anes2012$polmedia <- with(raw2012, recode(prmedia_wkinews, "lo:-4=NA; -1=0")
-                          + recode(prmedia_wktvnws, "lo:-4=NA; -1=0")
-                          + recode(prmedia_wkpaprnws, "lo:-4=NA; -1=0")
-                          + recode(prmedia_wkrdnws, "lo:-4=NA; -1=0")) / 28
+anes2012$polmedia <- with(raw2012, car::recode(prmedia_wkinews, "lo:-4=NA; -1=0")
+                          + car::recode(prmedia_wktvnws, "lo:-4=NA; -1=0")
+                          + car::recode(prmedia_wkpaprnws, "lo:-4=NA; -1=0")
+                          + car::recode(prmedia_wkrdnws, "lo:-4=NA; -1=0")) / 28
 
 polmedia <- list(c("V083019","V083024"), c("V083021a", "V083025")
                  , c("V083021b", "V083023"), c("V083022", "V083026"))
 anes2008$polmedia <- 0
 for(i in 1:length(polmedia)){
-  tmp <- recode(raw2008[,polmedia[[i]][1]], "c(-4,-8,-9)=NA; -1=0")
+  tmp <- car::recode(raw2008[,polmedia[[i]][1]], "c(-4,-8,-9)=NA; -1=0")
   if(length(polmedia[[i]])>1){
-    tmp[raw2008[,polmedia[[i]][1]]==-1] <- recode(raw2008[,polmedia[[i]][2]]
+    tmp[raw2008[,polmedia[[i]][1]]==-1] <- car::recode(raw2008[,polmedia[[i]][2]]
                                                   , "c(-8,-9,-1)=NA")[raw2008[,polmedia[[i]][1]]==-1]
   }
   anes2008$polmedia <- anes2008$polmedia + tmp
@@ -107,100 +107,100 @@ anes2008$polmedia_c <- scale(anes2008$polmedia, scale=F)
 anes2012$polknow <- with(raw2012, ((preknow_prestimes==2) + (preknow_sizedef==1)
                                    + (preknow_senterm==6) + (preknow_medicare==1)
                                    + (preknow_leastsp==1))/5)
-anes2008$polknow <- recode(raw2008$V085119a, "-2=NA; 5=1; else=0")
+anes2008$polknow <- car::recode(raw2008$V085119a, "-2=NA; 5=1; else=0")
 
 ## political knowledge (mean centered)
 anes2012$polknow_c <- scale(anes2012$polknow, scale=F)
 anes2008$polknow_c <- scale(anes2008$polknow, scale=F)
 
 ## political discussion
-anes2012$poldisc <- recode(raw2012$discuss_discpstwk, "lo:-1 = NA")/7
+anes2012$poldisc <- car::recode(raw2012$discuss_discpstwk, "lo:-1 = NA")/7
 anes2012$poldisc[raw2012$discuss_disc>1] <- 0
 
-anes2008$poldisc <- recode(raw2008$V085108a,"lo:-1 = NA")
+anes2008$poldisc <- car::recode(raw2008$V085108a,"lo:-1 = NA")
 anes2008$poldisc[raw2008$V085108>1] <- 0
-anes2008$poldisc[raw2008$V085108a==-1] <- recode(raw2008$V085109,"lo:-1=NA")[raw2008$V085108a==-1]
+anes2008$poldisc[raw2008$V085108a==-1] <- car::recode(raw2008$V085109,"lo:-1=NA")[raw2008$V085108a==-1]
 
 ## political discussion (mean centered)
 anes2012$poldisc_c <- scale(anes2012$poldisc, scale=F)
 anes2008$poldisc_c <- scale(anes2008$poldisc, scale=F)
 
 ## candidate evaluations (feeling thermometer)
-anes2012$eval_cand <- (recode(raw2012$ft_dpc, "lo:-1=NA; 101:hi=NA") - 
-                         recode(raw2012$ft_rpc, "lo:-1=NA; 101:hi=NA"))
+anes2012$eval_cand <- (car::recode(raw2012$ft_dpc, "lo:-1=NA; 101:hi=NA") - 
+                         car::recode(raw2012$ft_rpc, "lo:-1=NA; 101:hi=NA"))
 
-anes2008$eval_cand <- (recode(raw2008$V083037a, "lo:-1=NA; 101:hi=NA") - 
-                         recode(raw2008$V083037b, "lo:-1=NA; 101:hi=NA"))
+anes2008$eval_cand <- (car::recode(raw2008$V083037a, "lo:-1=NA; 101:hi=NA") - 
+                         car::recode(raw2008$V083037b, "lo:-1=NA; 101:hi=NA"))
 
 ## party evaluations (feeling thermometer)
-anes2012$eval_party <- (recode(raw2012$ft_dem, "lo:-1=NA; 101:hi=NA") -
-                          recode(raw2012$ft_rep, "lo:-1=NA; 101:hi=NA"))
+anes2012$eval_party <- (car::recode(raw2012$ft_dem, "lo:-1=NA; 101:hi=NA") -
+                          car::recode(raw2012$ft_rep, "lo:-1=NA; 101:hi=NA"))
 
-anes2008$eval_party <- (recode(raw2008$V083044a, "lo:-1=NA; 101:hi=NA") -
-                          recode(raw2008$V083044b, "lo:-1=NA; 101:hi=NA"))
+anes2008$eval_party <- (car::recode(raw2008$V083044a, "lo:-1=NA; 101:hi=NA") -
+                          car::recode(raw2008$V083044b, "lo:-1=NA; 101:hi=NA"))
 
 ## voted in previous election
-anes2012$pastvote <- recode(raw2012$interest_voted2008, "c(2,5)=0; lo:-1=NA")
-anes2008$pastvote <- recode(raw2008$V083007, "c(2,5)=0; lo:-1=NA")
+anes2012$pastvote <- car::recode(raw2012$interest_voted2008, "c(2,5)=0; lo:-1=NA")
+anes2008$pastvote <- car::recode(raw2008$V083007, "c(2,5)=0; lo:-1=NA")
 
 ## voted in current election
-anes2012$vote <- recode(raw2012$rvote2012_x, "2=0; lo:-1=NA")
-anes2008$vote <- recode(raw2008$V085036x, "2=0; lo:-1=NA")
+anes2012$vote <- car::recode(raw2012$rvote2012_x, "2=0; lo:-1=NA")
+anes2008$vote <- car::recode(raw2008$V085036x, "2=0; lo:-1=NA")
 
 ## voted for democratic presidential candidate
-anes2012$vote_dem <- recode(raw2012$presvote2012_x, "2=0; c(-2,5)=NA")
-anes2008$vote_dem <- recode(raw2008$V083169a, "2=0; c(-2,5)=NA")
+anes2012$vote_dem <- car::recode(raw2012$presvote2012_x, "2=0; c(-2,5)=NA")
+anes2008$vote_dem <- car::recode(raw2008$V083169a, "2=0; c(-2,5)=NA")
 
 ## participated in protest march / rally
-anes2012$protest <- recode(raw2012$dhsinvolv_march, "c(2,5)=0; lo:-1=NA")
-anes2008$protest <- recode(raw2008$V085201a, "c(2,5)=0; lo:-1=NA")
+anes2012$protest <- car::recode(raw2012$dhsinvolv_march, "c(2,5)=0; lo:-1=NA")
+anes2008$protest <- car::recode(raw2008$V085201a, "c(2,5)=0; lo:-1=NA")
 
 ## letter to congressman/senator
-anes2012$letter <- recode(raw2012$dhsinvolv_contact1, "2=0; lo:-1=NA")
+anes2012$letter <- car::recode(raw2012$dhsinvolv_contact1, "2=0; lo:-1=NA")
 
 ## signed a petition
-anes2012$petition <- as.numeric((recode(raw2012$dhsinvolv_netpetition, "c(2,5)=0; lo:-1=NA") +
-                                   recode(raw2012$dhsinvolv_petition, "c(2,5)=0; lo:-1=NA")) > 0)
+anes2012$petition <- as.numeric((car::recode(raw2012$dhsinvolv_netpetition, "c(2,5)=0; lo:-1=NA") +
+                                   car::recode(raw2012$dhsinvolv_petition, "c(2,5)=0; lo:-1=NA")) > 0)
 
-anes2008$petition <- as.numeric((recode(raw2008$V085201c, "c(2,5)=0; lo:-1=NA") +
-                                   recode(raw2008$V085201d, "c(2,5)=0; lo:-1=NA")) > 0)
+anes2008$petition <- as.numeric((car::recode(raw2008$V085201c, "c(2,5)=0; lo:-1=NA") +
+                                   car::recode(raw2008$V085201d, "c(2,5)=0; lo:-1=NA")) > 0)
 
 ## wear a campaign button
-anes2012$button <- recode(raw2012$mobilpo_sign, "c(2,5)=0; lo:-1=NA")
-anes2008$button <- recode(raw2008$V085031, "c(2,5)=0; lo:-1=NA")
+anes2012$button <- car::recode(raw2012$mobilpo_sign, "c(2,5)=0; lo:-1=NA")
+anes2008$button <- car::recode(raw2008$V085031, "c(2,5)=0; lo:-1=NA")
 
 ## additive index protest behavior
 anes2012$part <- with(anes2012, as.numeric((protest + petition + button)>0))
 anes2008$part <- with(anes2008, as.numeric((protest + petition + button)>0))
 
 ## age
-anes2012$age <- recode(raw2012$dem_age_r_x, "c(-2,-9,-8) = NA")
-anes2008$age <- recode(raw2008$V081104, "c(-2,-9,-8) = NA")
+anes2012$age <- car::recode(raw2012$dem_age_r_x, "c(-2,-9,-8) = NA")
+anes2008$age <- car::recode(raw2008$V081104, "c(-2,-9,-8) = NA")
 
 ## sex
 anes2012$female <- raw2012$gender_respondent_x - 1
 anes2008$female <- raw2008$V081101 - 1
 
 ## race
-anes2012$black <- as.numeric(recode(raw2012$dem_raceeth_x, "lo:0 = NA") == 2)
-anes2008$black <- as.numeric(recode(raw2008$V081102, "lo:0 = NA") == 2)
+anes2012$black <- as.numeric(car::recode(raw2012$dem_raceeth_x, "lo:0 = NA") == 2)
+anes2008$black <- as.numeric(car::recode(raw2008$V081102, "lo:0 = NA") == 2)
 
 ## religiosity (church attendance)
-anes2012$relig <- (5 - recode(raw2012$relig_churchoft, "lo:0 = NA"))/5
+anes2012$relig <- (5 - car::recode(raw2012$relig_churchoft, "lo:0 = NA"))/5
 anes2012$relig[raw2012$relig_church != 1] <- 0
 anes2012$relig[raw2012$relig_churchwk == 2] <- 1
 
-anes2008$relig <- (5 - recode(raw2008$V083186a, "lo:0 = NA"))/5
+anes2008$relig <- (5 - car::recode(raw2008$V083186a, "lo:0 = NA"))/5
 anes2008$relig[raw2008$V083186 != 1] <- 0
 anes2008$relig[raw2008$V083186b == 2] <- 1
 
 ## education (bachelor degree)
-anes2012$educ <- recode(raw2012$dem_edugroup_x, "lo:-1=NA; 0:3=0; 3:hi=1")
-anes2008$educ <- recode(raw2008$V083218x, "lo:-1=NA; 1:5=0; 6:hi=1")
+anes2012$educ <- car::recode(raw2012$dem_edugroup_x, "lo:-1=NA; 0:3=0; 3:hi=1")
+anes2008$educ <- car::recode(raw2008$V083218x, "lo:-1=NA; 1:5=0; 6:hi=1")
 
 ## education (continuous)
-anes2012$educ_cont <- (recode(raw2012$dem_edugroup_x, "lo:-1=NA") - 1)/4
-anes2008$educ_cont <- recode(raw2008$V083218x, "lo:-1=NA")/7
+anes2012$educ_cont <- (car::recode(raw2012$dem_edugroup_x, "lo:-1=NA") - 1)/4
+anes2008$educ_cont <- car::recode(raw2008$V083218x, "lo:-1=NA")/7
 
 ## spanish speaking respondent
 anes2012$spanish <- as.numeric(raw2012$profile_spanishsurv == 1 |
@@ -353,6 +353,16 @@ tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
 colnames(tmp1) <- paste0("media_",colnames(tmp1))
 tmp2 <- apply(tmp1[,grep("_d",colnames(tmp1))], 2, function(x) as.numeric(x>0))
 colnames(tmp2) <- paste0(colnames(tmp2),"01")
+
+## combine media usage with mft similarity scores as mean dimensions (new version)
+tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))  / apply(anes2012media,1,sum)
+tmp1[apply(anes2012media,1,sum)==0, ] <- 0
+colnames(tmp1) <- paste0("media_",colnames(tmp1))
+# take into account media type and relative frequency here
+# question: what about respondents who watch news but none of the ones mentioned above?
+# check the coding w/ media vs. media_s
+
+## add new variables to anes
 anes2012 <- cbind(anes2012,tmp1,tmp2)
 anes2012$media <- apply(anes2012media,1,sum)>0
 
