@@ -370,7 +370,7 @@ anes2012inews <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
 anes2012inews <- anes2012inews / ifelse(apply(anes2012inews,1,sum)>0, apply(anes2012inews,1,sum), 1)
 
 # proportion times days per week
-anes2012inews <- anes2012inews*anes2012$wkinews
+#anes2012inews <- anes2012inews*anes2012$wkinews
 
 
 ## tv news
@@ -400,7 +400,7 @@ anes2012tvnws <- data.frame(TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
 anes2012tvnws <- anes2012tvnws / ifelse(apply(anes2012tvnws,1,sum)>0, apply(anes2012tvnws,1,sum), 1)
 
 # proportion times days per week
-anes2012tvnws <- anes2012tvnws*anes2012$wktvnws
+#anes2012tvnws <- anes2012tvnws*anes2012$wktvnws
 
 
 ## print news
@@ -416,7 +416,7 @@ anes2012paprnws <- data.frame(INET_TheNewYorkTimes = raw2012$medsrc_printnews_01
 anes2012paprnws <- anes2012paprnws / ifelse(apply(anes2012paprnws,1,sum)>0, apply(anes2012paprnws,1,sum), 1)
 
 # proportion times days per week
-anes2012paprnws <- anes2012paprnws*anes2012$wkpaprnws
+#anes2012paprnws <- anes2012paprnws*anes2012$wkpaprnws
 
 
 ## radio news
@@ -431,7 +431,7 @@ anes2012rdnws <- data.frame(NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
 anes2012rdnws <- anes2012rdnws / ifelse(apply(anes2012rdnws,1,sum)>0, apply(anes2012rdnws,1,sum), 1)
 
 # proportion times days per week
-anes2012rdnws <- anes2012rdnws*anes2012$wkrdnws
+#anes2012rdnws <- anes2012rdnws*anes2012$wkrdnws
 
 
 ## combine media usage with mft similarity scores and add to anes (old version with aggregate usage)
@@ -454,8 +454,22 @@ tmp1 <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(a
 colnames(tmp1) <- paste0("media_",colnames(tmp1))
 
 ## add new variables to anes
-anes2012 <- cbind(anes2012,tmp1,tmp2)
+#anes2012 <- cbind(anes2012,tmp1,tmp2)
 anes2012$media <- apply(anes2012media,1,sum)>0
+
+## combine media usage with mft similarity scores for each type separately (new version)
+rownames(media2012) <- gsub(".txt","",rownames(media2012))
+tmp1a <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),]
+colnames(tmp1a) <- paste0("inews_",colnames(tmp1a))
+tmp1b <- as.matrix(anes2012tvnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012tvnws),]
+colnames(tmp1b) <- paste0("tvnws_",colnames(tmp1b))
+tmp1c <- as.matrix(anes2012paprnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012paprnws),]
+colnames(tmp1c) <- paste0("paprnws_",colnames(tmp1c))
+tmp1d <- as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012rdnws),]
+colnames(tmp1d) <- paste0("rdnws_",colnames(tmp1d))
+
+## add new variables to anes
+anes2012 <- cbind(anes2012,tmp1a,tmp1b,tmp1c,tmp1d)
 
 
 ### compute bootstrapped standard errors for media content (word-based bootstrap)

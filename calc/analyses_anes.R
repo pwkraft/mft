@@ -425,6 +425,26 @@ tobit_cont[[4]] <- vglm(authority_s ~ media_harm_s + media_fairness_s + media_in
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
 
+## try general mft instead
+m <- vglm(general_s ~ media_general*polmedia + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+summary(m)
+
+## try different media sources
+m <- vglm(general_s ~ wkinews*inews_general + wktvnws*tvnws_general
+          + wkpaprnws*paprnws_general + wkrdnws*rdnws_general
+          + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+summary(m)
+
+summary(vglm(general_s ~ wkinews*inews_general + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wktvnws*tvnws_general + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wkpaprnws*paprnws_general + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wkrdnws*rdnws_general + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
 
 
 ################
