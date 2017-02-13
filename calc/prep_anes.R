@@ -351,6 +351,7 @@ anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
                             , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
                             ) %>% apply(2,as.numeric)
 
+
 ## internet news
 
 # dichotomous indicator for each news outlet
@@ -371,7 +372,10 @@ anes2012inews <- anes2012inews / ifelse(apply(anes2012inews,1,sum)>0, apply(anes
 # proportion times days per week
 anes2012inews <- anes2012inews*anes2012$wkinews
 
+
 ## tv news
+
+# dichotomous indicator for each news outlet
 anes2012tvnws <- data.frame(TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
                             , TV_ABC_GoodMorningAmerica = raw2012$medsrc_tvprog_24==1
                             , TV_ABC_ThisWeek = raw2012$medsrc_tvprog_45==1
@@ -391,24 +395,46 @@ anes2012tvnws <- data.frame(TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
                             , TV_NBC_RockCenter = raw2012$medsrc_tvprog_39==1
                             , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
                             ) %>% apply(2,as.numeric)
-anes2012tvnws <- apply(anes2012tvnws, 1, function(x) (if(sum(x)>0) x/sum(x)))
+
+# proportion of each news outlet
+anes2012tvnws <- anes2012tvnws / ifelse(apply(anes2012tvnws,1,sum)>0, apply(anes2012tvnws,1,sum), 1)
+
+# proportion times days per week
+anes2012tvnws <- anes2012tvnws*anes2012$wktvnws
+
 
 ## print news
+
+# dichotomous indicator for each news outlet
 anes2012paprnws <- data.frame(INET_TheNewYorkTimes = raw2012$medsrc_printnews_01==1
                               , INET_USAToday = raw2012$medsrc_printnews_02==1 
                               , PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
                               , PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1
                               ) %>% apply(2,as.numeric)
 
+# proportion of each news outlet
+anes2012paprnws <- anes2012paprnws / ifelse(apply(anes2012paprnws,1,sum)>0, apply(anes2012paprnws,1,sum), 1)
+
+# proportion times days per week
+anes2012paprnws <- anes2012paprnws*anes2012$wkpaprnws
+
+
 ## radio news
+
+# dichotomous indicator for each news outlet
 anes2012rdnws <- data.frame(NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
                             , NPR_FreshAir = raw2012$medsrc_radio_04==1
                             , NPR_MorningEdition = raw2012$medsrc_radio_08==1
                             ) %>% apply(2,as.numeric)
 
-## CONTINUE HERE, also check the exact recoding of media sources
+# proportion of each news outlet
+anes2012rdnws <- anes2012rdnws / ifelse(apply(anes2012rdnws,1,sum)>0, apply(anes2012rdnws,1,sum), 1)
 
-## combine media usage with mft similarity scores and add to anes
+# proportion times days per week
+anes2012rdnws <- anes2012rdnws*anes2012$wkrdnws
+
+
+## combine media usage with mft similarity scores and add to anes (old version with aggregate usage)
 tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
 colnames(tmp1) <- paste0("media_",colnames(tmp1))
 tmp2 <- apply(tmp1[,grep("_d",colnames(tmp1))], 2, function(x) as.numeric(x>0))
@@ -418,10 +444,14 @@ colnames(tmp2) <- paste0(colnames(tmp2),"01")
 tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))  / apply(anes2012media,1,sum)
 tmp1[apply(anes2012media,1,sum)==0, ] <- 0
 colnames(tmp1) <- paste0("media_",colnames(tmp1))
-# take into account media type and relative frequency here
-# question: what about respondents who watch news but none of the ones mentioned above?
-# check the coding w/ media vs. media_s
-# question: binding vs. individualizing foundations?
+
+## combine media usage with mft similarity scores for each type with relative frequency (new version)
+rownames(media2012) <- gsub(".txt","",rownames(media2012))
+tmp1 <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),] +
+  as.matrix(anes2012tvnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012tvnws),] +
+  as.matrix(anes2012paprnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012paprnws),] +
+  as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012rdnws),]
+colnames(tmp1) <- paste0("media_",colnames(tmp1))
 
 ## add new variables to anes
 anes2012 <- cbind(anes2012,tmp1,tmp2)

@@ -335,13 +335,13 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## model estimation
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ media_harm + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(fairness_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black
+tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[3]] <- vglm(ingroup_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[4]] <- vglm(authority_s ~ media_harm:polmedia + media_fairness:polmedia + media_ingroup:polmedia + media_authority:polmedia + relig + educ + age + female + black 
+tobit_cont[[4]] <- vglm(authority_s ~ media_authority + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
 
@@ -368,6 +368,30 @@ ggplot(tobit_cont_res, aes(x = mean, y = var)) +
   facet_grid(.~value) + 
   scale_y_discrete(limits = rev(levels(tobit_cont_res$var)))
 ggsave("fig/tobit_cont.pdf", width = 5, height = 2.5)
+
+## placebo test: individualizing vs. binding foundations
+tobit_cont <- list(NULL)
+tobit_cont[[1]] <- vglm(harm_s ~ media_fairness + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[2]] <- vglm(fairness_s ~ media_harm + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_authority + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[4]] <- vglm(authority_s ~ media_ingroup + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(tobit_cont, summary)
+
+## placebo test: other random foundations
+tobit_cont <- list(NULL)
+tobit_cont[[1]] <- vglm(harm_s ~ media_ingroup + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[2]] <- vglm(fairness_s ~ media_authority + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_harm + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[4]] <- vglm(authority_s ~ media_fairness + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(tobit_cont, summary)
 
 
 
