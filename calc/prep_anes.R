@@ -447,11 +447,11 @@ colnames(tmp1) <- paste0("media_",colnames(tmp1))
 
 ## combine media usage with mft similarity scores for each type with relative frequency (new version)
 rownames(media2012) <- gsub(".txt","",rownames(media2012))
-tmp1 <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),] +
+tmp2 <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),] +
   as.matrix(anes2012tvnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012tvnws),] +
   as.matrix(anes2012paprnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012paprnws),] +
   as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012rdnws),]
-colnames(tmp1) <- paste0("media_",colnames(tmp1))
+colnames(tmp2) <- paste0("mediatype_",colnames(tmp2))
 
 ## add new variables to anes
 #anes2012 <- cbind(anes2012,tmp1,tmp2)
@@ -469,7 +469,7 @@ tmp1d <- as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(
 colnames(tmp1d) <- paste0("rdnws_",colnames(tmp1d))
 
 ## add new variables to anes
-anes2012 <- cbind(anes2012,tmp1a,tmp1b,tmp1c,tmp1d)
+anes2012 <- cbind(anes2012,tmp1,tmp2,tmp1a,tmp1b,tmp1c,tmp1d)
 
 
 ### compute bootstrapped standard errors for media content (word-based bootstrap)

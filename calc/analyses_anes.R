@@ -395,23 +395,37 @@ lapply(tobit_cont, summary)
 
 ## including all controls
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm + media_fairness + media_ingroup + media_authority + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ mediatype_harm_s + mediatype_fairness_s + mediatype_ingroup_s + mediatype_authority_s + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(fairness_s ~ media_harm + media_fairness + media_ingroup + media_authority + relig + educ + age + female + black
+tobit_cont[[2]] <- vglm(fairness_s ~ mediatype_harm_s + mediatype_fairness_s + mediatype_ingroup_s + mediatype_authority_s + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[3]] <- vglm(ingroup_s ~ media_harm + media_fairness + media_ingroup + media_authority + relig + educ + age + female + black 
+tobit_cont[[3]] <- vglm(ingroup_s ~ mediatype_harm_s + mediatype_fairness_s + mediatype_ingroup_s + mediatype_authority_s + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[4]] <- vglm(authority_s ~ media_harm + media_fairness + media_ingroup + media_authority + relig + educ + age + female + black 
+tobit_cont[[4]] <- vglm(authority_s ~ mediatype_harm_s + mediatype_fairness_s + mediatype_ingroup_s + mediatype_authority_s + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
 
 ## binding vs. individualizing
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(I(harm_s + fairness_s) ~ I(media_harm + media_fairness) + I(media_ingroup + media_authority) + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(I(harm_s + fairness_s) ~ I(media_harm_s + media_fairness_s) + I(media_ingroup_s + media_authority_s) + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(I(ingroup_s + authority_s) ~ I(media_harm + media_fairness) + I(media_ingroup + media_authority) + relig + educ + age + female + black 
+tobit_cont[[2]] <- vglm(I(ingroup_s + authority_s) ~ I(media_harm_s + media_fairness_s) + I(media_ingroup_s + media_authority_s) + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[3]] <- vglm(I(harm_s + fairness_s) ~ I(media_harm + media_fairness) + I(media_ingroup + media_authority) + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[4]] <- vglm(I(ingroup_s + authority_s) ~ I(media_harm + media_fairness) + I(media_ingroup + media_authority) + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[5]] <- vglm(I(harm_s + fairness_s) ~ I(mediatype_harm_s + mediatype_fairness_s) + I(mediatype_ingroup_s + mediatype_authority_s) + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[6]] <- vglm(I(ingroup_s + authority_s) ~ I(mediatype_harm_s + mediatype_fairness_s) + I(mediatype_ingroup_s + mediatype_authority_s) + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
+
+## binding - individualizing
+summary(vglm(I(harm_s + fairness_s - ingroup_s - authority_s) ~ I(media_harm_s + media_fairness_s - media_ingroup - media_authority) + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(I(harm_s + fairness_s - ingroup_s - authority_s) ~ I(mediatype_harm_s + mediatype_fairness_s - mediatype_ingroup - mediatype_authority) + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
 
 ## checking alternative recodings
 tobit_cont <- list(NULL)
