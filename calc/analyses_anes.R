@@ -430,6 +430,10 @@ m <- vglm(general_s ~ media_general*polmedia + relig + educ + age + female + bla
           + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 summary(m)
 
+m <- vglm(general_s ~ media_general_s*polmedia + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+summary(m)
+
 ## try different media sources
 m <- vglm(general_s ~ wkinews*inews_general + wktvnws*tvnws_general
           + wkpaprnws*paprnws_general + wkrdnws*rdnws_general
@@ -445,6 +449,22 @@ summary(vglm(general_s ~ wkpaprnws*paprnws_general + relig + educ + age + female
              + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
 summary(vglm(general_s ~ wkrdnws*rdnws_general + relig + educ + age + female + black 
              + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+
+summary(vglm(general_s ~ wkinews*inews_general_s + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wktvnws*tvnws_general_s + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wkpaprnws*paprnws_general_s + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+summary(vglm(general_s ~ wkrdnws*rdnws_general_s + relig + educ + age + female + black 
+             + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012))
+
+## try different media sources
+m <- vglm(general_s ~ wkinews*inews_general_s + wktvnws*tvnws_general_s
+          + wkpaprnws*paprnws_general_s + wkrdnws*rdnws_general_s
+          + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+summary(m)
 
 
 ################
