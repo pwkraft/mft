@@ -25,7 +25,7 @@ plot_df <- fbrg_mft %>% select(-paper,-article) %>%
   gather("variable","Score",authority_rtf:purity_tfidf)
 plot_df$Foundation <- factor(gsub("_.*","",plot_df$variable)
                              , levels = c("purity", "authority", "ingroup"
-                                          , "fairness", "harm")
+                                          , "fairness", "harm", "general")
                              , labels = c())
 plot_df$Method
 grep("harm", plot_df$variable)
@@ -64,6 +64,36 @@ for(i in 1:length(vname)){
 png("fig/feinberg.png",height=10,width=5,units="in",res=300)
 grid.arrange(grobs=p, ncol=2)
 dev.off()
+
+
+## General MFT references
+
+p <- NULL
+m <- NULL
+
+m$general <- lm(general~general_rtf, data=fbrg_mft)
+tmp <- as.character(paste0("R^2 == ",round(summary(m$general)$r.squared*100,2)))
+
+p$general <- ggplot(fbrg_mft, aes(x=general,y=general_rtf)) + 
+  geom_smooth(method="lm", col = "black") + geom_point(alpha=.5, size=1) + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
+  ggtitle("General MFT") + xlab("Manual Coding") + ylab("Traditional Dictionary") + 
+  annotate("text",x=0,y=.04,label=tmp,hjust=0,size=3,parse=T)
+
+m$general_tfidf <- lm(general~general_tfidf, data=fbrg_mft)
+tmp <- as.character(paste0("R^2 == ",round(summary(m$general_tfidf)$r.squared*100,2)))
+
+p$general_tfidf <- ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) + 
+  geom_smooth(method="lm", col = "black") + geom_point(alpha=.5, size=1) + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
+  ggtitle("General MFT") + xlab("Manual Coding") + ylab("Weighted Dictionary") + 
+  annotate("text",x=0,y=.04,label=tmp,hjust=0,size=3,parse=T)
+
+png("fig/feinberg2.png",height=3,width=5,units="in",res=300)
+grid.arrange(grobs=p, ncol=2)
+dev.off()
+
+p$general_tfidf
 
 library(corrplot)
 M <- cor(select(fbrg_mft, -article, -id, -paper))
