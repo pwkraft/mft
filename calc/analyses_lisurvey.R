@@ -54,12 +54,12 @@ tobit_ideol_li_res$var <- rep(4:1, each=2)
 ggplot(tobit_ideol_li_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  ggtitle("Change in Predicted Emphasis on Moral Foundation (Replication)") +
-  labs(y = "Dependent Variable: Moral Foundation"
+  #ggtitle("Change in Predicted Emphasis on Moral Foundation (Replication)") +
+  labs(y = "Moral Foundation"
        , x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(~value)
-ggsave(filename = "fig/tobit_ideol_lisurvey.pdf", width = 5, height = 2.5)
+ggsave(filename = "fig/tobit_ideol_lisurvey.pdf", width = 4, height = 2)
 
 
 ### Additional analyses: 
