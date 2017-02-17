@@ -190,9 +190,10 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
         evs <- pnorm(betas %*% X)
       } else stop("Model type not supported")
     } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
-      ## decompose effect of tobit in dP(Y>0) and dY|Y>0
+      ## IDEA: decompose effect of tobit in dP(Y>0) and dY|Y>0
       ## based on predicted values (rather than EVs)
       ## note that betas[,2] is log(Sigma) estimate
+      ## CHECK CALCULATIONS!
       if(unique(models[[i]]@misc$Upper)!=Inf) stop("Upper limit not supported")
       if(unique(models[[i]]@misc$Lower)!=0) warning("Limit != 0 not testes yet!")
       loLim <- unique(models[[i]]@misc$Lower)[1,1]
@@ -210,6 +211,8 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
       prob <- apply(pvs, 2, function(x) apply(x, 1, function(x) mean(x>loLim)))
     } else stop("Model type not supported")
     
+    skip <- F
+    
     if(nrow(iv)==2){
       ## calculate first differences
       evs <- evs[,2] - evs[,1]
@@ -225,7 +228,15 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
           prob <- (prob[,2] - prob[,1]) - (prob[,4] - prob[,3])
       }
     } else {
-      warning("Check number of scenarios")
+      ## compute predicted values for each step
+      warning("Check number of scenarios - STILL TESTING")
+      res <- data.frame(mean = apply(evs, 2, mean)
+                        , cilo = apply(evs, 2, quantile, ci[1])
+                        , cihi = apply(evs, 2, quantile, ci[2])
+                        , dv = as.factor(colnames(models[[i]]$model)[1])
+                        , iv = as.factor(paste(colnames(iv), collapse = "_")))
+      out <- rbind(out, res)
+      skip <- T
     }
     
     ## warning for Inf/-Inf in single iterations
@@ -234,23 +245,25 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
       evs[evs==Inf|evs==-Inf] <- NA
     }
     
-    ## generate output table
-    if(class(models[[i]])[1] != "vglm"){
-      res <- data.frame(mean = mean(evs)
-                        , cilo = quantile(evs, ci[1])
-                        , cihi = quantile(evs, ci[2])
-                        , dv = as.factor(colnames(models[[i]]$model)[1])
-                        , iv = as.factor(paste(colnames(iv), collapse = "_")))
-    } else {
-      res <- data.frame(mean = c(mean(prob, na.rm = T), mean(evs, na.rm = T))
-                        , cilo = c(quantile(prob, ci[1], na.rm = T),quantile(evs, ci[1], na.rm = T))
-                        , cihi = c(quantile(prob, ci[2], na.rm = T), quantile(evs, ci[2], na.rm = T))
-                        , dv = as.factor(sub("(.*) \\~.*", "\\1", models[[i]]@call[2]))
-                        , iv = as.factor(paste(colnames(iv), collapse = "_"))
-                        , value = factor(c("Probability P(y>0)","Expected Value E(y|y>0)")
-                                         , levels = c("Probability P(y>0)","Expected Value E(y|y>0)")))
+    if(!skip){
+      ## generate output table
+      if(class(models[[i]])[1] != "vglm"){
+        res <- data.frame(mean = mean(evs)
+                          , cilo = quantile(evs, ci[1])
+                          , cihi = quantile(evs, ci[2])
+                          , dv = as.factor(colnames(models[[i]]$model)[1])
+                          , iv = as.factor(paste(colnames(iv), collapse = "_")))
+      } else {
+        res <- data.frame(mean = c(mean(prob, na.rm = T), mean(evs, na.rm = T))
+                          , cilo = c(quantile(prob, ci[1], na.rm = T),quantile(evs, ci[1], na.rm = T))
+                          , cihi = c(quantile(prob, ci[2], na.rm = T), quantile(evs, ci[2], na.rm = T))
+                          , dv = as.factor(sub("(.*) \\~.*", "\\1", models[[i]]@call[2]))
+                          , iv = as.factor(paste(colnames(iv), collapse = "_"))
+                          , value = factor(c("Probability P(y>0)","Expected Value E(y|y>0)")
+                                           , levels = c("Probability P(y>0)","Expected Value E(y|y>0)")))
+      }
+      out <- rbind(out, res)
     }
-    out <- rbind(out, res)
   }
   
   ## return output table
