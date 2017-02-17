@@ -40,10 +40,10 @@ plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, har
 ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
   geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
   labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  ggtitle("Moral Reasoning in\nOpen-Ended Responses") + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_discrete(labels=c("Purity / \nSanctity", mftLabs))
-ggsave(file = "fig/prop_mft.pdf", width = 5, height = 2)
+ggsave(file = "fig/prop_mft.pdf", width = 3, height = 2)
 
 
 ### Fig 2: Ideological differences in moral foundations (tobit)
@@ -335,13 +335,13 @@ ggsave(filename = "fig/tobit_ideol_disc.pdf", width = 4, height = 3)
 
 ## model estimation
 tobit_cont <- list(NULL)
-tobit_cont[[1]] <- vglm(harm_s ~ media_harm + relig + educ + age + female + black 
+tobit_cont[[1]] <- vglm(harm_s ~ media_harm*polmedia_c + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness + relig + educ + age + female + black
+tobit_cont[[2]] <- vglm(fairness_s ~ media_fairness*polmedia_c + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup + relig + educ + age + female + black 
+tobit_cont[[3]] <- vglm(ingroup_s ~ media_ingroup*polmedia_c + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_cont[[4]] <- vglm(authority_s ~ media_authority + relig + educ + age + female + black 
+tobit_cont[[4]] <- vglm(authority_s ~ media_authority*polmedia_c + relig + educ + age + female + black 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
 
@@ -405,6 +405,30 @@ tobit_cont[[4]] <- vglm(authority_s ~ mediatype_harm_s + mediatype_fairness_s + 
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 lapply(tobit_cont, summary)
 
+## including control for polmedia + _s
+tobit_cont <- list(NULL)
+tobit_cont[[1]] <- vglm(harm_s ~ mediatype_harm * polmedia + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[2]] <- vglm(fairness_s ~ mediatype_fairness * polmedia + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[3]] <- vglm(ingroup_s ~ mediatype_ingroup * polmedia + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[4]] <- vglm(authority_s ~ mediatype_authority * polmedia + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(tobit_cont, summary)
+
+## including control for polmedia
+tobit_cont <- list(NULL)
+tobit_cont[[1]] <- vglm(harm_s ~ mediatype_harm_s * polmedia_c + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[2]] <- vglm(fairness_s ~ mediatype_fairness_s * polmedia_c + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[3]] <- vglm(ingroup_s ~ mediatype_ingroup_s * polmedia_c + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_cont[[4]] <- vglm(authority_s ~ mediatype_authority_s * polmedia_c + relig + educ + age + female + black 
+                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+lapply(tobit_cont, summary)
+
 ## binding vs. individualizing
 tobit_cont <- list(NULL)
 tobit_cont[[1]] <- vglm(I(harm_s + fairness_s) ~ I(media_harm_s + media_fairness_s) + I(media_ingroup_s + media_authority_s) + relig + educ + age + female + black 
@@ -440,11 +464,15 @@ tobit_cont[[4]] <- vglm(authority_s ~ media_harm_s + media_fairness_s + media_in
 lapply(tobit_cont, summary)
 
 ## try general mft instead
-m <- vglm(general_s ~ media_general*polmedia + relig + educ + age + female + black 
+m <- vglm(general_s ~ media_general * polmedia_c + relig + educ + age + female + black 
           + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 summary(m)
 
-m <- vglm(general_s ~ media_general_s*polmedia + relig + educ + age + female + black 
+m <- vglm(general_s ~ media_general + I(media_general^2) + polmedia_c + relig + educ + age + female + black 
+          + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+summary(m)
+
+m <- vglm(general_s ~ media_general_s + polmedia_c + relig + educ + age + female + black 
           + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 summary(m)
 
