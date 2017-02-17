@@ -25,6 +25,23 @@ load("out/prep_anes.RData")
 ### Additional Descriptive information
 
 
+### Fig 1: Moral foundations in open-ended responses
+
+## prepare data for plotting
+plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, harm_d) %>%
+  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))))) %>%
+  t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
+
+## generate plot
+ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
+  geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
+  labs(y = "Moral Foundation", x = "Proportion of Respondents") +
+  ggtitle("Moral Reasoning in\nOpen-Ended Responses") + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_discrete(labels=c("Purity / \nSanctity", mftLabs))
+ggsave(file = "fig/prop_mft.pdf", width = 3, height = 2)
+
+
 ### Tab B.1: Missing open-ended responses
 
 ## prepare table
@@ -152,6 +169,54 @@ ggsave("fig/media_desc.pdf",width = 7, height = 4)
 load("out/analyses_anes.RData")
 
 
+### Fig 3: Moral foundations and feeling thermometer differentials (ols)
+
+## model estimation
+ols_feel <- NULL
+ols_feel[[1]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
+                    + relig + educ + age + female + black + lwc + wordsum + mode
+                    , data=anes2012)
+ols_feel[[2]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
+                    + pid_dem + pid_rep + relig + educ + age + female + black
+                    + lwc + wordsum + mode, data=anes2012)
+ols_feel[[3]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
+                    + relig + educ + age + female + black + lwc + wordsum + mode
+                    , data=anes2012)
+ols_feel[[4]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
+                    + pid_dem + pid_rep + relig + educ + age + female + black
+                    + lwc + wordsum + mode, data=anes2012)
+
+## simulate expected values / marginal effects
+ols_feel_res <- rbind(sim(ols_feel, iv=data.frame(harm_s = min(anes2012$harm_s)+c(0,1))
+                          , robust=T)
+                      , sim(ols_feel, iv=data.frame(fairness_s = min(anes2012$fairness_s)+c(0,1))
+                            , robust=T)
+                      , sim(ols_feel, iv=data.frame(ingroup_s = min(anes2012$ingroup_s)+c(0,1))
+                            , robust=T)
+                      , sim(ols_feel, iv=data.frame(authority_s = min(anes2012$authority_s)+c(0,1))
+                            , robust=T))
+ols_feel_res$cond <- rep(c("No","Yes"),8)
+ols_feel_res$var <- rep(4:1,each=4)
+ols_feel_res$year <- "2012"
+levels(ols_feel_res$dv) <- c("Party Evaluation", "Candidate Evaluation")
+
+## generate plot
+ggplot(ols_feel_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
+  labs(y = "Independent Variable: Moral Foundation"
+       , x= "Change in Feeling Thermometer (Democrat - Republican)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  ggtitle("Change in Feeling Thermometer Differentials") +
+  guides(col=guide_legend(title="Control for Party Identification")
+         , shape=guide_legend(title="Control for Party Identification")) +
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_wrap(~dv) +
+  scale_color_grey(start=0,end=.5)
+ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
+
+
+
 ### Fig C.1: Participation and general moral reasoning (tobit)
 
 ## model estimation
@@ -198,6 +263,55 @@ ggplot(tobit_part_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shap
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5) + facet_grid(~value)
 ggsave(filename = "fig/tobit_part.pdf", width = 5, height = 3)
+
+
+
+### Fig 5: Knoledge/media/discussion and general moral reasoning (tobit)
+
+## model estimation
+tobit_learn <- list(NULL)
+tobit_learn[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_learn[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_learn[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black 
+                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
+tobit_learn[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
+                         + relig + educ + age + female + black + lwc + wordsum + mode
+                         , tobit(Lower = 0), data=anes2012)
+
+## simulate expected values / marginal effects
+tobit_learn_res <- rbind(sim(tobit_learn[[1]]
+                             , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                         , sim(tobit_learn[[2]]
+                               , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                         , sim(tobit_learn[[3]]
+                               , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
+                         , sim(tobit_learn[[4]]
+                               , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                         , sim(tobit_learn[[4]]
+                               , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                         , sim(tobit_learn[[4]]
+                               , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
+tobit_learn_res$cond <- rep(c("No", "Yes"), each=6)
+tobit_learn_res$var <- rep(c(3:1,3:1),each=2)
+tobit_learn_res$year <- "2012"
+
+## generate plot
+ggplot(tobit_learn_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
+  labs(y = "Independent Variable", x= "Marginal Effect") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=3:1, labels=polLabs) +
+  ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
+  guides(col=guide_legend(title="Control for remaining variables")
+         , shape=guide_legend(title="Control for remaining variables")) +
+  theme(legend.position="bottom", legend.box="horizontal") +
+  scale_color_grey(start=0,end=.5) + facet_grid(~value)
+ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
+
+
 
 
 ### Fig C.2: Knowledge/media/discussion and ideological differences in moral foundations (tobit, did)

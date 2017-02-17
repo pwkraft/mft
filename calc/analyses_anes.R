@@ -29,23 +29,6 @@ anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0, ]
 ### Ideological Differences in Moral Reasoning
 
 
-### Fig 1: Moral foundations in open-ended responses
-
-## prepare data for plotting
-plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, harm_d) %>%
-  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))))) %>%
-  t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
-
-## generate plot
-ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
-  geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
-  labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-  ggtitle("Moral Reasoning in\nOpen-Ended Responses") + 
-  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_discrete(labels=c("Purity / \nSanctity", mftLabs))
-ggsave(file = "fig/prop_mft.pdf", width = 3, height = 2)
-
-
 ### Fig 2: Ideological differences in moral foundations (tobit)
 
 ## model estimation
@@ -79,53 +62,6 @@ ggsave(filename = "fig/tobit_ideol.pdf", width = 5, height = 2.5)
 
 ##############################################
 ### The Political Relevance of Moral Reasoning
-
-
-### Fig 3: Moral foundations and feeling thermometer differentials (ols)
-
-## model estimation
-ols_feel <- NULL
-ols_feel[[1]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
-                    + relig + educ + age + female + black + lwc + wordsum + mode
-                    , data=anes2012)
-ols_feel[[2]] <- lm(eval_party ~ harm_s + fairness_s + ingroup_s + authority_s
-                    + pid_dem + pid_rep + relig + educ + age + female + black
-                    + lwc + wordsum + mode, data=anes2012)
-ols_feel[[3]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
-                    + relig + educ + age + female + black + lwc + wordsum + mode
-                    , data=anes2012)
-ols_feel[[4]] <- lm(eval_cand ~ harm_s + fairness_s + ingroup_s + authority_s
-                    + pid_dem + pid_rep + relig + educ + age + female + black
-                    + lwc + wordsum + mode, data=anes2012)
-
-## simulate expected values / marginal effects
-ols_feel_res <- rbind(sim(ols_feel, iv=data.frame(harm_s = min(anes2012$harm_s)+c(0,1))
-                          , robust=T)
-                      , sim(ols_feel, iv=data.frame(fairness_s = min(anes2012$fairness_s)+c(0,1))
-                            , robust=T)
-                      , sim(ols_feel, iv=data.frame(ingroup_s = min(anes2012$ingroup_s)+c(0,1))
-                            , robust=T)
-                      , sim(ols_feel, iv=data.frame(authority_s = min(anes2012$authority_s)+c(0,1))
-                            , robust=T))
-ols_feel_res$cond <- rep(c("No","Yes"),8)
-ols_feel_res$var <- rep(4:1,each=4)
-ols_feel_res$year <- "2012"
-levels(ols_feel_res$dv) <- c("Party Evaluation", "Candidate Evaluation")
-
-## generate plot
-ggplot(ols_feel_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
-  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
-  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
-  labs(y = "Independent Variable: Moral Foundation"
-       , x= "Change in Feeling Thermometer (Democrat - Republican)") +
-  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  ggtitle("Change in Feeling Thermometer Differentials") +
-  guides(col=guide_legend(title="Control for Party Identification")
-         , shape=guide_legend(title="Control for Party Identification")) +
-  theme(legend.position="bottom", legend.box="horizontal") +
-  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_wrap(~dv) +
-  scale_color_grey(start=0,end=.5)
-ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
 
 
 ### Fig 4: Moral foundations and democratic vote (logit)
@@ -168,39 +104,37 @@ ggsave(filename = "fig/logit_vote.pdf", width = 3, height = 3)
 ### The Conditionality of Moral Reasoning
 
 
-### Fig 5: Knoledge/media/discussion and general moral reasoning (tobit)
+### Fig 5: Media Exposure and general political discussion (tobit)
 
 ## model estimation
-tobit_learn <- list(NULL)
-tobit_learn[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black 
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
-                         + relig + educ + age + female + black + lwc + wordsum + mode
+tobit_media <- list(NULL)
+tobit_media[[1]] <- vglm(general_s ~ polmedia_c
+                         + poldisc + polknow + relig + educ + age + female + black + lwc + wordsum + mode
                          , tobit(Lower = 0), data=anes2012)
+tobit_media[[2]] <- vglm(general_s ~ polmedia_c * media_general
+                         + poldisc + polknow + relig + educ + age + female + black + lwc + wordsum + mode
+                         , tobit(Lower = 0), data=anes2012)
+lapply(tobit_media, summary)
 
 ## simulate expected values / marginal effects
-tobit_learn_res <- rbind(sim(tobit_learn[[1]]
+tobit_media_res <- rbind(sim(tobit_media[[1]]
                              , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
-                         , sim(tobit_learn[[2]]
+                         , sim(tobit_media[[2]]
                                , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                         , sim(tobit_learn[[3]]
+                         , sim(tobit_media[[3]]
                                , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
-                         , sim(tobit_learn[[4]]
+                         , sim(tobit_media[[4]]
                                , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
-                         , sim(tobit_learn[[4]]
+                         , sim(tobit_media[[4]]
                                , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                         , sim(tobit_learn[[4]]
+                         , sim(tobit_media[[4]]
                                , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
-tobit_learn_res$cond <- rep(c("No", "Yes"), each=6)
-tobit_learn_res$var <- rep(c(3:1,3:1),each=2)
-tobit_learn_res$year <- "2012"
+tobit_media_res$cond <- rep(c("No", "Yes"), each=6)
+tobit_media_res$var <- rep(c(3:1,3:1),each=2)
+tobit_media_res$year <- "2012"
 
 ## generate plot
-ggplot(tobit_learn_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+ggplot(tobit_media_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
@@ -211,7 +145,7 @@ ggplot(tobit_learn_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, sha
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5) + facet_grid(~value)
-ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
+ggsave(filename = "fig/tobit_media.pdf", width = 5, height = 3)
 
 
 ### Fig 6: Knowledge and ideological differences in moral foundations (tobit)
