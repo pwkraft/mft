@@ -72,7 +72,8 @@ p <- NULL
 m <- NULL
 
 m$general <- lm(general~general_rtf, data=fbrg_mft)
-tmp <- as.character(paste0("R^2 == ",round(summary(m$general)$r.squared*100,2)))
+#tmp <- as.character(paste0("R^2 == ",round(summary(m$general)$r.squared*100,2)))
+tmp <- as.character(paste0("italic(r) == ",round(cor(fbrg_mft$general,fbrg_mft$general_rtf),2)))
 
 p$general <- ggplot(fbrg_mft, aes(x=general,y=general_rtf)) + 
   geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
@@ -81,7 +82,8 @@ p$general <- ggplot(fbrg_mft, aes(x=general,y=general_rtf)) +
   annotate("text",x=0,y=.04,label=tmp,hjust=0,size=2,parse=T)
 
 m$general_tfidf <- lm(general~general_tfidf, data=fbrg_mft)
-tmp <- as.character(paste0("R^2 == ",round(summary(m$general_tfidf)$r.squared*100,2)))
+#tmp <- as.character(paste0("R^2 == ",round(summary(m$general_tfidf)$r.squared*100,2)))
+tmp <- as.character(paste0("italic(r) == ",round(cor(fbrg_mft$general,fbrg_mft$general_tfidf),2)))
 
 p$general_tfidf <- ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) + 
   geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
