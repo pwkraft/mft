@@ -38,7 +38,7 @@ ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
   labs(y = "Moral Foundation", x = "Proportion of Respondents") +
   ggtitle("Moral Reasoning in\nOpen-Ended Responses") + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_discrete(labels=c("Purity / \nSanctity", mftLabs))
+  scale_y_discrete(labels=c("Sanctity", mftLabs))
 ggsave(file = "fig/prop_mft.pdf", width = 3, height = 2)
 
 
@@ -148,7 +148,7 @@ plot_df <- cbind(gather(select(media2012, id, authority_s:ingroup_s), mft, score
                  , gather(select(media2012, id, authority_hi, fairness_hi, harm_hi, ingroup_hi)
                           , mft_hi, score_hi, -id)[,-1]) %>%
   mutate(mft = factor(mft, levels = rev(c("authority_s","ingroup_s","fairness_s","harm_s"))
-                      , labels = gsub("\\n","", rev(mftLabs))))
+                      , labels = rev(mftLabs)))
 
 ## generate plot
 ggplot(plot_df, aes(y=reorder(id, score), x=score,xmin=score_lo,xmax=score_hi)) + 

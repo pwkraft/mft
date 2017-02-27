@@ -34,7 +34,7 @@ grep("harm", plot_df$variable)
 p <- NULL
 m <- NULL
 vname <- c("harm","fairness","ingroup","authority")
-vlab <- c("Harm/Care","Fairness/Reciprocity","Ingroup/Loyalty","Authority/Respect")
+vlab <- c("Care","Fairness","Loyalty","Authority")
 for(i in 1:length(vname)){
   
   m[[vname[i]]] <- lm(fbrg_mft[,vname[i]]~fbrg_mft[,paste0(vname[i],"_rtf")])

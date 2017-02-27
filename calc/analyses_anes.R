@@ -14,11 +14,11 @@ rm(list=ls())
 ## working directory
 setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
 
-## load additional functions
-source("func.R")
-
 ## load recoded dataset
 load("out/prep_anes.RData")
+
+## load additional functions
+source("func.R")
 
 ## drop spanish respondents and empty responses
 anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0, ]

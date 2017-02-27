@@ -15,11 +15,11 @@ rm(list=ls())
 ## working directory
 setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
 
-## load additional functions
-source("func.R")
-
 ## load recoded dataset
 load("out/prep_lisurvey.RData")
+
+## load additional functions
+source("func.R")
 
 ## drop empty responses
 lidat <- lidat[lidat$wc != 0, ]

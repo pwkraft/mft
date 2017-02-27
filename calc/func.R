@@ -14,8 +14,7 @@ rm(pkg)
 
 ### global labels for plots
 
-mftLabs <- c("Authority / \nRespect", "Ingroup / \nLoyalty"
-             , "Fairness / \nReciprocity", "Harm / \nCare")
+mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")
 polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 
 
