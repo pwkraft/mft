@@ -99,13 +99,13 @@ ggsave(filename = "fig/logit_vote.pdf", width = 2.5, height = 2)
 ### Fig 5: Media content effects (tobit)
 
 ## model estimation
+anes2012$media_general <- anes2012$media_general/sd(anes2012$media_general)
 tobit_media <- vglm(general_s ~ media_general + polmedia_c + poldisc + polknow
                     + relig + educ + age + female + black + lwc + wordsum + mode
                     , tobit(Lower = 0), data=anes2012)
 
 ## simulate expected values / marginal effects
-tobit_media_res <- sim(tobit_media, iv=data.frame(media_general=seq(min(anes2012$media_general, na.rm = T)
-                                                                    , max(anes2012$media_general, na.rm = T)
+tobit_media_res <- sim(tobit_media, iv=data.frame(media_general=seq(0,6
                                                                     , length.out=20)),nsim=2000)
 
 ## check diff
