@@ -30,6 +30,22 @@ lidat_con <- lidat_con[lidat_con$wc != 0, ]
 ###########################
 ### Replicate main analyses
 
+### Moral foundations in open-ended responses
+
+## prepare data for plotting
+plot_df <- lidat %>% select(purity_d, authority_d, ingroup_d, fairness_d, harm_d) %>%
+  apply(2,function(x) c(mean(x, na.rm=T),sd(x, na.rm=T)/sqrt(sum(!is.na(x))))) %>%
+  t() %>% data.frame() %>% mutate(var = rownames(.), varnum = as.factor(1:5))
+
+## generate plot
+ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
+  geom_point() + geom_errorbarh(height=0) + xlim(0,.3) +
+  labs(y = "Moral Foundation", x = "Proportion of Respondents") +
+  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_discrete(labels=c("Sanctity", mftLabs))
+ggsave(file = "fig/prop_lisurvey.pdf", width = 5, height = 3)
+
 
 ### Fig 10: Ideological differences in moral foundations (tobit, LI survey data)
 

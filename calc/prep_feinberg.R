@@ -103,6 +103,11 @@ sim <- data.frame(
                                       ,dict_list$harm,dict_list$ingroup
                                       ,dict_list$purity)],1,sum)
 )
+
+## rescale all vars to unit variance
+sim <- data.frame(apply(sim, 2, function(x) x/sd(x, na.rm = T)))
+
+## add id
 sim$id <- rownames(sim)
 
 ## combine similarity results

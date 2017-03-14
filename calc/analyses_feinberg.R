@@ -35,7 +35,7 @@ p$general <- ggplot(fbrg_mft, aes(x=general,y=general_rtf)) +
   geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   ggtitle("General MFT") + xlab("Manual Coding") + ylab("Traditional Dictionary") + 
-  annotate("text",x=0,y=.04,label=tmp,hjust=0,size=2,parse=T)
+  annotate("text",x=0,y=6,label=tmp,hjust=0,size=2,parse=T)
 
 m$general_tfidf <- lm(general~general_tfidf, data=fbrg_mft)
 #tmp <- as.character(paste0("R^2 == ",round(summary(m$general_tfidf)$r.squared*100,2)))
@@ -45,7 +45,7 @@ p$general_tfidf <- ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) +
   geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   ggtitle("General MFT") + xlab("Manual Coding") + ylab("Weighted Dictionary") + 
-  annotate("text",x=0,y=.04,label=tmp,hjust=0,size=2,parse=T)
+  annotate("text",x=0,y=6,label=tmp,hjust=0,size=2,parse=T)
 
 png("fig/feinberg_2versions.png",height=3,width=5,units="in",res=300)
 grid.arrange(grobs=p, ncol=2)
