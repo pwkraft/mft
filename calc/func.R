@@ -95,16 +95,16 @@ mftScore <- function(opend, id, dict, regex, dict_list){
   
   ## combine dictionary and responses in common dfm/tfidf
   spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% dfm()
-  spell_tfidf <- spell_tfidf[names(spell),] %>% tfidf(normalize=T,k=1)
+  spell_tfidf <- spell_tfidf[names(spell),] %>% tfidf(normalize=T,k=0)
   spell_tfidf <- spell_tfidf[,regex[,2]]
   
   ## count relative tfidf weights for each media source
   sim <- data.frame(
-    authority = apply(spell_tfidf[,dict_list$authority],1,sum)
-    , fairness = apply(spell_tfidf[,dict_list$fairness],1,sum)
-    , harm = apply(spell_tfidf[,dict_list$harm],1,sum)
-    , ingroup = apply(spell_tfidf[,dict_list$ingroup],1,sum)
-    , purity = apply(spell_tfidf[,dict_list$purity],1,sum)
+    authority = apply(spell_tfidf[,dict_list$authority],1,sum,na.rm=T)
+    , fairness = apply(spell_tfidf[,dict_list$fairness],1,sum,na.rm=T)
+    , harm = apply(spell_tfidf[,dict_list$harm],1,sum,na.rm=T)
+    , ingroup = apply(spell_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
+    , purity = apply(spell_tfidf[,dict_list$purity],1,sum,na.rm=T)
   )
   sim$general <- apply(sim,1,sum)
   sim$id <- gsub("\\.txt","",rownames(sim))

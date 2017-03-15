@@ -267,6 +267,9 @@ anes2008 <- merge(anes2008, anes2008sim)
 ### media content analysis
 
 
+## NOTE: the media analysis uses k=0 instead of k=1 
+##       because there are words included in every individual document
+
 ## read textfiles
 docs2012 <- textfile(list.files(path = paste0(datsrc, "anes2012/media")
                                 , pattern = "\\.txt$", full.names = TRUE, recursive = FALSE))
@@ -291,22 +294,23 @@ close(pb)
 ## combine dictionary and responses in common dfm/tfidf
 media2012_tfidf <- corpus(c(dict, docs2012@texts)
                           , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
-media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(normalize=T,k=1)
+media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(normalize=T,k=0)
 media2012_tfidf <- media2012_tfidf[,dict_df[,2]]
 
 ## count relative tfidf weights for each media source
 media2012_sim <- data.frame(
-  authority = apply(media2012_tfidf[,dict_list$authority],1,sum)
-  , fairness = apply(media2012_tfidf[,dict_list$fairness],1,sum)
-  , harm = apply(media2012_tfidf[,dict_list$harm],1,sum)
-  , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum)
-  , purity = apply(media2012_tfidf[,dict_list$purity],1,sum)
+  authority = apply(media2012_tfidf[,dict_list$authority],1,sum,na.rm=T)
+  , fairness = apply(media2012_tfidf[,dict_list$fairness],1,sum,na.rm=T)
+  , harm = apply(media2012_tfidf[,dict_list$harm],1,sum,na.rm=T)
+  , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
+  , purity = apply(media2012_tfidf[,dict_list$purity],1,sum,na.rm=T)
 )
 media2012_sim$general <- apply(media2012_sim,1,sum)
 media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
 
 ## create scaled variable for moral foundations
-media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x)))
+#media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x)))
+media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) x/sd(x))
 media2012_sim_d <- apply(select(media2012_sim, -id), 2, function(x) ifelse(x>=median(x),1,-1))
 colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
 colnames(media2012_sim_d) <- paste0(colnames(media2012_sim_d),"_d")
@@ -479,8 +483,13 @@ media2012_dfm <- corpus(c(dict, docs2012@texts)
                         , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
 media2012_dfm <- media2012_dfm[names(docs2012@texts),] %>% as.matrix()
 
-## initialize object to store individual dfm bootstraps (only keep mft words in dfm!)
-nboot <- 500
+## merge all non-mft words (to make computation easier)
+media2012_dfm <- cbind(media2012_dfm[,dict_df[,2]]
+                       , apply(media2012_dfm[,!colnames(media2012_dfm)%in%dict_df[,2]],1,sum))
+colnames(media2012_dfm)[ncol(media2012_dfm)] <- "nomft"
+
+## initialize object to store individual dfm bootstraps
+nboot <- 1000
 media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
                         , dimnames = list(docs = rownames(media2012_dfm)
                                           , features = colnames(media2012_dfm)
@@ -494,27 +503,33 @@ for(d in 1:nrow(media2012_dfm)){
 }
 
 ## initialize object to store similarity results
-tmp <- tmp_s <- array(dim=c(nrow(media2012_dfm),5,nboot)
+tmp <- tmp_s <- array(dim=c(nrow(media2012_dfm),6,nboot)
                       , dimnames = list(docs = rownames(media2012_dfm)
-                                        , mft = names(dict), iter = 1:nboot))
+                                        , mft = c(names(dict),"general")
+                                        , iter = 1:nboot))
 
 ## compute similarity for bootstrapped dfms
 pb <- txtProgressBar(min = 0, max = nboot, style = 3)
 for(i in 1:nboot){
-  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T,k=1)
+  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T,k=0)
   tmp_tfidf <- tmp_tfidf[,dict_df[,2]]
   
   ## count relative tfidf weights for each media source
   tmp[,,i] <- data.frame(
-    authority = apply(tmp_tfidf[,dict_list$authority],1,sum)
-    , fairness = apply(tmp_tfidf[,dict_list$fairness],1,sum)
-    , harm = apply(tmp_tfidf[,dict_list$harm],1,sum)
-    , ingroup = apply(tmp_tfidf[,dict_list$ingroup],1,sum)
-    , purity = apply(tmp_tfidf[,dict_list$purity],1,sum)
+    authority = apply(tmp_tfidf[,dict_list$authority],1,sum,na.rm=T)
+    , fairness = apply(tmp_tfidf[,dict_list$fairness],1,sum,na.rm=T)
+    , harm = apply(tmp_tfidf[,dict_list$harm],1,sum,na.rm=T)
+    , ingroup = apply(tmp_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
+    , purity = apply(tmp_tfidf[,dict_list$purity],1,sum,na.rm=T)
+    , general = 0
   ) %>% as.matrix()
   
+  ## compute general moralization
+  tmp[,"general",i] <- apply(tmp[,,i],1,sum)
+  
   ## create scaled variable for moral foundations
-  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
+  #tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
+  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) x/sd(x))
   
   ## progress bar
   setTxtProgressBar(pb, i)
@@ -523,10 +538,14 @@ close(pb)
 
 for(m in 1:dim(tmp)[2]){
   tmp_res <- t(apply(tmp_s[,m,],1,quantile,c(.025,.975)))
-  colnames(tmp_res) <- paste(names(tmp[1,,1])[m],c("lo","hi"),sep="_")
+  colnames(tmp_res) <- paste(names(tmp_s[1,,1])[m],c("lo","hi"),sep="_")
   media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
 }
 
+m=4
+quantile(tmp_s["TV_NBC_Dateline.txt",m,],.025)
+hist(tmp_s["TV_NBC_Dateline.txt",m,])
+i=496
 
 ##############################
 ### save output for analyses.R

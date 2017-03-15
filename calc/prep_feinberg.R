@@ -81,7 +81,7 @@ fbrg_rtf <- apply(fbrg_dfm, 2, function(x) x/fbrg_text$wc)
 fbrg_rtf <- fbrg_rtf[,dict_df[,2]]
 
 ## convert dfm to tfidf
-fbrg_tfidf <- fbrg_dfm %>% tfidf(normalize=T,k=1)
+fbrg_tfidf <- fbrg_dfm %>% tfidf(normalize=T,k=0)
 fbrg_tfidf <- fbrg_tfidf[,dict_df[,2]]
 
 ## count relative term frequencies & tfidf weights for each media source
@@ -94,14 +94,14 @@ sim <- data.frame(
   , general_rtf = apply(fbrg_rtf[,c(dict_list$authority,dict_list$fairness
                                     ,dict_list$harm,dict_list$ingroup
                                     ,dict_list$purity)],1,sum)
-  , authority_tfidf = apply(fbrg_tfidf[,dict_list$authority],1,sum)
-  , fairness_tfidf = apply(fbrg_tfidf[,dict_list$fairness],1,sum)
-  , harm_tfidf = apply(fbrg_tfidf[,dict_list$harm],1,sum)
-  , ingroup_tfidf = apply(fbrg_tfidf[,dict_list$ingroup],1,sum)
-  , purity_tfidf = apply(fbrg_tfidf[,dict_list$purity],1,sum)
+  , authority_tfidf = apply(fbrg_tfidf[,dict_list$authority],1,sum,na.rm=T)
+  , fairness_tfidf = apply(fbrg_tfidf[,dict_list$fairness],1,sum,na.rm=T)
+  , harm_tfidf = apply(fbrg_tfidf[,dict_list$harm],1,sum,na.rm=T)
+  , ingroup_tfidf = apply(fbrg_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
+  , purity_tfidf = apply(fbrg_tfidf[,dict_list$purity],1,sum,na.rm=T)
   , general_tfidf = apply(fbrg_tfidf[,c(dict_list$authority,dict_list$fairness
                                       ,dict_list$harm,dict_list$ingroup
-                                      ,dict_list$purity)],1,sum)
+                                      ,dict_list$purity)],1,sum,na.rm=T)
 )
 
 ## rescale all vars to unit variance
