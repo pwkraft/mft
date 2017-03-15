@@ -14,13 +14,14 @@ rm(pkg)
 
 ### global labels for plots
 
+mftVars <- c("authority","fairness","harm","ingroup","purity")
 mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")
 polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 
 
 ### function to pre-process open-ended responses and calculate cosine similarity
 
-mftScore <- function(opend, id, dict, regex, dict_list){
+mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   if(nrow(opend) != length(id)) stop("ID vector must be equal to number of observations/documents")
   if(length(unique(id)) != length(id))  stop("IDs are not unique")
   
@@ -93,20 +94,34 @@ mftScore <- function(opend, id, dict, regex, dict_list){
     spell <- gsub(regex[i,1], regex[i,2], spell)
   }
   
-  ## combine dictionary and responses in common dfm/tfidf
-  spell_tfidf <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% dfm()
-  spell_tfidf <- spell_tfidf[names(spell),] %>% tfidf(normalize=T,k=0)
+  ## combine dictionary and responses in common dfm
+  spell_dfm <- corpus(c(dict, spell), docnames = c(names(dict), names(spell))) %>% dfm()
+  
+  ## optional: report tfidf weigths for each word
+  if(report_weights){
+    tmp <- as.matrix(spell_dfm[names(spell),regex[,2]])
+    N <- nrow(tmp)
+    n_t <- apply(tmp,2,function(x) sum(x>0))
+    mft_weights <- log10(N/n_t)
+    mft_weights[mft_weights==Inf] <- 0
+    out <- data.frame(term = names(mft_weights)
+                      , weight = mft_weights
+                      , mft = rep(names(sapply(dict_list,length)),sapply(dict_list,length)))
+    return(out)
+  }
+  
+  ## create tfidf matrix
+  spell_tfidf <- spell_dfm[names(spell),] %>% tfidf(normalize=T,k=0)
   spell_tfidf <- spell_tfidf[,regex[,2]]
   
-  ## count relative tfidf weights for each media source
-  sim <- data.frame(
-    authority = apply(spell_tfidf[,dict_list$authority],1,sum,na.rm=T)
-    , fairness = apply(spell_tfidf[,dict_list$fairness],1,sum,na.rm=T)
-    , harm = apply(spell_tfidf[,dict_list$harm],1,sum,na.rm=T)
-    , ingroup = apply(spell_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
-    , purity = apply(spell_tfidf[,dict_list$purity],1,sum,na.rm=T)
-  )
-  sim$general <- apply(sim[,1:4],1,sum)
+  ## count relative tfidf weights for each document
+  sim <- NULL
+  for(d in names(dict)){
+    sim <- cbind(sim, apply(spell_tfidf[,dict_list[[d]]],1,sum,na.rm=T))
+  }
+  sim <- data.frame(sim)
+  colnames(sim) <- names(dict)
+  sim$general <- apply(sim[,-grep("purity",names(dict))],1,sum)
   sim$id <- gsub("\\.txt","",rownames(sim))
   
   ## create scaled variable for moral foundations

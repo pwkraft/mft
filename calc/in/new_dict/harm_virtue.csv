@@ -11,7 +11,7 @@ harm.virtue
 \\bshelter\\b
 \\bamity\\b
 \\bsecur[[:lower:]]*
-\\bbenefit[[:lower:]]*        
+\\bbenefit[[:lower:]]*
 \\bdefen[[:lower:]]*
 \\bguard[[:lower:]]*
 \\bpreserve\\b

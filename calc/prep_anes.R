@@ -236,8 +236,11 @@ anes2008opend <- read.csv(paste0(datsrc,"anes2008/anes2008TSopenends_redacted_De
   select(caseid, DemPC_like, DemPC_dislike, RepPC_like, RepPC_dislike
          , DemParty_like, DemParty_dislike, RepParty_like, RepParty_dislike)
 
+
+### original Graham et al. 2009 dictionary
+
 ## load dictionary
-dict_list <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+dict_list <- sapply(mftVars, function(x){
   read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)
 })
 names(dict_list) <- gsub("\\..*","",names(dict_list))
@@ -245,30 +248,86 @@ names(dict_list) <- gsub("\\..*","",names(dict_list))
 dict <- sapply(dict_list, paste, collapse = " ")
 
 ## regex replacements for dictionary
-dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(x){
+dict_df <- sapply(mftVars, function(x){
   cbind(read.csv(paste0("in/graham/",x,".csv"), allowEscapes = T, stringsAsFactors = F)[[1]]
         , read.csv(paste0("in/graham/",x,"_noregex.csv"), stringsAsFactors = F)[[1]])
 }) %>% do.call("rbind", .)
 
+
+### updated dictionary differentiating virtues and vices
+
+## load dictionary
+newdict_list <- sapply(c(paste0(mftVars,"_virtue"), paste0(mftVars,"_vice")), function(x){
+  read.csv(paste0("in/new_dict/",x,"_noregex.csv"), stringsAsFactors = F)
+})
+names(newdict_list) <- gsub("\\..*","",names(newdict_list))
+
+newdict <- sapply(newdict_list, paste, collapse = " ")
+
+## regex replacements for dictionary
+newdict_df <- sapply(c(paste0(mftVars,"_virtue"), paste0(mftVars,"_vice")), function(x){
+  cbind(read.csv(paste0("in/new_dict/",x,".csv"), allowEscapes = T, stringsAsFactors = F)[[1]]
+        , read.csv(paste0("in/new_dict/",x,"_noregex.csv"), stringsAsFactors = F)[[1]])
+}) %>% do.call("rbind", .)
+
+
+### match responses and dictionary
+
 ## pre-process open-ended data and calculate similarity
-anes2012sim <- mftScore(opend = anes2012opend[-1], id = anes2012opend$caseid
+anes2012sim <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
 
+## get weights for dictionary terms
+anes2012weights <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
+                        , dict = dict, regex = dict_df, dict_list = dict_list, report_weights=T)
+
+## new dictionary differentiating vice and virtues
+anes2012newsim <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
+                           , dict = newdict, regex = newdict_df, dict_list = newdict_list) %>%
+  select(-spell,-wc,-lwc,-nitem,-general,-general_d,-general_s)
+
+## only likes in OE responses (only scales mftScore!)
+anes2012li <- mftScore(opend = anes2012opend[,grep("_l",colnames(anes2012opend))]
+                       , id = anes2012opend$caseid
+                       , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012li <- anes2012li[,c(1,grep("_s",colnames(anes2012li)))]
+colnames(anes2012li) <- gsub("_s","_li",colnames(anes2012li))
+
+## only dislikes in OE responses (only scales mftScore!)
+anes2012di <- mftScore(opend = anes2012opend[,grep("_d",colnames(anes2012opend))]
+                       , id = anes2012opend$caseid
+                       , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012di <- anes2012di[,c(1,grep("_s",colnames(anes2012di)))]
+colnames(anes2012di) <- gsub("_s","_di",colnames(anes2012di))
+
+## only democratic party/candidate in OE responses (only scales mftScore!)
+anes2012dem <- mftScore(opend = anes2012opend[,grep("whatdp",colnames(anes2012opend))]
+                        , id = anes2012opend$caseid
+                        , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012dem <- anes2012dem[,c(1,grep("_s",colnames(anes2012dem)))]
+colnames(anes2012dem) <- gsub("_s","_dem",colnames(anes2012dem))
+
+## only republican party/candidate in OE responses (only scales mftScore!)
+anes2012rep <- mftScore(opend = anes2012opend[,grep("whatrp",colnames(anes2012opend))]
+                        , id = anes2012opend$caseid
+                        , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012rep <- anes2012rep[,c(1,grep("_s",colnames(anes2012rep)))]
+colnames(anes2012rep) <- gsub("_s","_rep",colnames(anes2012rep))
+
+
+## 2008 replication
 anes2008sim <- mftScore(opend = anes2008opend[-1], id = anes2008opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
 
 ## merge ts data and open-ended data and save objects for analyses
-anes2012 <- merge(anes2012, anes2012sim)
+anes2012 <- merge(anes2012, anes2012sim) %>% merge(anes2012newsim) %>% 
+  merge(anes2012li) %>% merge(anes2012di) %>% merge(anes2012dem) %>% merge(anes2012rep)
 anes2008 <- merge(anes2008, anes2008sim)
 
 
 
 ##########################
 ### media content analysis
-
-
-## NOTE: the media analysis uses k=0 instead of k=1 
-##       because there are words included in every individual document
 
 ## read textfiles
 docs2012 <- textfile(list.files(path = paste0(datsrc, "anes2012/media")
@@ -551,5 +610,5 @@ i=496
 ### save output for analyses.R
 
 
-save(anes2012, anes2012opend, anes2008, anes2008opend, media2012
+save(anes2012, anes2012opend, anes2008, anes2008opend, media2012, anes2012weights
      , mftLabs, polLabs, file="out/prep_anes.RData")

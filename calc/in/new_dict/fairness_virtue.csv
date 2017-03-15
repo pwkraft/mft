@@ -1,8 +1,7 @@
 fairness.virtue
-\\bfair\\b
+\\bfair-?[[:lower:]]*
 \\bfairly\\b
 \\bfairness\\b
-\\bfair-[[:lower:]]*
 \\bfairmind[[:lower:]]*
 \\bfairplay\\b
 \\bequal[[:lower:]]*

@@ -23,7 +23,7 @@ purity.vice
 \\bpromiscu[[:lower:]]*
 \\blewd[[:lower:]]*
 \\badulter[[:lower:]]*
-\\bdebauche[[:lower:]]* 
+\\bdebauche[[:lower:]]*
 \\bdefile[[:lower:]]*
 \\btramp\\b
 \\bprostitut[[:lower:]]*
@@ -31,7 +31,7 @@ purity.vice
 \\bintemperate\\b
 \\bwanton\\b
 \\bprofligate\\b
-\\bfilth[[:lower:]]* 
+\\bfilth[[:lower:]]*
 \\btrashy\\b
 \\bobscen[[:lower:]]*
 \\blax\\b

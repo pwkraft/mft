@@ -88,6 +88,17 @@ grid.arrange(p1, p2, ncol=2)
 dev.off()
 
 
+### TFIDF Weights
+
+anes2012weights$mft_lab <- factor(anes2012weights$mft
+                                  , levels = c("harm","fairness","ingroup","authority","purity")
+                                  , labels = c("Care","Fairness","Loyalty","Authority","Sanctity"))
+ggplot(anes2012weights[anes2012weights$weight!=0,], aes(y=reorder(term, -weight), x=weight)) +
+  geom_point() + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
+  facet_wrap(~mft_lab, scales="free_y", ncol=2) + xlab("Weight") + ylab("MFT Term")
+ggsave("fig/app_mftweights.pdf",width=6,height=10)
+
+
 ### Fig B.2: Histograms of variables included in the analyses
 
 desc <- list(NULL)
@@ -175,6 +186,184 @@ ggsave("fig/media_desc.pdf",width = 4, height = 4)
 ## load model results
 load("out/analyses_anes.RData")
 
+
+
+##############################################
+### Ideological Differences in Moral Reasoning
+
+
+### Ideological differences by virtue/vice (tobit)
+
+## model estimation
+tobit_vivi <- list(NULL)
+tobit_vivi[[1]] <- vglm(harm_virtue_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[2]] <- vglm(harm_vice_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[3]] <- vglm(fairness_virtue_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[4]] <- vglm(fairness_vice_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[5]] <- vglm(ingroup_virtue_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[6]] <- vglm(ingroup_vice_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[7]] <- vglm(authority_virtue_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_vivi[[8]] <- vglm(authority_vice_s ~ ideol + relig + educ + age + female + black
+                         + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+## simulate expected values / marginal effects
+tobit_vivi_res <- sim(tobit_vivi, iv=data.frame(ideolModerate = c(0,0)
+                                                  , ideolConservative = c(1,0)))
+tobit_vivi_res$var <- rep(4:1, each=4)
+tobit_vivi_res$opend <- rep(c("Virtue","Virtue","Vice","Vice"),4)
+
+## generate plot
+ggplot(tobit_vivi_res, aes(x = mean, y = var)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
+ggsave(filename = "fig/tobit_vivi.pdf", width = 4, height = 2)
+
+
+### Ideological differences by like/dislike (tobit)
+
+## model estimation
+tobit_lidi <- list(NULL)
+tobit_lidi[[1]] <- vglm(harm_li ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[2]] <- vglm(harm_di ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[3]] <- vglm(fairness_li ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[4]] <- vglm(fairness_di ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[5]] <- vglm(ingroup_li ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[6]] <- vglm(ingroup_di ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[7]] <- vglm(authority_li ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_lidi[[8]] <- vglm(authority_di ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+## simulate expected values / marginal effects
+tobit_lidi_res <- sim(tobit_lidi, iv=data.frame(ideolModerate = c(0,0)
+                                                , ideolConservative = c(1,0)))
+tobit_lidi_res$var <- rep(4:1, each=4)
+tobit_lidi_res$opend <- rep(c("Like","Like","Dislike","Dislike"),4)
+
+## generate plot
+ggplot(tobit_lidi_res, aes(x = mean, y = var)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
+ggsave(filename = "fig/tobit_lidi.pdf", width = 4, height = 2)
+
+
+### Ideological differences by dem/rep (tobit)
+
+## model estimation
+tobit_demrep <- list(NULL)
+tobit_demrep[[1]] <- vglm(harm_dem ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[2]] <- vglm(harm_rep ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[3]] <- vglm(fairness_dem ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[4]] <- vglm(fairness_rep ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[5]] <- vglm(ingroup_dem ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[6]] <- vglm(ingroup_rep ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[7]] <- vglm(authority_dem ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_demrep[[8]] <- vglm(authority_rep ~ ideol + relig + educ + age + female + black
+                        + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+## simulate expected values / marginal effects
+tobit_demrep_res <- sim(tobit_demrep, iv=data.frame(ideolModerate = c(0,0)
+                                                , ideolConservative = c(1,0)))
+tobit_demrep_res$var <- rep(4:1, each=4)
+tobit_demrep_res$opend <- rep(c("Democratic Party/Candidate","Democratic Party/Candidate"
+                                , "Republican Party/Candidate","Republican Party/Candidate"),4)
+
+## generate plot
+ggplot(tobit_demrep_res, aes(x = mean, y = var)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
+ggsave(filename = "fig/tobit_demrep.pdf", width = 4, height = 2)
+
+
+### Ideological differences by in-/out-party (tobit)
+
+## recode variables
+for(i in mftVars){
+  anes2012[which(anes2012$pid=="Democrat"),paste0(i,"_in")] <- 
+    anes2012[which(anes2012$pid=="Democrat"),paste0(i,"_dem")]
+  anes2012[which(anes2012$pid=="Republican"),paste0(i,"_in")] <- 
+    anes2012[which(anes2012$pid=="Republican"),paste0(i,"_rep")]
+  anes2012[which(anes2012$pid=="Democrat"),paste0(i,"_out")] <- 
+    anes2012[which(anes2012$pid=="Democrat"),paste0(i,"_rep")]
+  anes2012[which(anes2012$pid=="Republican"),paste0(i,"_out")] <- 
+    anes2012[which(anes2012$pid=="Republican"),paste0(i,"_dem")]
+}
+
+## model estimation
+tobit_inout <- list(NULL)
+tobit_inout[[1]] <- vglm(harm_in ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[2]] <- vglm(harm_out ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[3]] <- vglm(fairness_in ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[4]] <- vglm(fairness_out ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[5]] <- vglm(ingroup_in ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[6]] <- vglm(ingroup_out ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[7]] <- vglm(authority_in ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+tobit_inout[[8]] <- vglm(authority_out ~ ideol + relig + educ + age + female + black
+                          + lwc + wordsum + mode, tobit(Lower = 0), data = anes2012)
+
+## simulate expected values / marginal effects
+tobit_inout_res <- sim(tobit_inout, iv=data.frame(ideolModerate = c(0,0)
+                                                    , ideolConservative = c(1,0)))
+tobit_inout_res$var <- rep(4:1, each=4)
+tobit_inout_res$opend <- rep(c("In-Party","In-Party","Out-Party","Out-Party"),4)
+
+## generate plot
+ggplot(tobit_inout_res, aes(x = mean, y = var)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
+  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
+  labs(y = "Moral Foundation"
+       , x = "Marginal Effect (Liberal - Conservative)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
+ggsave(filename = "fig/tobit_inout.pdf", width = 4, height = 2)
+
+
+
+#################################################
+### Political relevance of MFT
 
 ### Fig 3: Moral foundations and feeling thermometer differentials (ols)
 
