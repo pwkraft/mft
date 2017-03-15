@@ -41,3 +41,16 @@ source("analyses_lisurvey.R", echo=T, max.deparse.length=10000)
 ## run analyses for appendix
 source("appendix_lisurvey.R", echo=T, max.deparse.length=10000)
 
+
+### Feinberg replication
+
+## prepare dataset
+source("prep_feinberg.R", echo=T, max.deparse.length=10000)
+
+## run main analyses
+source("analyses_feinberg.R", echo=T, max.deparse.length=10000)
+
+## run analyses for appendix
+source("appendix_feinberg.R", echo=T, max.deparse.length=10000)
+
+

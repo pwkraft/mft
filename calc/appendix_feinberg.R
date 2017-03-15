@@ -33,8 +33,8 @@ grep("harm", plot_df$variable)
 
 p <- NULL
 m <- NULL
-vname <- c("harm","fairness","ingroup","authority","purity")
-vlab <- c("Care","Fairness","Loyalty","Authority","Sanctity")
+vname <- c("harm","fairness","ingroup","authority")#,"purity")
+vlab <- c("Care","Fairness","Loyalty","Authority")#,"Sanctity")
 for(i in 1:length(vname)){
   
   # m[[vname[i]]] <- lm(fbrg_mft[,vname[i]]~fbrg_mft[,paste0(vname[i],"_rtf")])
@@ -64,7 +64,7 @@ for(i in 1:length(vname)){
   # }
 }
 
-pdf("fig/feinberg_sep.pdf",height=6,width=4)
+pdf("fig/feinberg_sep.pdf",height=4,width=4)
 grid.arrange(grobs=p, ncol=2)
 dev.off()
 
