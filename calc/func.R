@@ -106,7 +106,7 @@ mftScore <- function(opend, id, dict, regex, dict_list){
     , ingroup = apply(spell_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
     , purity = apply(spell_tfidf[,dict_list$purity],1,sum,na.rm=T)
   )
-  sim$general <- apply(sim,1,sum)
+  sim$general <- apply(sim[,1:4],1,sum)
   sim$id <- gsub("\\.txt","",rownames(sim))
   
   ## create scaled variable for moral foundations

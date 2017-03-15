@@ -305,7 +305,7 @@ media2012_sim <- data.frame(
   , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
   , purity = apply(media2012_tfidf[,dict_list$purity],1,sum,na.rm=T)
 )
-media2012_sim$general <- apply(media2012_sim,1,sum)
+media2012_sim$general <- apply(media2012_sim[,1:4],1,sum)
 media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
 
 ## create scaled variable for moral foundations
@@ -525,7 +525,7 @@ for(i in 1:nboot){
   ) %>% as.matrix()
   
   ## compute general moralization
-  tmp[,"general",i] <- apply(tmp[,,i],1,sum)
+  tmp[,"general",i] <- apply(tmp[,1:4,i],1,sum)
   
   ## create scaled variable for moral foundations
   #tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))

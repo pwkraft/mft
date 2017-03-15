@@ -92,16 +92,14 @@ sim <- data.frame(
   , ingroup_rtf = apply(fbrg_rtf[,dict_list$ingroup],1,sum)
   , purity_rtf = apply(fbrg_rtf[,dict_list$purity],1,sum)
   , general_rtf = apply(fbrg_rtf[,c(dict_list$authority,dict_list$fairness
-                                    ,dict_list$harm,dict_list$ingroup
-                                    ,dict_list$purity)],1,sum)
+                                    ,dict_list$harm,dict_list$ingroup)],1,sum)
   , authority_tfidf = apply(fbrg_tfidf[,dict_list$authority],1,sum,na.rm=T)
   , fairness_tfidf = apply(fbrg_tfidf[,dict_list$fairness],1,sum,na.rm=T)
   , harm_tfidf = apply(fbrg_tfidf[,dict_list$harm],1,sum,na.rm=T)
   , ingroup_tfidf = apply(fbrg_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
   , purity_tfidf = apply(fbrg_tfidf[,dict_list$purity],1,sum,na.rm=T)
   , general_tfidf = apply(fbrg_tfidf[,c(dict_list$authority,dict_list$fairness
-                                      ,dict_list$harm,dict_list$ingroup
-                                      ,dict_list$purity)],1,sum,na.rm=T)
+                                      ,dict_list$harm,dict_list$ingroup)],1,sum,na.rm=T)
 )
 
 ## rescale all vars to unit variance

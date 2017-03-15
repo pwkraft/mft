@@ -159,6 +159,14 @@ ggplot(plot_df, aes(y=reorder(id, score), x=score,xmin=score_lo,xmax=score_hi)) 
   geom_vline(xintercept=0, col="lightgrey")
 ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
+## generate plot
+ggplot(media2012, aes(y=reorder(id, general_s), x=general_s,xmin=general_lo,xmax=general_hi)) + 
+  geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + 
+  theme(panel.border = element_rect(fill=NA)) +
+  ggtitle("Moralization in Media Sources (October 2012)") +
+  xlab("General MFT Score (rescaled)") + ylab("News Source") +
+  geom_vline(xintercept=0, col="lightgrey")
+ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 
 ##################################################
