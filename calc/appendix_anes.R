@@ -95,8 +95,8 @@ anes2012weights$mft_lab <- factor(anes2012weights$mft
                                   , labels = c("Care","Fairness","Loyalty","Authority","Sanctity"))
 ggplot(anes2012weights[anes2012weights$weight!=0,], aes(y=reorder(term, -weight), x=weight)) +
   geom_point() + theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
-  facet_wrap(~mft_lab, scales="free_y", ncol=2) + xlab("Weight") + ylab("MFT Term")
-ggsave("fig/app_mftweights.pdf",width=6,height=10)
+  facet_wrap(~mft_lab, scales="free_y", ncol=3, dir="v") + xlab("Weight") + ylab("MFT Term")
+ggsave("fig/app_mftweights.pdf",width=6,height=7)
 
 
 ### Fig B.2: Histograms of variables included in the analyses
@@ -192,6 +192,8 @@ load("out/analyses_anes.RData")
 ### Ideological Differences in Moral Reasoning
 
 
+p <- list()
+
 ### Ideological differences by virtue/vice (tobit)
 
 ## model estimation
@@ -220,15 +222,14 @@ tobit_vivi_res$var <- rep(4:1, each=4)
 tobit_vivi_res$opend <- rep(c("Virtue","Virtue","Vice","Vice"),4)
 
 ## generate plot
-ggplot(tobit_vivi_res, aes(x = mean, y = var)) +
+p[[1]] <- ggplot(tobit_vivi_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
-  labs(y = "Moral Foundation"
-       , x = "Marginal Effect (Liberal - Conservative)") +
+  ggtitle("a) by MFT valence (virtue vs. vice)") +
+  labs(y = "Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
-ggsave(filename = "fig/tobit_vivi.pdf", width = 4, height = 2)
+#ggsave(filename = "fig/tobit_vivi.pdf", width = 4, height = 2)
 
 
 ### Ideological differences by like/dislike (tobit)
@@ -259,15 +260,14 @@ tobit_lidi_res$var <- rep(4:1, each=4)
 tobit_lidi_res$opend <- rep(c("Like","Like","Dislike","Dislike"),4)
 
 ## generate plot
-ggplot(tobit_lidi_res, aes(x = mean, y = var)) +
+p[[2]] <- ggplot(tobit_lidi_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
-  labs(y = "Moral Foundation"
-       , x = "Marginal Effect (Liberal - Conservative)") +
+  ggtitle("b) by question type (like vs. dislike)") +
+  labs(y = "Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
-ggsave(filename = "fig/tobit_lidi.pdf", width = 4, height = 2)
+#ggsave(filename = "fig/tobit_lidi.pdf", width = 4, height = 2)
 
 
 ### Ideological differences by dem/rep (tobit)
@@ -295,19 +295,18 @@ tobit_demrep[[8]] <- vglm(authority_rep ~ ideol + relig + educ + age + female + 
 tobit_demrep_res <- sim(tobit_demrep, iv=data.frame(ideolModerate = c(0,0)
                                                 , ideolConservative = c(1,0)))
 tobit_demrep_res$var <- rep(4:1, each=4)
-tobit_demrep_res$opend <- rep(c("Democratic Party/Candidate","Democratic Party/Candidate"
-                                , "Republican Party/Candidate","Republican Party/Candidate"),4)
+tobit_demrep_res$opend <- rep(c("Democrats","Democrats"
+                                , "Republicans","Republicans"),4)
 
 ## generate plot
-ggplot(tobit_demrep_res, aes(x = mean, y = var)) +
+p[[3]] <- ggplot(tobit_demrep_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
-  labs(y = "Moral Foundation"
-       , x = "Marginal Effect (Liberal - Conservative)") +
+  ggtitle("c) by party/candidate (Dem. vs. Rep.)") +
+  labs(y = "Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
-ggsave(filename = "fig/tobit_demrep.pdf", width = 4, height = 2)
+#ggsave(filename = "fig/tobit_demrep.pdf", width = 4, height = 2)
 
 
 ### Ideological differences by in-/out-party (tobit)
@@ -350,16 +349,18 @@ tobit_inout_res$var <- rep(4:1, each=4)
 tobit_inout_res$opend <- rep(c("In-Party","In-Party","Out-Party","Out-Party"),4)
 
 ## generate plot
-ggplot(tobit_inout_res, aes(x = mean, y = var)) +
+p[[4]] <- ggplot(tobit_inout_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cilo,xmin=cihi),height=0) +
-  #ggtitle("Change in Predicted Emphasis on Moral Foundation") +
-  labs(y = "Moral Foundation"
-       , x = "Marginal Effect (Liberal - Conservative)") +
+  ggtitle("d) by party (in- vs. out-party)") +
+  labs(y = "Moral Foundation", x = "Marginal Effect (Liberal - Conservative)") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_continuous(breaks=1:4, labels=mftLabs) + facet_grid(opend~value)
-ggsave(filename = "fig/tobit_inout.pdf", width = 4, height = 2)
+#ggsave(filename = "fig/tobit_inout.pdf", width = 4, height = 2)
 
+pdf("fig/tobit_ideol_app.pdf", width=6, height = 5)
+grid.arrange(grobs=p, ncol=2)
+dev.off()
 
 
 #################################################
