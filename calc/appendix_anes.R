@@ -25,6 +25,29 @@ load("out/prep_anes.RData")
 ### Additional Descriptive information
 
 
+### Tab B.1: Missing open-ended responses
+
+## prepare table
+tab_mis <- rbind(c(table(anes2012$spanish)[2]
+                   , table(anes2012$spanish)[2]*100/sum(table(anes2012$spanish)))
+                 , c(table(anes2012$wc<=5)[2]
+                     , table(anes2012$wc<=5)[2]*100/sum(table(anes2012$wc<=5))))
+colnames(tab_mis) <- c("N","Percent")
+rownames(tab_mis) <- c("Spanish Interview", "No Responses")
+
+## export table
+print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
+             , caption = "Missing open-ended responses"
+             , label="tab:app_mis")
+      , table.placement="ht", caption.placement="top"
+      , file="tab/app_mis.tex")
+
+
+## drop spanish respondents and empty responses
+anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc >5,]
+
+
+
 ### Fig 1: Moral foundations in open-ended responses
 
 ## prepare data for plotting
@@ -42,28 +65,7 @@ ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
 ggsave(file = "fig/prop_mft.pdf", width = 2, height = 1.5)
 
 
-### Tab B.1: Missing open-ended responses
-
-## prepare table
-tab_mis <- rbind(c(table(anes2012$spanish)[2]
-                   , table(anes2012$spanish)[2]*100/sum(table(anes2012$spanish)))
-                 , c(table(anes2012$wc==0)[2]
-                     , table(anes2012$wc==0)[2]*100/sum(table(anes2012$wc==0))))
-colnames(tab_mis) <- c("N","Percent")
-rownames(tab_mis) <- c("Spanish Interview", "No Responses")
-
-## export table
-print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
-             , caption = "Missing open-ended responses"
-             , label="tab:app_mis")
-      , table.placement="ht", caption.placement="top"
-      , file="tab/app_mis.tex")
-
-
 ### Fig B.1: Individual open-ended response lengths (for wc>0!)
-
-## drop spanish respondents and empty responses
-anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0,]
 
 ## histogram/density of wc
 wc_mean = mean(anes2012$wc)
@@ -103,8 +105,19 @@ ggsave("fig/app_mftweights.pdf",width=6,height=7)
 
 desc <- list(NULL)
 plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+desc[[1]] <- 1
+  
+  ggplot(anes2012, aes(x=harm_s, y=ideol)) + geom_point()
+  ggplot(anes2012, aes(x=log(harm+1))) + geom_histogram()
+
+  ggplot(anes2012, aes(x=harm_s)) + geom_bar(stat="count") + 
+  labs(y="Count", x="Care MFT Score") + plot_default
 desc[[1]] <- ggplot(anes2012, aes(x=ideol)) + geom_bar(stat="count") + 
   labs(y="Count", x="Ideology") + plot_default
+desc[[7]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
+  geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
+desc[[2]] <- ggplot(anes2012, aes(x=media_general)) + geom_bar(stat="count") + 
+  labs(y="Count", x="Media Moralization") + plot_default
 desc[[2]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + 
   labs(y="Count", x="Political Knowledge") + plot_default
 desc[[3]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + 
@@ -115,8 +128,6 @@ desc[[5]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) 
   labs(y="Count", x="Feeling Thermometer (Candidates)") + plot_default
 desc[[6]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + 
   labs(y="Count", x="Feeling Thermometer (Parties)") + plot_default
-desc[[7]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
 desc[[8]] <- ggplot(anes2012, aes(x=factor(vote_dem, labels=c("No","Yes")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Voted for Democratic Candidate") + plot_default
 desc[[9]] <- ggplot(anes2012, aes(x=factor(pastvote, labels=c("No","Yes")))) + 

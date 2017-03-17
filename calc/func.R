@@ -141,6 +141,13 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   return(out)
 }
 
+mftRescale <- function(x, select,vars = c("authority","fairness","harm","ingroup","purity","general")){
+  for(i in vars){
+    x[,paste0(i,"_s")] <- x[,i]/sd(x[select,i])
+  }
+  return(x)
+}
+
 
 ### function to simulate expected values/first differences (replaces Zelig)
 #' built: 2016-08-27, Patrick Kraft

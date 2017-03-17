@@ -87,26 +87,31 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 ## pre-process open-ended data and calculate mft scores
 lisim <- mftScore(opend = select(raw, deslib,deslibb,descon,desconb)
                   , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
+lisim <- mftRescale(lisim, select = (lisim$wc > 5))
+
 lisim_lib <- mftScore(opend = select(raw, deslib,deslibb)
                       , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
+lisim_lib <- mftRescale(lisim_lib, select = (lisim_lib$wc > 5))
+
 lisim_con <- mftScore(opend = select(raw, descon,desconb)
                       , id = raw$id, dict = dict, regex = dict_df, dict_list = dict_list)
+lisim_con <- mftRescale(lisim_con, select = (lisim_con$wc > 5))
 
 
 ### merge survey with mft data
 
 ## descriptions of liberals
-lidat_lib <- merge(lidat, lisim_lib) %>% mutate(year = "liberals") %>% filter(wc>0)
+lidat_lib <- merge(lidat, lisim_lib) %>% mutate(year = "liberals") %>% filter(wc>5)
 lidat_lib %>% group_by(ideol) %>% 
   summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
 
 ## descriptions of conservatives
-lidat_con <- merge(lidat, lisim_con) %>% mutate(year = "conservatives") %>% filter(wc>0)
+lidat_con <- merge(lidat, lisim_con) %>% mutate(year = "conservatives") %>% filter(wc>5)
 lidat_con %>% group_by(ideol) %>% 
   summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
 
 ## all open-ended responses
-lidat <- merge(lidat, lisim) %>% mutate(year = "all responses") %>% filter(wc>0)
+lidat <- merge(lidat, lisim) %>% mutate(year = "all responses") %>% filter(wc>5)
 lidat %>% group_by(ideol) %>% 
   summarise_each(authority_s, fairness_s, harm_s, ingroup_s, purity_s, funs="mean")
 

@@ -276,6 +276,16 @@ newdict_df <- sapply(c(paste0(mftVars,"_virtue"), paste0(mftVars,"_vice")), func
 ## pre-process open-ended data and calculate similarity
 anes2012sim <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012sim <- mftRescale(anes2012sim, select = anes2012sim$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012sim$id[anes2012sim$wc > 5]))
+
+# check rescaling
+sd(anes2012sim$harm_s)
+sd(anes2012sim$harm_s[anes2012$spanish != 1 & anes2012sim$wc > 5])
+sd(anes2012sim$harm_s[anes2012sim$id %in% intersect(anes2012$id[anes2012$spanish != 1]
+                                                    , anes2012sim$id[anes2012sim$wc > 5])])
+
 
 ## get weights for dictionary terms
 anes2012weights <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
@@ -283,13 +293,19 @@ anes2012weights <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$casei
 
 ## new dictionary differentiating vice and virtues
 anes2012newsim <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
-                           , dict = newdict, regex = newdict_df, dict_list = newdict_list) %>%
+                           , dict = newdict, regex = newdict_df, dict_list = newdict_list)
+anes2012newsim <- mftRescale(anes2012newsim, select = anes2012newsim$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012newsim$id[anes2012newsim$wc > 5])) %>%
   select(-spell,-wc,-lwc,-nitem,-general,-general_d,-general_s)
 
 ## only likes in OE responses (only scales mftScore!)
 anes2012li <- mftScore(opend = anes2012opend[,grep("_l",colnames(anes2012opend))]
                        , id = anes2012opend$caseid
                        , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012li <- mftRescale(anes2012li, select = anes2012li$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012li$id[anes2012li$wc > 5]))
 anes2012li <- anes2012li[,c(1,grep("_s",colnames(anes2012li)))]
 colnames(anes2012li) <- gsub("_s","_li",colnames(anes2012li))
 
@@ -297,6 +313,9 @@ colnames(anes2012li) <- gsub("_s","_li",colnames(anes2012li))
 anes2012di <- mftScore(opend = anes2012opend[,grep("_d",colnames(anes2012opend))]
                        , id = anes2012opend$caseid
                        , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012di <- mftRescale(anes2012di, select = anes2012di$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012di$id[anes2012di$wc > 5]))
 anes2012di <- anes2012di[,c(1,grep("_s",colnames(anes2012di)))]
 colnames(anes2012di) <- gsub("_s","_di",colnames(anes2012di))
 
@@ -304,6 +323,9 @@ colnames(anes2012di) <- gsub("_s","_di",colnames(anes2012di))
 anes2012dem <- mftScore(opend = anes2012opend[,grep("whatdp",colnames(anes2012opend))]
                         , id = anes2012opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012dem <- mftRescale(anes2012dem, select = anes2012dem$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012dem$id[anes2012dem$wc > 5]))
 anes2012dem <- anes2012dem[,c(1,grep("_s",colnames(anes2012dem)))]
 colnames(anes2012dem) <- gsub("_s","_dem",colnames(anes2012dem))
 
@@ -311,6 +333,9 @@ colnames(anes2012dem) <- gsub("_s","_dem",colnames(anes2012dem))
 anes2012rep <- mftScore(opend = anes2012opend[,grep("whatrp",colnames(anes2012opend))]
                         , id = anes2012opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2012rep <- mftRescale(anes2012rep, select = anes2012rep$id %in% 
+                            intersect(anes2012$id[anes2012$spanish != 1]
+                                      , anes2012rep$id[anes2012rep$wc > 5]))
 anes2012rep <- anes2012rep[,c(1,grep("_s",colnames(anes2012rep)))]
 colnames(anes2012rep) <- gsub("_s","_rep",colnames(anes2012rep))
 
@@ -318,6 +343,9 @@ colnames(anes2012rep) <- gsub("_s","_rep",colnames(anes2012rep))
 ## 2008 replication
 anes2008sim <- mftScore(opend = anes2008opend[-1], id = anes2008opend$caseid
                         , dict = dict, regex = dict_df, dict_list = dict_list)
+anes2008sim <- mftRescale(anes2008sim, select = anes2008sim$id %in% 
+                            intersect(anes2008$id[anes2008$spanish != 1]
+                                      , anes2008sim$id[anes2008sim$wc > 5]))
 
 ## merge ts data and open-ended data and save objects for analyses
 anes2012 <- merge(anes2012, anes2012sim) %>% merge(anes2012newsim) %>% 

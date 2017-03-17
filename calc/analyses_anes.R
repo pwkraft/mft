@@ -21,7 +21,7 @@ load("out/prep_anes.RData")
 source("func.R")
 
 ## drop spanish respondents and empty responses
-anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc != 0, ]
+anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc > 5, ]
 
 
 

@@ -22,9 +22,9 @@ load("out/prep_lisurvey.RData")
 source("func.R")
 
 ## drop empty responses
-lidat <- lidat[lidat$wc != 0, ]
-lidat_lib <- lidat_lib[lidat_lib$wc != 0, ]
-lidat_con <- lidat_con[lidat_con$wc != 0, ]
+lidat <- lidat[lidat$wc > 5, ]
+lidat_lib <- lidat_lib[lidat_lib$wc > 5, ]
+lidat_con <- lidat_con[lidat_con$wc > 5, ]
 
 
 ###########################
