@@ -34,12 +34,12 @@ plot_df <- anes2012 %>% select(purity_d, authority_d, ingroup_d, fairness_d, har
 
 ## generate plot
 ggplot(plot_df, aes(x=X1, xmin=X1-1.96*X2, xmax=X1+1.96*X2, y=varnum)) +
-  geom_point() + geom_errorbarh(height=0) + xlim(0,.5) +
+  geom_point(size=.5) + geom_errorbarh(height=0) + xlim(-.002,.5) +
   labs(y = "Moral Foundation", x = "Proportion of Respondents") +
-  ggtitle("Moral Reasoning in Open-Ended Responses") + 
+  #ggtitle("Moral Reasoning in\nOpen-Ended Responses") + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   scale_y_discrete(labels=c("Sanctity", mftLabs))
-ggsave(file = "fig/prop_mft.pdf", width = 5, height = 3)
+ggsave(file = "fig/prop_mft.pdf", width = 2, height = 1.5)
 
 
 ### Tab B.1: Missing open-ended responses
@@ -83,7 +83,7 @@ p2 <- ggplot(anes2012, aes(lwc, ..density..)) +
   ylab("Density") + xlab("log(Word Count)")
 
 ## combine plots
-pdf("fig/app_wc.pdf",width=7, height=3)
+pdf("fig/app_wc.pdf",width=4, height=1.5)
 grid.arrange(p1, p2, ncol=2)
 dev.off()
 
