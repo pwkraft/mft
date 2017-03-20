@@ -1,6 +1,6 @@
 ###########################################################################################
 ## Project:  Moral Foundations of Political Reasoning
-## File:     analyses_feinberg.R
+## File:     appendix_feinberg.R
 ## Overview: validation of dictionary method (additional plots for appendix)
 ## Author:   Patrick Kraft
 ###########################################################################################
@@ -26,7 +26,8 @@ plot_df <- fbrg_mft %>% select(-paper,-article) %>%
 plot_df$Foundation <- factor(gsub("_.*","",plot_df$variable)
                              , levels = c("purity", "authority", "ingroup"
                                           , "fairness", "harm", "general")
-                             , labels = c())
+                             , labels = c("Sanctity","Authority","Loyalty"
+                                          ,"Fairness","Care","General"))
 plot_df$Method
 grep("harm", plot_df$variable)
 

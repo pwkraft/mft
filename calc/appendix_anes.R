@@ -33,7 +33,7 @@ tab_mis <- rbind(c(table(anes2012$spanish)[2]
                  , c(table(anes2012$wc<=5)[2]
                      , table(anes2012$wc<=5)[2]*100/sum(table(anes2012$wc<=5))))
 colnames(tab_mis) <- c("N","Percent")
-rownames(tab_mis) <- c("Spanish Interview", "No Responses")
+rownames(tab_mis) <- c("Spanish Interview", "No/Short Responses")
 
 ## export table
 print(xtable(tab_mis, align="lcc",digits=c(0,0,2)
@@ -105,56 +105,39 @@ ggsave("fig/app_mftweights.pdf",width=6,height=7)
 
 desc <- list(NULL)
 plot_default <- theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
-desc[[1]] <- 1
-  
-  ggplot(anes2012, aes(x=harm_s, y=ideol)) + geom_point()
-  ggplot(anes2012, aes(x=log(harm+1))) + geom_histogram()
-
-  ggplot(anes2012, aes(x=harm_s)) + geom_bar(stat="count") + 
-  labs(y="Count", x="Care MFT Score") + plot_default
 desc[[1]] <- ggplot(anes2012, aes(x=ideol)) + geom_bar(stat="count") + 
   labs(y="Count", x="Ideology") + plot_default
-desc[[7]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
-desc[[2]] <- ggplot(anes2012, aes(x=media_general)) + geom_bar(stat="count") + 
-  labs(y="Count", x="Media Moralization") + plot_default
-desc[[2]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + 
-  labs(y="Count", x="Political Knowledge") + plot_default
-desc[[3]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + 
-  labs(y="Count", x="Political Media Exposure") + plot_default
-desc[[4]] <- ggplot(anes2012, aes(x=poldisc)) + geom_bar(stat="count") + 
-  labs(y="Count", x="Political Discussions") + plot_default
-desc[[5]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) + 
-  labs(y="Count", x="Feeling Thermometer (Candidates)") + plot_default
-desc[[6]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + 
-  labs(y="Count", x="Feeling Thermometer (Parties)") + plot_default
-desc[[8]] <- ggplot(anes2012, aes(x=factor(vote_dem, labels=c("No","Yes")))) + 
+desc[[2]] <- ggplot(anes2012, aes(x=factor(vote_dem, labels=c("No","Yes")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Voted for Democratic Candidate") + plot_default
-desc[[9]] <- ggplot(anes2012, aes(x=factor(pastvote, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Voted in 2008") + plot_default
-desc[[10]] <- ggplot(anes2012, aes(x=factor(protest, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Participated in Protest") + plot_default
-desc[[11]] <- ggplot(anes2012, aes(x=factor(letter, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Letter to Congressmen/Senator") + plot_default
-desc[[12]] <- ggplot(anes2012, aes(x=factor(petition, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Signed Petition") + plot_default
-desc[[13]] <- ggplot(anes2012, aes(x=factor(button, labels=c("No","Yes")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Wearing Campaign Button") + plot_default
-desc[[14]] <- ggplot(anes2012, aes(x=age)) + geom_bar(stat="count") + 
+desc[[3]] <- ggplot(anes2012, aes(x=media_general_s)) + geom_histogram() + 
+  labs(y="Count", x="Moral Media Content") + plot_default
+desc[[4]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + 
+  labs(y="Count", x="Political Knowledge") + plot_default
+desc[[5]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + 
+  labs(y="Count", x="Political Media Exposure") + plot_default
+desc[[6]] <- ggplot(anes2012, aes(x=poldisc)) + geom_bar(stat="count") + 
+  labs(y="Count", x="Political Discussions") + plot_default
+desc[[7]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) + 
+  labs(y="Count", x="Feeling Thermometer (Candidates)") + plot_default
+desc[[8]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + 
+  labs(y="Count", x="Feeling Thermometer (Parties)") + plot_default
+desc[[9]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
+  geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
+desc[[10]] <- ggplot(anes2012, aes(x=age)) + geom_bar(stat="count") + 
   labs(y="Count", x="Age") + plot_default
-desc[[15]] <- ggplot(anes2012, aes(x=factor(female,labels=c("Male","Female")))) + 
+desc[[11]] <- ggplot(anes2012, aes(x=factor(female,labels=c("Male","Female")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Sex") + plot_default
-desc[[16]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + 
+desc[[12]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Race/Ethnicity") + plot_default
-desc[[17]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + 
+desc[[13]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + 
   labs(y="Count", x="Church Attendance") + plot_default
-desc[[18]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + 
-  geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
-desc[[19]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + 
+desc[[14]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + 
   labs(y="Count", x="Party Identification") + plot_default
-desc[[20]] <- ggplot(anes2012, aes(x=factor(mode, labels=c("Face-to-Face","Online")))) + 
+desc[[15]] <- ggplot(anes2012, aes(x=factor(mode, labels=c("Face-to-Face","Online")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Survey Mode") + plot_default
-desc[[21]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + 
+desc[[16]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + 
+  geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
+desc[[17]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + 
   labs(y="Count", x="Wordsum Literacy Test") + plot_default
 pdf("fig/app_desc.pdf", width=7, height=9)
 grid.arrange(grobs=desc,ncol=3)
@@ -183,8 +166,8 @@ ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
 ## generate plot
 ggplot(media2012, aes(y=reorder(id, general_s), x=general_s,xmin=general_lo,xmax=general_hi)) + 
-  geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + 
-  theme(panel.border = element_rect(fill=NA)) +
+  geom_vline(xintercept = 0,col="grey") + geom_point() + geom_errorbarh(height=0) + 
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   ggtitle("Moralization in Media Sources\n(October 2012)") +
   xlab("General MFT Score (rescaled)") + ylab("News Source")
 ggsave("fig/media_desc.pdf",width = 4, height = 4)
@@ -425,99 +408,29 @@ ggsave(filename = "fig/ols_feel.pdf", width = 5, height = 3)
 
 
 
-### Fig C.1: Participation and general moral reasoning (tobit)
-
-## model estimation
-tobit_part <- list(NULL)
-tobit_part[[1]] <- vglm(general_s ~ pastvote + relig + educ + age + female + black
-                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_part[[2]] <- vglm(general_s ~ protest + relig + educ + age + female + black 
-                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_part[[3]] <- vglm(general_s ~ petition + relig + educ + age + female + black 
-                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_part[[4]] <- vglm(general_s ~ button + relig + educ + age + female + black 
-                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_part[[5]] <- vglm(general_s ~ letter + relig + educ + age + female + black 
-                        + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_part[[6]] <- vglm(general_s ~ pastvote + protest + petition + button + letter
-                        + relig + educ + age + female + black + lwc + wordsum + mode
-                        , tobit(Lower = 0), data=anes2012)
+### Fig 5: Knowledge/media/discussion and general moral reasoning (tobit)
 
 ## simulate expected values / marginal effects
-tobit_part_res <- rbind(sim(tobit_part[[1]], iv=data.frame(pastvote=range(anes2012$pastvote,na.rm=T)))
-                        , sim(tobit_part[[2]], iv=data.frame(protest=range(anes2012$protest,na.rm=T)))
-                        , sim(tobit_part[[3]], iv=data.frame(petition=range(anes2012$petition,na.rm=T)))
-                        , sim(tobit_part[[4]], iv=data.frame(button=range(anes2012$button,na.rm=T)))
-                        , sim(tobit_part[[5]], iv=data.frame(letter=range(anes2012$letter,na.rm=T)))
-                        , sim(tobit_part[[6]], iv=data.frame(pastvote=range(anes2012$pastvote,na.rm=T)))
-                        , sim(tobit_part[[6]], iv=data.frame(protest=range(anes2012$protest,na.rm=T)))
-                        , sim(tobit_part[[6]], iv=data.frame(petition=range(anes2012$petition,na.rm=T)))
-                        , sim(tobit_part[[6]], iv=data.frame(button=range(anes2012$button,na.rm=T)))
-                        , sim(tobit_part[[6]], iv=data.frame(letter=range(anes2012$letter,na.rm=T))))
-tobit_part_res$cond <- rep(c("No", "Yes"), each=10)
-tobit_part_res$var <- rep(c(5:1,5:1),each=2)
-tobit_part_res$year <- "2012"
-
-## generate plot
-ggplot(tobit_part_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
-  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
-  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
-  labs(y = "Independent Variable", x= "Marginal Effect") +
-  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=5:1, labels=c("Voted in 2008", "Protest", "Petition", "Button", "Letter")) +
-  ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
-  guides(col=guide_legend(title="Control for remaining variables")
-         , shape=guide_legend(title="Control for remaining variables")) +
-  theme(legend.position="bottom", legend.box="horizontal") +
-  scale_color_grey(start=0,end=.5) + facet_grid(~value)
-ggsave(filename = "fig/tobit_part.pdf", width = 5, height = 3)
-
-
-
-### Fig 5: Knoledge/media/discussion and general moral reasoning (tobit)
-
-## model estimation
-tobit_learn <- list(NULL)
-tobit_learn[[1]] <- vglm(general_s ~ polknow + relig + educ + age + female + black
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[2]] <- vglm(general_s ~ polmedia + relig + educ + age + female + black
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[3]] <- vglm(general_s ~ poldisc + relig + educ + age + female + black 
-                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
-tobit_learn[[4]] <- vglm(general_s ~ polknow + polmedia + poldisc
-                         + relig + educ + age + female + black + lwc + wordsum + mode
-                         , tobit(Lower = 0), data=anes2012)
-
-## simulate expected values / marginal effects
-tobit_learn_res <- rbind(sim(tobit_learn[[1]]
-                             , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
-                         , sim(tobit_learn[[2]]
-                               , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                         , sim(tobit_learn[[3]]
-                               , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T)))
-                         , sim(tobit_learn[[4]]
-                               , iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
-                         , sim(tobit_learn[[4]]
-                               , iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
-                         , sim(tobit_learn[[4]]
-                               , iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
-tobit_learn_res$cond <- rep(c("No", "Yes"), each=6)
-tobit_learn_res$var <- rep(c(3:1,3:1),each=2)
+tobit_learn_res <- rbind(sim(tobit_media, iv=data.frame(media_general_s=range(anes2012$media_general_s, na.rm = T)))
+                         , sim(tobit_media, iv=data.frame(polknow=range(anes2012$polknow, na.rm = T)))
+                         , sim(tobit_media, iv=data.frame(polmedia=range(anes2012$polmedia, na.rm = T)))
+                         , sim(tobit_media, iv=data.frame(poldisc=range(anes2012$poldisc, na.rm = T))))
+tobit_learn_res$var <- rep(4:1,each=2)
 tobit_learn_res$year <- "2012"
 
 ## generate plot
-ggplot(tobit_learn_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+ggplot(tobit_learn_res, aes(x = mean, y = var)) +
   geom_vline(xintercept=0, col="lightgrey") + geom_point() +
   geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
   labs(y = "Independent Variable", x= "Marginal Effect") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
-  scale_y_continuous(breaks=3:1, labels=polLabs) +
+  scale_y_continuous(breaks=4:1, labels=c("Moral Media\nContent",polLabs)) +
   ggtitle("Change in Predicted Emphasis on any Moral Foundation") +
   guides(col=guide_legend(title="Control for remaining variables")
          , shape=guide_legend(title="Control for remaining variables")) +
   theme(legend.position="bottom", legend.box="horizontal") +
   scale_color_grey(start=0,end=.5) + facet_grid(~value)
-ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 3)
+ggsave(filename = "fig/tobit_learn.pdf", width = 5, height = 2.5)
 
 
 

@@ -294,7 +294,10 @@ anes2012weights <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$casei
 ## new dictionary differentiating vice and virtues
 anes2012newsim <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
                            , dict = newdict, regex = newdict_df, dict_list = newdict_list)
-anes2012newsim <- mftRescale(anes2012newsim, select = anes2012newsim$id %in% 
+anes2012newsim <- mftRescale(anes2012newsim
+                             , vars = c("authority_virtue","fairness_virtue","harm_virtue","ingroup_virtue","purity_virtue"
+                                        ,"authority_vice","fairness_vice","harm_vice","ingroup_vice","purity_vice")
+                             , select = anes2012newsim$id %in% 
                             intersect(anes2012$id[anes2012$spanish != 1]
                                       , anes2012newsim$id[anes2012newsim$wc > 5])) %>%
   select(-spell,-wc,-lwc,-nitem,-general,-general_d,-general_s)
@@ -396,8 +399,8 @@ media2012_sim$general <- apply(media2012_sim[,1:4],1,sum)
 media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
 
 ## create scaled variable for moral foundations
-#media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x)))
-media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) x/sd(x))
+media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x[x!=0])))
+#media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) x/sd(x))
 media2012_sim_d <- apply(select(media2012_sim, -id), 2, function(x) ifelse(x>=median(x),1,-1))
 colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
 colnames(media2012_sim_d) <- paste0(colnames(media2012_sim_d),"_d")
@@ -562,6 +565,12 @@ colnames(tmp1d) <- paste0("rdnws_",colnames(tmp1d))
 ## add new variables to anes
 anes2012 <- cbind(anes2012,tmp1,tmp2,tmp1a,tmp1b,tmp1c,tmp1d)
 
+## rescale media variable, remove missings
+anes2012$media_general[anes2012$media_general==0] <- NA
+anes2012$media_general_s[is.na(anes2012$media_general)] <- NA
+#anes2012$media_general <- anes2012$media_general/sd(anes2012$media_general,na.rm = T)
+#anes2012$media_general <- scale(anes2012$media_general, center=median(x))
+#anes2012$media_general_s <- scale(anes2012$media_general_s, center=median(x))
 
 ### compute bootstrapped standard errors for media content (word-based bootstrap)
 
@@ -615,8 +624,8 @@ for(i in 1:nboot){
   tmp[,"general",i] <- apply(tmp[,1:4,i],1,sum)
   
   ## create scaled variable for moral foundations
-  #tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
-  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) x/sd(x))
+  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
+  #tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) x/sd(x))
   
   ## progress bar
   setTxtProgressBar(pb, i)

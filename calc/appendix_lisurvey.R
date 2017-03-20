@@ -25,6 +25,11 @@ datsrc <- "~/Dropbox/Uni/Data/"
 ## load recoded dataset
 load("out/analyses_lisurvey.RData")
 
+## drop empty responses
+lidat <- lidat[lidat$wc > 5, ]
+lidat_lib <- lidat_lib[lidat_lib$wc > 5, ]
+lidat_con <- lidat_con[lidat_con$wc > 5, ]
+
 
 
 ######################################

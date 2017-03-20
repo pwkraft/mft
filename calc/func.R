@@ -143,7 +143,7 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
 
 mftRescale <- function(x, select,vars = c("authority","fairness","harm","ingroup","purity","general")){
   for(i in vars){
-    x[,paste0(i,"_s")] <- x[,i]/sd(x[select,i])
+    x[,paste0(i,"_s")] <- x[,i]/sd(x[select,i], na.rm = T)
   }
   return(x)
 }
