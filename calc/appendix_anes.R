@@ -101,6 +101,14 @@ ggplot(anes2012weights[anes2012weights$weight!=0,], aes(y=reorder(term, -weight)
 ggsave("fig/app_mftweights.pdf",width=6,height=7)
 
 
+### Individual moral media content
+
+ggplot(anes2012, aes(x=media_general_s)) + geom_histogram() + 
+  labs(y="Count", x="Moral Media Content") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA))
+ggsave(file = "fig/app_moralmedia.pdf", width = 2, height = 1.5)
+
+
 ### Fig B.2: Histograms of variables included in the analyses
 
 desc <- list(NULL)
@@ -109,35 +117,33 @@ desc[[1]] <- ggplot(anes2012, aes(x=ideol)) + geom_bar(stat="count") +
   labs(y="Count", x="Ideology") + plot_default
 desc[[2]] <- ggplot(anes2012, aes(x=factor(vote_dem, labels=c("No","Yes")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Voted for Democratic Candidate") + plot_default
-desc[[3]] <- ggplot(anes2012, aes(x=media_general_s)) + geom_histogram() + 
-  labs(y="Count", x="Moral Media Content") + plot_default
-desc[[4]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + 
+desc[[3]] <- ggplot(anes2012, aes(x=polknow)) + geom_bar(stat="count") + 
   labs(y="Count", x="Political Knowledge") + plot_default
-desc[[5]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + 
+desc[[4]] <- ggplot(anes2012, aes(x=polmedia)) + geom_bar(stat="count") + 
   labs(y="Count", x="Political Media Exposure") + plot_default
-desc[[6]] <- ggplot(anes2012, aes(x=poldisc)) + geom_bar(stat="count") + 
+desc[[5]] <- ggplot(anes2012, aes(x=poldisc)) + geom_bar(stat="count") + 
   labs(y="Count", x="Political Discussions") + plot_default
-desc[[7]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) + 
+desc[[6]] <- ggplot(anes2012, aes(x=eval_cand)) + geom_histogram(binwidth = 20) + 
   labs(y="Count", x="Feeling Thermometer (Candidates)") + plot_default
-desc[[8]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + 
+desc[[7]] <- ggplot(anes2012, aes(x=eval_party)) + geom_histogram(binwidth = 20) + 
   labs(y="Count", x="Feeling Thermometer (Parties)") + plot_default
-desc[[9]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
+desc[[8]] <- ggplot(anes2012, aes(x=factor(vote, labels=c("No","Yes")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Voted in 2012") + plot_default
-desc[[10]] <- ggplot(anes2012, aes(x=age)) + geom_bar(stat="count") + 
+desc[[9]] <- ggplot(anes2012, aes(x=age)) + geom_bar(stat="count") + 
   labs(y="Count", x="Age") + plot_default
-desc[[11]] <- ggplot(anes2012, aes(x=factor(female,labels=c("Male","Female")))) + 
+desc[[10]] <- ggplot(anes2012, aes(x=factor(female,labels=c("Male","Female")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Sex") + plot_default
-desc[[12]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + 
+desc[[11]] <- ggplot(anes2012, aes(x=factor(black,labels=c("Other","Black non-Hispanic")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Race/Ethnicity") + plot_default
-desc[[13]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + 
+desc[[12]] <- ggplot(anes2012, aes(x=relig)) + geom_bar(stat="count") + 
   labs(y="Count", x="Church Attendance") + plot_default
-desc[[14]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + 
+desc[[13]] <- ggplot(anes2012, aes(x=pid)) + geom_bar(stat="count") + 
   labs(y="Count", x="Party Identification") + plot_default
-desc[[15]] <- ggplot(anes2012, aes(x=factor(mode, labels=c("Face-to-Face","Online")))) + 
+desc[[14]] <- ggplot(anes2012, aes(x=factor(mode, labels=c("Face-to-Face","Online")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Survey Mode") + plot_default
-desc[[16]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + 
+desc[[15]] <- ggplot(anes2012, aes(x=factor(educ, labels=c("No College","College")))) + 
   geom_bar(stat="count") + labs(y="Count", x="Education") + plot_default
-desc[[17]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + 
+desc[[16]] <- ggplot(anes2012, aes(x=wordsum)) + geom_bar(stat="count") + 
   labs(y="Count", x="Wordsum Literacy Test") + plot_default
 pdf("fig/app_desc.pdf", width=7, height=9)
 grid.arrange(grobs=desc,ncol=3)
