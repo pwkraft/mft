@@ -56,7 +56,7 @@ for(i in 1:length(vname)){
   p[[paste0(vname[i],"_tfidf")]] <- ggplot(fbrg_mft, aes_string(x=vname[i],y=paste0(vname[i],"_tfidf"))) + 
     geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
-    ggtitle(vlab[i]) + ylab("Weighted Dictionary") + xlab("Manual Coding") + ylim(0,7) + xlim(0,6) +
+    ggtitle(vlab[i]) + ylab("MFT Score") + xlab("Manual Coding") + ylim(0,7) + xlim(0,6) +
     annotate("text",x=0,y=6.5,label=tmp,hjust=0,size=3,parse=T)
   
   # if(i == length(vname)){

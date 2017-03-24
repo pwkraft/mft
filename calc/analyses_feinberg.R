@@ -44,7 +44,7 @@ tmp <- as.character(paste0("italic(r) == ",round(cor(fbrg_mft$general,fbrg_mft$g
 p$general_tfidf <- ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) + 
   geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
-  ggtitle("General MFT") + xlab("Manual Coding") + ylab("Weighted Dictionary") + 
+  ggtitle("General MFT") + xlab("Manual Coding") + ylab("General MFT Score") + 
   annotate("text",x=0,y=6,label=tmp,hjust=0,size=2,parse=T)
 
 png("fig/feinberg_2versions.png",height=3,width=5,units="in",res=300)

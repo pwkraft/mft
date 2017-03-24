@@ -77,7 +77,7 @@ varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideol
                , age="Age", female1="Sex (Female)", black="Race (African American)"
                , lwc="Word Count (log)"
                , "(Intercept):1"="Intercept", "(Intercept):2"="log(Sigma)")
-mlabs <- c("Harm", "Fairness", "Ingroup", "Authority")
+mlabs <- c("Care", "Fairness", "Loyalty", "Authority")
 
 ## create table
 latexTable(tobit_ideol_li, caption="Tobit models predicting MFT score for each foundation based 

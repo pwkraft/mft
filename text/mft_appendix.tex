@@ -9,14 +9,14 @@
 \usepackage{verbatim}
 \usepackage{booktabs}
 \usepackage{amsmath}
-\usepackage{lscape}
 \usepackage{dcolumn}
+\usepackage{enumerate}
 \usepackage{subcaption}
 \usepackage[title]{appendix}
 \usepackage{xcolor}
 \usepackage{todonotes}
 \usepackage{titletoc}
-\usepackage{longtable}
+\usepackage{hvfloat}
 \usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
 
 % sans serif font
@@ -93,7 +93,7 @@ In this study, MFT scores are computed based on verbatim open-ended responses in
 
 \input{../calc/tab/app_mis}
 
-Respondents were not included in the analysis if they only provided extremely short responses (less or equal to 5 words in total), or if the interview language was Spanish. Table~\ref{tab:app_mis} provides an overview of the number of omitted cases. About 4\% of the interviews were held in Spanish and about 11\% of the respondents only provided extremely short or no responses (7\% did not answer any open-ended question). Furthermore, Figure~\ref{fig:appB2num} displays histograms of the length of the respondents' answers to all open-ended items. On average, the collection of all open-ended responses consists of about 75 words for each individual.
+Respondents were not included in the analysis if they only provided extremely short responses (less or equal to 5 words across all 8 open-ended items), or if the interview language was Spanish. Table~\ref{tab:app_mis} provides an overview of the number of omitted cases. About 4\% of the interviews were held in Spanish and about 11\% of the respondents only provided extremely short or no responses (7\% did not answer any open-ended question). Furthermore, Figure~\ref{fig:appB2num} displays histograms of the length of the respondents' answers to all open-ended items. On average, the collection of all open-ended responses consists of about 75 words for each individual.
 
 \begin{figure}[h]\centering
 \includegraphics{../calc/fig/app_wc.pdf}
@@ -141,6 +141,7 @@ Based on the coded content for each media source, I created a measure that repre
 \end{figure}
 
 
+\clearpage
 \subsection{Remaining Variables in 2012 ANES}
 
 The 2012 ANES contains two representative cross-sectional samples which are pooled in the analyses. One sample was collected via computer assisted face-to-face interviews while the other is based on an internet panel. Most items described below are drawn from the pre-election wave of the survey.\footnote{The open-ended items were included only in the pre-election wave. Accordingly, wherever possible, the set of explanatory variables was limited to the pre-election wave.} The key independent variable used to predict the emphasis on each moral foundation in the first step of the analyses is \textit{political ideology}. Respondents were asked to place themselves on a seven-point scale ranging from extremely liberal to extremely conservative, which was transformed into dichotomous indicators for respondents who identified as liberals, conservatives, or moderates. Additional control variables included in the analyses are \textit{age}, \textit{sex}, \textit{race} (African American), \textit{church attendance}, survey mode (online vs. offline), \textit{education} (college degree), as well as the overall length of the individual responses in the open-ended questions (\textit{measured as logged number of words}). Furthermore, the 2012 ANES included the \textit{Wordsum} vocabulary test as a measure of literacy and verbal skill. It consists of a series of items asking respondents to choose a term that is closest to a target word. The Wordsum score consists of an additive index of correct responses in ten individual trials. The inclusion of education, the length of individual responses, and the Wordsum score as control variables should account for potential confounding factors such as general effects of increased political literacy on the complexity of open-ended responses.
@@ -206,7 +207,7 @@ To address this concern, I replicated the analysis from Figure 1 in the article 
 Figure~\ref{fig:tobit_ideol_lisurvey} shows patterns that are consistent with previous results. Liberals are more likely to emphasize the foundations of care and fairness. The result for the loyalty dimension, however, do not reach conventional levels of statistical significance. Additional analyses reveal that the ideological differences in moral reasoning are mostly due to the fact that respondents who identify as liberals emphasize the foundations of care and fairness more strongly than conservatives when describing their ingroup (i.e., other liberals and their beliefs), while conservatives emphasize the loyalty foundation more strongly than liberals when describing their ingroup (results available upon request). The fact that the same basic ideological pattern can be recovered in a survey that was conducted in a different political context (non-election period, Republican administration), employed a different survey mode (phone interview), and relied on a different set of open-ended survey questions (asking about liberals and conservatives and their respective beliefs), provides additional evidence that the MFT dictionary recovers basic moral considerations in political attitude expression.
 
 
-
+\clearpage
 \subsection{Negations and Valence in Open-Ended Responses (2012 ANES)}
 
 Dictionary-based approaches do not take into account the context in which signal terms appear. As such, they cannot capture directly whether individuals use certain words in a positive context or as part of a negation. Interpreting MFT scores as endorsements of a foundation might therefore be problematic if respondents commonly reject certain signal terms. Manual inspections of a random subset of open-ended suggested that most appearances of dictionary terms are not used in a direct negation (see also Table~\ref{tab:sample}). To provide a more comprehensive overview of potential negations or valenced statements in open-ended responses, I repeated the analyses from Figure 1 for different subsets of the questionnaire as well as the dictionary. The results are displayed in Figure~\ref{fig:tobit_ideol_app}.
@@ -217,7 +218,7 @@ Dictionary-based approaches do not take into account the context in which signal
 }\label{fig:tobit_ideol_app}
 \end{figure}
 
-Panel a) divides the MFT dictionary in positive and negative terms for each moral foundation (i.e. virtues and vices, c.f., \url{http://moralfoundations.org}) before examining ideological differences. Whether we only consider signal terms that represent ``vices'' (top) or ``virtues'' (bottom), the differences between liberals and conservatives in moral reasoning are largely consistent. Panel b) uses the full MFT dictionary again, but now splits up the set of open-ended questions before repeating the analysis. The top part displays the ideological differences when focusing on ``dislike'' questions, whereas the bottom part only considers ``like'' questions. While the results are again largely consistent, some interesting differences appear. For example, liberals are only more likely to emphasize the care foundation than conservatives when discussing issues they \textit{like} about parties and candidates, and not when they talk about things they \textit{dislike}. It seems unlikely that the consistent differences on ``Likes'' are driven by negations rather than positive endorsements of moral foundations. On the other hand, however, we also observe that liberals are more likely to emphasize the authority foundation than conservatives when talking about aspects they like. While this finding contradicts MFT, the remaining two panels provide some intuition about possible explanations. Panel c) splits up the open-ended responses by the party each respondent is asked to discuss. Here we observe that the ideological differences in moral reasoning are more pronounced when discussing the Democratic party and candidate as compared to the Republican party and candidate. A similar distinction is made in Panel d), where open-ended responses are divided into description of the respondent's respective out-party vs. in-party. Now, ideological differences appear to be more pronounced when respondents discuss their in-party rather than their out-party. Overall, regarding the surprising finding on authority, it appears that liberals where more likely to emphasize the foundation when discussing aspects that they like about their in-party candidate. A plausible example for such a pattern could be that they were more likely to describe the Democratic presidential candidate (Barack Obama) as a good ``leader'', which is a signal term for the authority dimension.
+Panel a) divides the MFT dictionary in positive and negative terms for each moral foundation (i.e. virtues and vices, c.f., \url{http://moralfoundations.org}) before examining ideological differences. Whether we only consider signal terms that represent ``vices'' (top) or ``virtues'' (bottom), the differences between liberals and conservatives in moral reasoning are largely consistent. Panel b) uses the full MFT dictionary again, but now splits up the set of open-ended questions before repeating the analysis. The top part displays the ideological differences when focusing on ``dislike'' questions, whereas the bottom part only considers ``like'' questions. While the results are again largely consistent, some interesting differences appear. For example, liberals are only more likely to emphasize the care foundation than conservatives when discussing issues they \textit{like} about parties and candidates, and not when they talk about things they \textit{dislike}. It seems unlikely that the consistent differences on ``Likes'' are driven by negations rather than positive endorsements of moral foundations. On the other hand, however, we also observe that liberals are more likely to emphasize the authority foundation than conservatives when talking about aspects they like. While this finding contradicts MFT, the remaining two panels provide some intuition about possible explanations. Panel c) splits the open-ended responses by the party each respondent is asked to discuss. Here we observe that the ideological differences in moral reasoning are more pronounced when discussing the Democratic party and candidate as compared to the Republican party and candidate. A similar distinction is made in Panel d), where open-ended responses are divided into description of the respondent's respective out-party vs. in-party. Now, ideological differences appear to be more pronounced when respondents discuss their in-party rather than their out-party. Overall, regarding the surprising finding on authority, it appears that liberals were more likely to emphasize the foundation when discussing aspects that they like about their in-party candidate. A plausible example for such a pattern could be that they were more likely to describe the Democratic presidential candidate (Barack Obama) as a good ``leader'', which is a signal term for the authority dimension.
 
 
 \clearpage
@@ -233,7 +234,7 @@ The second part of the analyses in the main text examines whether the expression
 }\label{fig:ols_feel}
 \end{figure}
 
-Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are consistent with previous results. Individuals who emphasize considerations related to care and fairness evaluate the Democratic party/candidate on average about 3 points higher than the Republican party/candidate (on a 100 point scale). On the other hand, if individuals emphasized the loyalty dimension, they reported stronger preferences for the Republican party/candidate. Interestingly, mentioning terms that belong to the authority dimension appears to increase favorability towards the democratic party and candidate, which contradicts MFT. However, the effect disappears once party identification is controlled for.
+Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are consistent with previous results. Individuals who emphasize considerations related to care and fairness evaluate the Democratic party/candidate on average about 3 points higher than the Republican party/candidate (on a 100 point scale). On the other hand, if individuals emphasized the loyalty dimension, they reported stronger preferences for the Republican party/candidate. Interestingly, mentioning terms that belong to the authority dimension appears to increase favorability towards the democratic party and candidate, which contradicts MFT. However, the effect disappears when party identification is included as a control variable.
 
 % ADD 2012 turnout?
 
@@ -253,6 +254,7 @@ The last analysis in the article focuses on the effect of moralization in indivi
 The significant positive effect of frequent political discussions (even after controlling for moral media content, political knowledge, and media exposure), is especially interesting. Citizens who engage in frequent political arguments are more likely to use moral considerations when evaluating candidates and parties, which could suggest that morality serves as a rhetorical tool utilized to convince others of certain political views.
 
 
+\clearpage
 \subsection{Comparing General Media MFT Scores with Manual Coding}
 
 The most fundamental concern related to the effects of individual media environments might be whether the content analysis of media sources using a dictionary is able to capture overall levels of moralization in news reporting. Luckily, a study reported in \citet{feinberg2013moral} included manual coding of a selection of newspaper articles on environmental issues to capture whether they use rhetoric grounded in each of the moral domains. Their coding therefore focuses on the same foundations without utilizing the dictionary. I computed a general moralization variable by summing the scores used in \citet{feinberg2013moral} and compared them to the MFT scores based on the procedures outlined above.\footnote{I am indebted to the authors for providing the data.}
@@ -273,60 +275,27 @@ Figure~\ref{fig:ols_feinberg} presents the correlation of general moralization i
 
 
 \clearpage
-\subsection{Face Validity of Sample Response}
 
-\begin{center} \small
-\begin{longtable}{lp{2.7cm}p{5.5cm}p{5cm}}
-\caption[Open-Ended Responses]{Sample of open-ended responses in the 2012 American National Election Study. Responses were selected if their length was within 10 words of average responses ($\sim75$ words) and if they scored high on one of the moral foundations (see first column). The second and third column display the item category and the raw response. The last column displays the processed response highlighting all signal words for the respective foundation.}\label{tab:sample} \\
+\subsection{Face Validity of Sample Responses}
 
-\hline
-	\textbf{Foundation} & \textbf{Variable} & \textbf{Raw Response} & \textbf{Processed Response} \\ \hline \endfirsthead
-	
-	\multicolumn{4}{c}{{\tablename\ \thetable{} -- continued from previous page}} \\
-	\hline \textbf{Foundation} & \textbf{Variable} & \textbf{Raw Response} & \textbf{Processed Response} \\ \hline \endhead
-	
-	\hline \multicolumn{4}{r}{{Continued on next page}} \\	\endfoot
-	
-	\hline	\endlastfoot
-	
-	Care & Obama (like) & supports ending war, supports affordable health care for all, supports the preservation of medicare and social security, looking into energy conservation to preserve our planet for future generations, initiatives to promote education and job growth and much more. & \multirow{8}{5.5cm}{supports ending \textit{war} supports affordable health \textit{care} for all supports the preservation of medicare and social \textit{secur} looking into energy conservation to \textit{preserve} our planet for future generations initiatives to promote education and job growth and much more imposing a fine if someone does not get a health \textit{care} plan he supports a strong military anti same sex marriage anti women s choice for abortion not supportive of health \textit{care} reform act not sensitive to the needs of the very poor and immigra} \\
-		 & Obama (dislike) & imposing a fine if someone does not get a health care plan \\
-		 & Romney (like) & he supports a strong military \\
-		 & Romney (dislike) & anti same sex marriage, anti women's choice for abortion, not supportive of health care reform act, not sensitive to the needs of the very poor and immigrants \\
-		 & Dems (like) & -1 Inapplicable \\
-		 & Dems (dislike) & -1 Inapplicable \\
-		 & Reps (like) & -1 Inapplicable \\
-		 & Reps (dislike) & -1 Inapplicable \\ \hline
-	
-	Fairness & Obama (like) & people rights, economy, taxes for working people, understanding of international problems & \multirow{8}{5.5cm}{people \textit{rights} economy taxes for working people understanding of international problems abortion \textit{rights} women \textit{rights} tax breaks for the rich military hawk rude and condescending to president obama economy women s \textit{rights} gay \textit{rights} health care tax plan for working class international strategy sometimes they do not fight hard enough against the republicans racist elitist trying to enrich the rich even more by hurt working people international relations health care women \textit{rights} gay \textit{rights}} \\
-	 & Obama (dislike) & -1 Inapplicable \\
-	 & Romney (like) & -1 Inapplicable \\
-	 & Romney (dislike) & abortion rights, women rights, tax breaks for the rich, military hawk, rude and condescending to President Obama \\
-	 & Dems (like) & economy, women's rights, gay rights, health care, tax plan for working class, international strategy. \\
-	 & Dems (dislike) & sometimes they do not fight hard enough against the republicans. \\
-	 & Reps (like) & -1 Inapplicable \\
-	 & Reps (dislike) & racist, elitist, trying to enrich the rich even more by hurting working people, international relations, health care, women rights, gay rights \\ \hline	
-	
-	Loyalty & Obama (like) &  & \multirow{8}{5.5cm}{he dozen t do enough about keeping us safe from our \textit{foreign} \textit{enem} he s too iffy about isle too favorable about homosexuality abortion like his close \textit{family} ties good ideas about keeping us safe from \textit{foreign} countries strong on israel they support same sex marriage they won t bend i like the people that are their leader i vie nevier been disappointed in their positions on most things} \\
-	 & Obama (dislike) & He doesn't do enough about keeping us safe from our foreign enemies; he's too iffy about Isael; too favorable about homosexuallity, abortion. \\
-	 & Romney (like) & Like his close family ties; good ideas about keeping us safe from foreign countries; strong on Israel; \\
-	 & Romney (dislike) &  \\
-	 & Dems (like) &  \\
-	 & Dems (dislike) & They support same sex marriage; they won't bend \\
-	 & Reps (like) & I like the people that are their leaders; I've never been disappointed in their positions on most things. \\
-	 & Reps (dislike) &  \\ \hline
-	 
-	 Authority & Obama (like) & competent, intelligent, but not strong in protecting US border, seriously dealing with illegal immigrant not rewarding for breaking the law. also, health care bill have me a little concern & \multirow{8}{5.5cm}{competent intelligent but not strong in protect us border seriously dealing with \textit{illegal} immigra not rewarding for breaking the \textit{law} also health care bill have me a little concern lack of strong laws dealing with \textit{illegal} aliens and us borders strong and firm dealing with foreign countries ie middle east china mexico the health care not too comfortable with what i am hearing about it} \\
-	 	 & Obama (dislike) & lack of strong laws dealing with illegal aliens and US borders, strong and firm dealing with foreign countries ie middle east, china, mexico; the health care--not too comfortable with what I am hearing about it. \\
-	 	 & Romney (like) & -1 Inapplicable \\
-	 	 & Romney (dislike) & -1 Inapplicable \\
-	 	 & Dems (like) & -1 Inapplicable \\
-	 	 & Dems (dislike) & -1 Inapplicable \\
-	 	 & Reps (like) & -1 Inapplicable \\
-	 	 & Reps (dislike) & -1 Inapplicable \\
-\end{longtable}
-\end{center}
-
+\hvFloat[%
+nonFloat=true,%
+capWidth=w,%
+capPos=t,%
+rotAngle=90,%
+objectPos=c%
+]{table}{%
+    \tiny\begin{tabular}{ | l | p{2.1cm} | p{2.1cm} | p{2.1cm} | p{2.1cm} | p{2.1cm} | p{2.1cm} | p{2.1cm} | p{2.1cm} | }
+    \hline
+    	& \multicolumn{2}{c|}{Obama} & \multicolumn{2}{c|}{Romney} & \multicolumn{2}{c|}{Democratic Party} & \multicolumn{2}{c|}{Republican Party} \\
+    	& Like & Dislike & Like & Dislike & Like & Dislike & Like & Dislike  \\ \hline
+    	Care & \texttt{supports ending \underline{war}, supports affordable health \underline{care} for all, supports the preservation of medicare and social \underline{security}, looking into energy conservation to \underline{preserve} our planet for future generations, initiatives to promote education and job growth and much more.} & \texttt{imposing a fine if someone does not get a health \underline{care} plan} & \texttt{he supports a strong military} & \texttt{anti same sex marriage, anti women's choice for abortion, not supportive of health \underline{care} reform act, not sensitive to the needs of the very poor and immigrants} &  &  &  &  \\ \hline
+    	Fairness & \texttt{people \underline{rights}, economy, taxes for working people, understanding of international problems} &  &  & \texttt{abortion \underline{rights}, women \underline{rights}, tax breaks for the rich, military hawk, rude and condescending to President Obama} & \texttt{economy, women's \underline{rights}, gay \underline{rights}, health care, tax plan for working class, international strategy.} & \texttt{sometimes they do not fight hard enough against the republicans.} &  & \texttt{racist, elitist, trying to enrich the rich even more by hurting working people, international relations, health care, women \underline{rights}, gay \underline{rights}} \\ \hline
+    	Loyalty &  & \texttt{He doesn't do enough about keeping us safe from our \underline{foreign} \underline{enemies}; he's too iffy about Isael; too favorable about homosexuallity, abortion.} & \texttt{Like his close \underline{family} ties; good ideas about keeping us safe from \underline{foreign} countries; strong on Israel;} &  &  & \texttt{They support same sex marriage; they won't bend} & \texttt{I like the people that are their leaders; I've never been disappointed in their positions on most things.} &  \\ \hline
+    	Authority & \texttt{competent, intelligent, but not strong in protecting US border, seriously dealing with \underline{illegal} immigrant not rewarding for breaking the \underline{law}. also, health care bill have me a little concern} & \texttt{lack of strong laws dealing with \underline{illegal} aliens and US borders, strong and firm dealing with foreign countries ie middle east, china, mexico; the health care--not too comfortable with what I am hearing about it.} &  &  &  &  &  &  \\ \hline
+    \end{tabular}
+}{%
+Sample of open-ended responses in the 2012 ANES. Each row represents one individual and the columns display his or her raw verbatim response to each likes/dislikes item included in the analyses. Individuals were selected if their total response length was within 10 words of the average ($\sim75$ words) and if they scored high on one of the moral foundations (see first column). Dictionary terms for the respective foundation are underlined.}{tab:sample}
 
 
 \clearpage
@@ -337,32 +306,48 @@ Figure~\ref{fig:ols_feinberg} presents the correlation of general moralization i
 \setcounter{table}{0}
 
 
-CONTENT FOLLOWS
+\subsection{Ideological Differences}
+\input{../calc/tab/tobit_ideol}
 
-%\subsection{Ideological Differences in Moral Reasoning}
-%\input{../calc/tab/tobit_ideol}
-%
-%\clearpage
-%\subsection{The Political Relevance of Moral Reasoning}
-%\input{../calc/tab/ols_feel}
-%\input{../calc/tab/logit_vote}
-%
-%\clearpage
-%\subsection{The Conditionality of Moral Reasoning}
-%\input{../calc/tab/tobit_learn}
-%\input{../calc/tab/tobit_ideol_know}
-%\input{../calc/tab/tobit_ideol_media}
-%\input{../calc/tab/tobit_ideol_disc}
-%\input{../calc/tab/tobit_cont}
-%
-%\clearpage
-%\subsection{Examining Alternative Explanations}
-%\input{../calc/tab/tobit_ideol_lisurvey}
-%
-%\clearpage
-%\subsection{Additional Models and Robustness Checks in Appendix}
-%\input{../calc/tab/tobit_part}
-%\input{../calc/tab/tobit_ideol_difdif}
+\clearpage
+\subsection{Moral Considerations and Vote Choice}
+\input{../calc/tab/logit_vote}
+
+\clearpage
+\subsection{Media Content and Exposure to Moral Rhetoric}
+\input{../calc/tab/tobit_media}
+
+\clearpage
+\subsection{Additional Model Results \& Robustness Checks}
+
+\vspace{2em}
+\subsubsection*{Replicating Ideological Differences using RDD Adult Sample}
+\input{../calc/tab/tobit_ideol_lisurvey}
+
+\clearpage
+\subsubsection*{Negations and Valence in Open-Ended Responses (2012 ANES)}
+\vspace{2em}
+\begin{enumerate}[a)]
+\item \textit{by MFT valence (virtue vs. vice)}
+\input{../calc/tab/tobit_virtue}
+\input{../calc/tab/tobit_vice}
+\clearpage
+\item \textit{by question type (like vs. dislike)}
+\input{../calc/tab/tobit_like}
+\input{../calc/tab/tobit_dislike}
+\clearpage
+\item \textit{by party/candidate (Democrat vs. Republican)}
+\input{../calc/tab/tobit_dem}
+\input{../calc/tab/tobit_rep}
+\clearpage
+\item \textit{by party (in- vs. out-party)}
+\input{../calc/tab/tobit_in}
+\input{../calc/tab/tobit_out}
+\end{enumerate}
+
+\clearpage
+\subsubsection*{MFT and Party/Candidate Evaluations (2012 ANES)}
+\input{../calc/tab/ols_feel}
 
 \clearpage
 \bibliographystyle{/data/Dropbox/Uni/Lit/apsr2006short}

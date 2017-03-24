@@ -23,13 +23,15 @@
 % sans serif font (will save a couple of lines!)
 \renewcommand{\familydefault}{\sfdefault}
 
-\author{Patrick W. Kraft\footnote{Ph.D. Candidate, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}.
+%\author{Patrick W. Kraft\footnote{Ph.D. Candidate, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}.
 %I am indebted to Jennifer Jerit, Yanna Krupnikov, Jason Barabas, Stanley Feldman, Fridolin Linder, Hannah Nam, Scott Clifford, Peter DeScioli, Scott Bokemper, and participants of the Political Science Graduate Student Colloquium at Stony Brook University as well as participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier drafts of this paper. Furthermore, I thank Leonie Huddie for sharing the data for the telephone survey replication.
-}}
-%\date{}
+%}}
+\date{}
 
 
-\title{Measuring Morality in Political Attitude Expression\footnote{An earlier version of this paper was presented at the 73rd Annual Conference of the Midwest Political Science Association, April 16-19, 2015. The manuscript and code are available on GitHub: \url{https://github.com/pwkraft/mft}.}}
+\title{Measuring Morality in Political Attitude Expression
+%\footnote{An earlier version of this paper was presented at the 73rd Annual Conference of the Midwest Political Science Association, April 16-19, 2015. The manuscript and code are available on GitHub: \url{https://github.com/pwkraft/mft}.}
+}
 
 
 
@@ -69,7 +71,7 @@ One way to address this problem would be to revise the dictionary and eliminate 
 \end{equation}
 where $\text{MFT}_{if}$ denotes the score of document $i$ for foundation $f$, $W_i$ is the total number of words in document $i$, $t$ indicates a term in the set of signal terms in foundation dictionary $\mathcal{D}_f$, $w_{it}$ denotes the number of occurrences of term $t$ in document $i$, $N$ represents the total number of documents, and $n_t$ is the number of documents in which the term $t$ appears. The weight represents the inverse of the proportion of documents in which the target term appears.\footnote{This specification is usually referred to as tf-idf weighting and is commonly used in quantitative text analyses (see \citealt[ch. 6]{manning2008introduction} for an introduction).} Terms that are ubiquitous across the entire corpus receive a lower weight, and terms that appear in only few documents receive a higher weight. %The denominator includes $+1$ to ensure that it does not equal zero if a dictionary term does not appear in any document.
 
-Each document is an individual's verbatim response to a set of open-ended questions. As such, a respondent's MFT score for foundation $f$ is the weighted proportion of words in the response that signal the respective foundation. The score has a lower bound of 0 (document does not contain any dictionary terms) and is independent of document length (since it is based on relative occurrences). Higher scores imply larger proportions of dictionary terms in a document. Most importantly, however, words that appear in nearly all open-ended remarks affect MFT scores less than uncommon terms because ubiquitous words convey less information about differences across individuals. Overall, the MFT score provides a correction for potential distortions due to suboptimal terms in the dictionary. Since nominal values of the MFT score above zero do not have a clear substantive interpretation, they are rescaled to unit variance.
+Each document is an individual's verbatim response to a set of open-ended questions. As such, a respondent's MFT score for foundation $f$ is the weighted proportion of words in the response that signal the respective foundation. The score has a lower bound of 0 (document does not contain any dictionary terms) and is independent of document length (since it is based on relative occurrences). Higher scores imply larger proportions of dictionary terms in a document. Most importantly, however, words that appear in nearly all open-ended remarks affect MFT scores less than words that appear only in a few responses because ubiquitous terms convey less information about differences across individuals. Overall, the MFT score provides a correction for potential distortions due to suboptimal terms in the dictionary. Since nominal values of the MFT score above zero do not have a clear substantive interpretation, they are rescaled to unit variance.
 
 
 \section*{Results}
