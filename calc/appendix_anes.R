@@ -166,7 +166,7 @@ ggplot(plot_df, aes(y=reorder(id, score), x=score,xmin=score_lo,xmax=score_hi)) 
   geom_point() + geom_errorbarh(height=0) + theme_classic(base_size = 8) + 
   theme(panel.border = element_rect(fill=NA)) +
   facet_grid(.~mft) + ggtitle("Moral Content of Media Sources (October 2012)") +
-  xlab("MFT Score (rescaled)") + ylab("News Source") +
+  xlab("MFT Score (rescaled, median-centered)") + ylab("News Source") +
   geom_vline(xintercept=0, col="lightgrey")
 ggsave("fig/media_desc.pdf",width = 7, height = 4)
 
@@ -175,7 +175,7 @@ ggplot(media2012, aes(y=reorder(id, general_s), x=general_s,xmin=general_lo,xmax
   geom_vline(xintercept = 0,col="grey") + geom_point() + geom_errorbarh(height=0) + 
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) + 
   ggtitle("Moralization in Media Sources\n(October 2012)") +
-  xlab("General MFT Score (rescaled)") + ylab("News Source")
+  xlab("General MFT Score (rescaled, median-centered)") + ylab("News Source")
 ggsave("fig/media_desc.pdf",width = 4, height = 4)
 
 

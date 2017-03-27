@@ -123,7 +123,7 @@ ggplot(tobit_media_res, aes(x=ivval, y=mean, ymin=cilo,ymax=cihi)) +
   geom_ribbon(alpha=0.2) + geom_line() + facet_wrap(~value, scale="free_y") +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   # ggtitle("Media Content Effects") +
-  labs(y = "Moral Reasoning", x= "Moral Media Content")
+  labs(y = "Moral Reasoning", x= "Moral Media Content (median-centered)")
 ggsave(filename = "fig/tobit_media.pdf", width = 4, height = 2)
 
 
