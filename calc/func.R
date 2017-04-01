@@ -186,7 +186,7 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
       means <- apply(models[[i]]$model[vars[-c(1,which(vars %in% names(iv)),int)]]
                      , 2, mean, na.rm=T)
     } else if(class(models[[i]])[1] == "glm"){
-      means <- apply(models[[i]]$data[vars[-c(1,which(vars %in% names(iv)),int)]]
+      means <- apply(models[[i]]$model[vars[-c(1,which(vars %in% names(iv)),int)]]
                      , 2, mean, na.rm=T)
     } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
       means <- apply(models[[i]]@x[,vars[-c(1,2,which(vars %in% names(iv)),int)]]
