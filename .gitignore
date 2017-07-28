@@ -5,12 +5,14 @@ memo
 /info/
 /text/auto/
 /pres/auto/
+/reviews/
 *.RData
 *.Rhistory
 *.log
 *.out
 *.aux
 *.bbl
+*.bak
 *.blg
 *.tar.gz
 *.fdb_latexmk
