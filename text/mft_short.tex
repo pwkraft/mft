@@ -19,22 +19,13 @@
 \usepackage{longtable}
 \usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
 
-
 % sans serif font (will save a couple of lines!)
 \renewcommand{\familydefault}{\sfdefault}
 
-\author{Patrick W. Kraft\footnote{Ph.D. Candidate, Stony Brook University, \href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}.
-I thank Jennifer Jerit, Yanna Krupnikov, Stanley Feldman, Jason Barabas, Hannah Nam, Reuben Kline, Peter DeScioli, Fridolin Linder, Scott Clifford, 
-Robert Klemmensen,  %Alexa Bankert, Scott Bokemper,
-three anonymous reviewers, and participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier drafts of this paper. Special thanks to Leonie Huddie as well as Matthew Feinberg and Robb Willer for sharing their data.
-}}
+
+\title{Measuring Morality in Political Attitude Expression}
+\author{\textbf{Patrick W. Kraft}\\Ph.D. Candidate\\Department of Political Science\\Stony Brook University\\ Stony Brook, NY 11794\\\href{mailto:patrick.kraft@stonybrook.edu}{patrick.kraft@stonybrook.edu}}
 \date{}
-
-
-\title{Measuring Morality in Political Attitude Expression
-%\footnote{An earlier version of this paper was presented at the 73rd Annual Conference of the Midwest Political Science Association, April 16-19, 2015. The manuscript and code are available on GitHub: \url{https://github.com/pwkraft/mft}.}
-}
-
 
 
 \begin{document}
@@ -42,12 +33,26 @@ three anonymous reviewers, and participants at the panel of the 2015 Annual Meet
 \doublespacing
 \thispagestyle{empty}
 
+\begin{center}\large
+Conditionally accepted at the \textit{Journal of Politics}\\
+\textit{Short title:} Measuring Morality
+\end{center}
+
+\clearpage\thispagestyle{empty}
 \begin{abstract}
 This study explores whether and how individuals evoke moral considerations when discussing their political beliefs. Analyzing open-ended responses in the 2012 American National Election Study (ANES) using a previously validated dictionary, I find systematic ideological differences in moral reasoning---even when respondents are not explicitly asked about morality. The study proceeds to show that the reliance on moral considerations in attitude expression is amplified by the moral content of individual media environments.
 
-%\vspace{\baselineskip}
-%\noindent \textbf{Keywords:} Moral Foundations Theory, Open-ended Survey Responses, Individual Media Environments
+\vspace{\baselineskip}
+\noindent \textbf{Keywords:} Moral Foundations Theory, Open-ended Survey Responses, Text Analysis, Media Content
+
+\vspace{\baselineskip}
+\noindent \textbf{Online Appendix:} Supplementary material for this article is available in the appendix in the online edition.
+
+\vspace{\baselineskip}
+\noindent \textbf{Replication files:} Replication files are available in the JOP Data Archive on Dataverse (\url{http://thedata.harvard.edu/dvn/dv/jop}) as well as on GitHub (\url{https://github.com/pwkraft/mft}).
 \end{abstract}
+
+
 \newpage
 \setcounter{page}{1}
 
@@ -65,7 +70,7 @@ The analysis begins by replicating previous findings regarding MFT and ideology 
 
 \section*{Method}
 
-This study utilizes the moral foundations dictionary created by \citet{graham2009liberals} to identify references to specific moral considerations when respondents discuss what they like and dislike about political parties and candidates.\footnote{See the appendix for the full content of the dictionary.} Other studies have used (variations of) this dictionary to identify the moral foundations in elite communication \citep[e.g.,][]{clifford2015concerns} or political advertising \citep[e.g.,][]{lipsitz2017playing}, but to date no research has examined verbatim attitude expressions in surveys. Based on the terms signaling each foundation in the dictionary, any document can be scored according to its emphasis on the respective moral dimension. Conventional dictionary-based methods usually consist of the proportion of signal word occurrences in each document \citep[e.g.,][]{graham2009liberals}. However, some dictionary terms are problematic when applied to verbatim survey responses. In particular, certain words might be too ubiquitous to be regarded as an unambiguous indicator for specific moral considerations. For example, ``leader'' is a signal word for the authority dimension. However, respondents may describe the qualities of presidential candidates as \textit{leaders} irrespective of moral considerations related to authority.
+This study utilizes the moral foundations dictionary created by \citet{graham2009liberals} to identify references to specific moral considerations when respondents discuss what they like and dislike about political parties and candidates.\footnote{See Appendix A for the full content of the dictionary.} Other studies have used (variations of) this dictionary to identify the moral foundations in elite communication \citep[e.g.,][]{clifford2015concerns} or political advertising \citep[e.g.,][]{lipsitz2017playing}, but to date no research has examined verbatim attitude expressions in surveys. Based on the terms signaling each foundation in the dictionary, any document can be scored according to its emphasis on the respective moral dimension. Conventional dictionary-based methods usually consist of the proportion of signal word occurrences in each document \citep[e.g.,][]{graham2009liberals}. However, some dictionary terms are problematic when applied to verbatim survey responses. In particular, certain words might be too ubiquitous to be regarded as an unambiguous indicator for specific moral considerations. For example, ``leader'' is a signal word for the authority dimension. However, respondents may describe the qualities of presidential candidates as \textit{leaders} irrespective of moral considerations related to authority.
 
 One way to address this problem would be to revise the dictionary and eliminate ambiguous words. Yet such revisions could be arbitrary and leave too much discretion to the researcher. Drawing on techniques developed in the field of information retrieval, I propose an alternative approach. If a specific dictionary term like ``leader'' is commonly used to describe presidential candidates, it is likely that the term can be used in multiple contexts and is not necessarily unique to the moral domain. Terms that are used by almost all respondents therefore provide less information about differences in their (moral) reasoning than terms that only occur in few responses. In this study, \textit{MFT scores} are computed for a foundation by weighting each term in the dictionary according to its ubiquity across documents, which serves as a proxy for the term's discriminative information:
 \begin{equation}\label{eq:tfidf}
@@ -78,17 +83,17 @@ Each document is an individual's verbatim response to a set of open-ended questi
 
 \section*{Results}
 
-Open-ended responses to the likes/dislikes items in the 2012 ANES were aggregated for each individual and pre-processed by correcting spelling errors before computing MFT scores. The appendix provides detailed information on the procedure, including the weighting scheme and raw proportions of individuals mentioning each foundation. Results for the sanctity dimension are not presented below due to its low general prevalence in individual attitude expressions.\footnote{Only about 3.6\% of respondents mentioned the sanctity dimension.} To account for confounding factors related to the respondents' eloquence when discussing their political attitudes, all models reported below include controls for education, logged overall response length, as well as the Wordsum vocabulary score measuring verbal intelligence.
+Open-ended responses to the likes/dislikes items in the 2012 ANES were aggregated for each individual and pre-processed by correcting spelling errors before computing MFT scores. Appendix B provides detailed information on the procedure, including the weighting scheme and raw proportions of individuals mentioning each foundation. Results for the sanctity dimension are not presented below due to its low general prevalence in individual attitude expressions.\footnote{Only about 3.6\% of respondents mentioned the sanctity dimension.} To account for confounding factors related to the respondents' eloquence when discussing their political attitudes, all models reported below include controls for education, logged overall response length, as well as the Wordsum vocabulary score measuring verbal intelligence.
 % MENTION: why sanctity was omitted
 
 
 \subsection*{Ideological Differences}
 
-MFT scores measure the weighted proportion of moral foundation terms in an open-ended response. Since they are bounded at zero (i.e., response does not contain any moral words), I begin by estimating a set of Tobit regressions using ideology to predict individual MFT scores for each moral foundation.\footnote{Full estimates for this and all subsequent models are presented in the appendix.} Figure~\ref{fig:tobit_ideol} compares liberals and conservatives while holding all other variables constant at their respective means. To facilitate their substantive interpretation, I decompose the estimates into the effect of ideology on the probability of mentioning a specific foundation \textit{at all} (i.e., the probability the MFT score is larger than zero) as well as the degree of emphasis on the foundation given that it was mentioned by a respondent (i.e., the change in the MFT score given that it is larger than zero, measured in standard deviations).\footnote{See for example \citet{mcdonald1980uses} for details on decomposing Tobit estimates.}
+MFT scores measure the weighted proportion of moral foundation terms in an open-ended response. Since they are bounded at zero (i.e., response does not contain any moral words), I begin by estimating a set of Tobit regressions using ideology to predict individual MFT scores for each moral foundation.\footnote{Full estimates for this and all subsequent models are presented in Appendix D.} Figure~\ref{fig:tobit_ideol} compares liberals and conservatives while holding all other variables constant at their respective means. To facilitate their substantive interpretation, I decompose the estimates into the effect of ideology on the probability of mentioning a specific foundation \textit{at all} (i.e., the probability the MFT score is larger than zero) as well as the degree of emphasis on the foundation given that it was mentioned by a respondent (i.e., the change in the MFT score given that it is larger than zero, measured in standard deviations).\footnote{See for example \citet{mcdonald1980uses} for details on decomposing Tobit estimates.}
 
 \begin{figure}[ht]\centering
 \includegraphics{../calc/fig/tobit_ideol.pdf}
-\caption{Difference between liberals and conservatives in the probability of mentioning a moral foundation (left panel) and in the MFT score given that the foundation was mentioned (right panel), holding control variables at their respective means (along with 95\% confidence intervals). Control variables include age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in the appendix.
+\caption{Difference between liberals and conservatives in the probability of mentioning a moral foundation (left panel) and in the MFT score given that the foundation was mentioned (right panel), holding control variables at their respective means (along with 95\% confidence intervals). Control variables include age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in Appendix D.1.
 }\label{fig:tobit_ideol}
 \end{figure}
 
@@ -100,11 +105,11 @@ Positive values denote a higher probability of mentioning the respective moral f
 
 \subsection*{Moral Considerations and Vote Choice}
 
-A skeptic may worry that the verbal expression of moral considerations might not be as strongly related to other forms of political behavior (e.g., vote choice) as moral foundations measured by the MFQ. To address this concern, Figure~\ref{fig:logit_vote} presents the changes in expected probabilities of voting for the Democratic (vs. Republican) presidential candidate in the 2012 election for individuals emphasizing the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including MFT scores for each moral foundation as independent variables as well as controls for various sociodemographic characteristics. Individuals who emphasized moral considerations related to the care and fairness foundations were more likely to vote for Barack Obama than for Mitt Romney. Respondents who emphasized the loyalty foundation, on the other hand, were less likely to vote for Obama.\footnote{The appendix shows similar results in an analysis of feeling thermometers towards parties and candidates.}
+A skeptic may worry that the verbal expression of moral considerations might not be as strongly related to other forms of political behavior (e.g., vote choice) as moral foundations measured by the MFQ. To address this concern, Figure~\ref{fig:logit_vote} presents the changes in expected probabilities of voting for the Democratic (vs. Republican) presidential candidate in the 2012 election for individuals emphasizing the moral foundations in their open-ended responses. The estimated probabilities are based on logit models including MFT scores for each moral foundation as independent variables as well as controls for various sociodemographic characteristics. Individuals who emphasized moral considerations related to the care and fairness foundations were more likely to vote for Barack Obama than for Mitt Romney. Respondents who emphasized the loyalty foundation, on the other hand, were less likely to vote for Obama.\footnote{Appendix C.3 shows similar results in an analysis of feeling thermometers towards parties and candidates.}
 
 \begin{figure}[ht]\centering
 \includegraphics[scale=.9]{../calc/fig/logit_vote.pdf}
-\caption{Change in predicted probabilities of voting for the Democratic rather than Republican candidate when MFT score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding control variables constant at their respective means (along with 95\% confidence intervals). Control variables include party identification, age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in the appendix.
+\caption{Change in predicted probabilities of voting for the Democratic rather than Republican candidate when MFT score is increased from its minimum (no overlap between dictionary and response) by one standard deviation, holding control variables constant at their respective means (along with 95\% confidence intervals). Control variables include party identification, age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in Appendix D.2.
 }\label{fig:logit_vote}
 \end{figure}
 
@@ -113,11 +118,11 @@ The effects on vote choice might not seem large, but bear in mind that the measu
 
 \subsection*{Media Content and Exposure to Moral Rhetoric}
 
-It can also be informative to examine the reliance on moral considerations \textit{in general} rather than focusing only on individual foundations. For example, a recent study found that moral language in political ads elicits emotional responses among recipients \citep{lipsitz2017playing}. Here, I investigate whether exposure to moralized discourse in the media is associated with a stronger general reliance on moral considerations in attitude expression. For each individual, I compute the sum of MFT scores to measure emphasis of \textit{any} moral foundation. The main independent variable captures moralization of media environments based on a content analysis of media sources consumed by each individual. Using Lexis-Nexis, I retrieved the content of 28 media sources covering either presidential candidate during the survey field period in the last month of the campaign (October 2012) and coded the emphasis on moral considerations using the weighted dictionary approach described earlier.\footnote{Sources include e.g., New York Times, CNN.com, and Fox News Programs. See appendix for details.} Based on each source's content, I create a measure that represents the extent to which each individual's media environment emphasized moral considerations by averaging (median-centered) MFT scores of all media outlets retrieved by a respondent.
+It can also be informative to examine the reliance on moral considerations \textit{in general} rather than focusing only on individual foundations. For example, a recent study found that moral language in political ads elicits emotional responses among recipients \citep{lipsitz2017playing}. Here, I investigate whether exposure to moralized discourse in the media is associated with a stronger general reliance on moral considerations in attitude expression. For each individual, I compute the sum of MFT scores to measure emphasis of \textit{any} moral foundation. The main independent variable captures moralization of media environments based on a content analysis of media sources consumed by each individual. Using Lexis-Nexis, I retrieved the content of 28 media sources covering either presidential candidate during the survey field period in the last month of the campaign (October 2012) and coded the emphasis on moral considerations using the weighted dictionary approach described earlier.\footnote{Sources include e.g., New York Times, CNN.com, and Fox News Programs. See Appendix B for details.} Based on each source's content, I create a measure that represents the extent to which each individual's media environment emphasized moral considerations by averaging (median-centered) MFT scores of all media outlets retrieved by a respondent.
 
 \begin{figure}[h]\centering
 \includegraphics{../calc/fig/tobit_media.pdf}
-\caption{Effect of MFT content in individual media environments on the probability of mentioning any moral foundation (left panel), and on the summed MFT score given that any foundation was mentioned (right panel), holding control variables at their respective means (along with 95\% confidence intervals). Control variables include political knowledge, general media exposure, political discussion frequency, age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in the appendix.
+\caption{Effect of MFT content in individual media environments on the probability of mentioning any moral foundation (left panel), and on the summed MFT score given that any foundation was mentioned (right panel), holding control variables at their respective means (along with 95\% confidence intervals). Control variables include political knowledge, general media exposure, political discussion frequency, age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in Appendix D.3.
 }\label{fig:tobit_media}
 \end{figure}
 
@@ -129,7 +134,7 @@ Figure~\ref{fig:tobit_media} presents the results of a Tobit model where effects
 
 \subsection*{Robustness Checks}
 
-To this point, the analyses assume that the dictionary-based approach captures the theoretical concept of interest---\textit{morality}. Yet, the terms in the dictionary may also be recovering other (i.e., non-moral) patterns in word choice. The appendix presents the results of multiple supplementary analyses to alleviate this concern for both open-ended responses as well as media environments. Two results are briefly highlighted here.
+To this point, the analyses assume that the dictionary-based approach captures the theoretical concept of interest---\textit{morality}. Yet, the terms in the dictionary may also be recovering other (i.e., non-moral) patterns in word choice. Appendix C presents the results of multiple supplementary analyses to alleviate this concern for both open-ended responses as well as media environments. Two results are briefly highlighted here.
 
 First, could the ideological differences in open-ended responses be explained by the survey context? To test for this possibility, I replicate the analysis from Figure~\ref{fig:tobit_ideol} using data from a random-digit-dial adult sample of residents within a 25 mile radius of a large northeastern state university conducted between early January, 2001 and July, 2003. Compared to the ANES, the survey varied the mode (phone), political context (non-election year, Republican presidency), as well as the set of open-ended items (discussing liberals and conservatives as social groups rather than candidates and parties). Notwithstanding these changes, the ideological differences in moral reasoning are consistent with the results presented above.
 
@@ -147,15 +152,25 @@ Moral Foundations Theory has become an influential framework for understanding i
 
 % A notable deviation from previous results on MFT is the fact that 
 % A potential explanation might be that liberals and conservatives use the foundations in different contexts. 
-That said, ideological differences on binding foundations (loyalty, authority) appear less persistent than those on individualizing foundations (care, fairness). The appendix examines potential explanations by analyzing subsets of the dictionary and the open-ended items. Liberals are more likely to mention the authority foundation in the context of positive moral endorsements (\textit{virtues}) when they discuss aspects they \textit{liked} about their \textit{in-party}. In contrast, there is suggestive evidence that conservatives are more likely to discuss the authority dimension in the context of negative endorsements (\textit{vices}). This finding indicates that liberals and conservatives attach diverging meanings to certain foundations, which promises to be a fruitful area for future research.
+That said, ideological differences on binding foundations (loyalty, authority) appear less persistent than those on individualizing foundations (care, fairness). Appendix C.2 examines potential explanations by analyzing subsets of the dictionary and the open-ended items. Liberals are more likely to mention the authority foundation in the context of positive moral endorsements (\textit{virtues}) when they discuss aspects they \textit{liked} about their \textit{in-party}. In contrast, there is suggestive evidence that conservatives are more likely to discuss the authority dimension in the context of negative endorsements (\textit{vices}). This finding indicates that liberals and conservatives attach diverging meanings to certain foundations, which promises to be a fruitful area for future research.
 
 Overall, this study improved conventional dictionary-based approaches in order to utilize a largely neglected data source: verbatim open-ended responses. Using this method, scholars can study moral reasoning in surveys that do not contain the MFQ simply by relying on open-ended items. Lastly, the approach outlined here allows for a seamless integration of media content in the analysis of moral reasoning, which can further illuminate how exposure to political discourse fosters ideological differences in moral reasoning. In times of growing partisan polarization, a better understanding of the antecedents of this ideological divide is essential.
 
 % REVISE: last para, especially regarding the conditionality argument
 % The present study therefore reaffirms the importance of moral reasoning in politics but also reveals its potential conditionality. Ultimately, a deeper understanding of the role of morality in politics necessitates further analyses of the broader political context that shapes individual information environments (e.g., how the endorsement of moral foundations varies over time and across campaigns). Such an investigation would further illuminate how exposure to political discourse fosters ideological differences in moral reasoning. In times of growing partisan polarization, a better understanding of the antecedents of this ideological divide is essential.
 
+\section*{Acknowledgments}
+I thank Jennifer Jerit, Yanna Krupnikov, Stanley Feldman, Jason Barabas, Hannah Nam, Reuben Kline, Peter DeScioli, Fridolin Linder, Scott Clifford, 
+Robert Klemmensen, three anonymous reviewers, and participants at the panel of the 2015 Annual Meeting of the Midwest Political Science Association for helpful comments on earlier versions of this paper. Special thanks to Leonie Huddie as well as Matthew Feinberg and Robb Willer for sharing their data.
+
+%An earlier version of this paper was presented at the 73rd Annual Conference of the Midwest Political Science Association, April 16-19, 2015.
+
 %\clearpage
 \bibliographystyle{/data/Dropbox/Uni/Lit/apsr2006short}
 \bibliography{mft_lit}
+
+\section*{Biographical Statement}
+
+Patrick W. Kraft is a Ph.D. candidate in the Department of Political Science at Stony Brook University, Stony Brook, NY 11794.
 
 \end{document}
