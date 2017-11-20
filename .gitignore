@@ -4,9 +4,13 @@ $ cat .gitignore
 memo
 /info/
 /text/auto/
-/pres/auto/
+/pres/auksco/
 /reviews/
+/in/feinberg/
 *.RData
+*.rda
+*.dta
+anes2012TS_openends.csv
 *.Rhistory
 *.log
 *.out

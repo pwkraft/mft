@@ -25,7 +25,7 @@ fbrg_mft <- read.spss("in/feinberg/Environment Article Coding.sav"
                       , to.data.frame = T) %>%
   select(NEWSPAPER,ARTICLENUMBER,HarmCare:Purity)
 
-## change id
+## id variable
 fbrg_mft$id <- paste(gsub("(^\\s+|\\s+$)","", fbrg_mft$NEWSPAPER)
                      , fbrg_mft$ARTICLENUMBER)
 
@@ -54,7 +54,7 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 
 ## minor pre-processing
 fbrg_text$processed <- paste(fbrg_text$title, fbrg_text$text) %>%
-  toLower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
+  char_tolower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
   gsub("[[:punct:]]"," ", .) %>% gsub("\\n"," ", .) %>% gsub("\\s+"," ", .) %>%
   gsub("(^\\s+|\\s+$)","", .)
 

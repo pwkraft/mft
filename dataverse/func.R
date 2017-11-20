@@ -1,7 +1,7 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     func.R
-## Overview: functions used in analyses_anes.R, analyses_lisurvey.R,
+## Overview: Functions used in analyses_anes.R, analyses_lisurvey.R,
 ##           appendix_anes.R, appendix_lisurvey.R
 ## Author:   Patrick Kraft
 ###########################################################################################
@@ -27,7 +27,7 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   
   ## minor pre-processing
   spell <- apply(opend, 2, function(x){
-    x <- toLower(x)
+    x <- char_tolower(x)
     x <- gsub("(^\\s+|\\s+$)","", x)
     x <- gsub("//"," ", x , fixed = T)
     x <- gsub("[[:punct:]]"," ", x)
@@ -84,7 +84,7 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   nitem <- apply(spell != "", 1, sum, na.rm = T)
   
   ## aggregate open-ended responses
-  spell <- toLower(apply(spell, 1, paste, collapse = " "))
+  spell <- char_tolower(apply(spell, 1, paste, collapse = " "))
   spell <- gsub("NA\\s*","",spell)
   names(spell) <- id
   #spell <- spell[spell != ""]
@@ -111,7 +111,7 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   }
   
   ## create tfidf matrix
-  spell_tfidf <- spell_dfm[names(spell),] %>% tfidf(normalize=T,k=0)
+  spell_tfidf <- spell_dfm[names(spell),] %>% tfidf(scheme_tf = "prop",k=0)
   spell_tfidf <- spell_tfidf[,regex[,2]]
   
   ## count relative tfidf weights for each document
