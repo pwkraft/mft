@@ -4,7 +4,7 @@ $ cat .gitignore
 memo
 /info/
 /text/auto/
-/pres/auksco/
+/pres/auto/
 /reviews/
 /calc/in/feinberg/
 /dataverse/in/feinberg
