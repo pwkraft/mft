@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     analyses_lisurvey.R
 ## Overview: main analyses (LI survey data) for the paper, produces plot
 ##           based on data prepared in prep_lisurvey.R

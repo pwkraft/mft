@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     analyses_feinberg.R
 ## Overview: validation of dictionary method
 ## Author:   Patrick Kraft

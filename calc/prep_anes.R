@@ -1,5 +1,5 @@
 ###############################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     prep_anes.R
 ## Overview: prepares open-ended survey responses in the 2012 ANES as well as the original
 ##           time series datasets for subsequent analyses in analyses_anes.R

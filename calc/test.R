@@ -1,5 +1,5 @@
 ###############################################################################################
-## Project:  Moral foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     test.R
 ## Overview: test some models for the next iteration
 ##           based on data prepared in prep_anes.R

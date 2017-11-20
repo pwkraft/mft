@@ -1,5 +1,5 @@
 ###############################################################################################
-## Project:  Moral foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     appendix_anes.R
 ## Overview: analyses for appendix (anes data), produces all additional plots and tables
 ##           based on data prepared in prep_anes.R and models estimated in analyses_anes.R
@@ -784,7 +784,7 @@ latexTable(tobit_media, caption="Tobit model predicting overall reliance on mora
            (sum of MFT scores) based on media moralization, political knowledge, media exposure, and frequency of 
            political discussions. Positive coefficients indicate stronger emphasis on any foundation.
            Standard errors in parentheses. Estimates are used for Figure 3 in 
-           the main text."
+           the main text as well as Figure \\ref{fig:tobit_learn} in the appendix."
            , label="tab:tobit_learn", align="lc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_media.tex"

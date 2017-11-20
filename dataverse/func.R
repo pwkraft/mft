@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     func.R
 ## Overview: functions used in analyses_anes.R, analyses_lisurvey.R,
 ##           appendix_anes.R, appendix_lisurvey.R
@@ -19,7 +19,7 @@ mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")
 polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 
 
-### function to pre-process open-ended responses and calculate cosine similarity
+### function to pre-process open-ended responses and compute MFT Score
 
 mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   if(nrow(opend) != length(id)) stop("ID vector must be equal to number of observations/documents")

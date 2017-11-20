@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     MASTER.R
 ## Overview: installs all required packages, prepares data, and runs analyses
 ## Author:   Patrick Kraft
@@ -16,6 +16,9 @@ pkg <- c("tidyverse","readstata13","car","quanteda","stargazer"
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 rm(pkg,inst)
+
+
+### create output folders
 
 
 ### ANES analyses

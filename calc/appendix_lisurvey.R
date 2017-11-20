@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     appendix_lisurvey.R
 ## Overview: analyses for appendix (lisurvey data), produces all additional plots and 
 ##           tables based on data prepared in prep_lisurvey.R and models estimated in 

@@ -1,8 +1,8 @@
 ###############################################################################################
-## Project:  Moral foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     analyses_anes.R
-## Overview: main analyses (anes data) for the paper, produces plots and tables
-##           based on data prepared in prep_anes.R
+## Overview: main analyses (anes data) to produce all figures in the manuscript, 
+## Requires: data prepared in prep_anes.R
 ## Author:   Patrick Kraft
 ###############################################################################################
 
@@ -10,9 +10,6 @@
 pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
-
-## working directory
-setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
 
 ## load recoded dataset
 load("out/prep_anes.RData")
@@ -29,7 +26,7 @@ anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc > 5, ]
 ### Ideological Differences in Moral Reasoning
 
 
-### Fig 2: Ideological differences in moral foundations (tobit)
+### Fig 1: Ideological differences in moral foundations (tobit)
 
 ## model estimation
 tobit_ideol <- list(NULL)
@@ -64,7 +61,7 @@ ggsave(filename = "fig/tobit_ideol.pdf", width = 4, height = 2)
 ### The Political Relevance of Moral Reasoning
 
 
-### Fig 4: Moral foundations and democratic vote (logit)
+### Fig 2: Moral foundations and vote choice (logit)
 
 ## model estimation
 logit_vote <- NULL
@@ -99,11 +96,11 @@ ggsave(filename = "fig/logit_vote.pdf", width = 4, height = 2)
 
 
 
-#########################################
-### The Conditionality of Moral Reasoning
+####################################
+### Media Effects on Moral Reasoning
 
 
-### Fig 5: Media content effects (tobit)
+### Fig 3: Media content effects (tobit)
 
 ## model estimation
 tobit_media <- vglm(general_s ~ media_general_s + polmedia + poldisc + polknow
@@ -128,9 +125,7 @@ ggsave(filename = "fig/tobit_media.pdf", width = 4, height = 2)
 
 
 
-
-
-################
-### save results
+######################################
+### save results (for appendix_anes.R)
 
 save.image(file="out/analyses_anes.RData")

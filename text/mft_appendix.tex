@@ -4,17 +4,14 @@
 \usepackage{natbib}
 \usepackage{multirow}
 \usepackage{graphicx}
-\usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{verbatim}
-\usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{dcolumn}
 \usepackage{enumerate}
 \usepackage{subcaption}
 \usepackage[title]{appendix}
 \usepackage{xcolor}
-\usepackage{todonotes}
 \usepackage{titletoc}
 \usepackage{hvfloat}
 \usepackage[colorlinks=true,citecolor=red!50!black,urlcolor=blue!50!black,linkcolor=red!50!black]{hyperref}
@@ -34,9 +31,6 @@
 
 \maketitle
 \appendices
-%\appendixpage
-%Online appendices for manuscript: \\
-%``Measuring Morality in Political Attitude Expression''
 
 \thispagestyle{empty}
 \startcontents[sections]
@@ -89,7 +83,7 @@ piety, pious, purity, pure*, clean*, steril*, sacred*, chast*, holy, holiness, s
 
 \subsection{Open-ended Responses and MFT Scores in 2012 ANES}
 
-In this study, MFT scores are computed based on verbatim open-ended responses in which individuals describe what they \textit{liked} and \textit{disliked} about either presidential candidate as well as the Republican and Democratic parties. More specifically, respondents in the 2012 American National Election Study (ANES) were asked to list anything in particular that they like/dislike about the Democratic/Republican party as well as anything that might make them vote/not vote for either of the Presidential candidates and were probed by the interviewer asking ``anything else?'' until the respondent answered ``no''. All responses to the eight open-ended like/dislike questions (evaluating both parties and both candidates) were combined for each individual and pre-processed by correcting spelling errors.\footnote{Spell checks and corrections were implemented using GNU Aspell, see \url{www.aspell.net}.}
+In this study, MFT scores are computed based on verbatim open-ended responses in which individuals describe what they \textit{liked} and \textit{disliked} about either presidential candidate as well as the Republican and Democratic parties. More specifically, respondents in the 2012 American National Election Study (ANES) were asked to list anything in particular that they like/dislike about the Democratic/Republican party as well as anything that might make them vote/not vote for either of the Presidential candidates and were probed by the interviewer asking ``anything else?'' until the respondent answered ``no.'' All responses to the eight open-ended like/dislike questions (evaluating both parties and both candidates) were combined for each individual and pre-processed by correcting spelling errors.\footnote{Spell checks and corrections were implemented using GNU Aspell, see \url{www.aspell.net}.}
 
 \input{../calc/tab/app_mis}
 
@@ -107,13 +101,10 @@ Figure~\ref{fig:prop_ideol} presents the proportion of respondents who mentioned
 \includegraphics{../calc/fig/prop_mft.pdf}
 \caption{Proportion of respondents mentioning each of the moral foundations in any of their open-ended responses, along with 95\% confidence intervals. The first two foundations are often labeled individualizing foundations, which have been shown to be more prevalent among liberals, while the remaining ones are described as binding foundations, which are more prevalent among conservatives.}\label{fig:prop_ideol}
 \end{figure}
-% ADD Note
-% add note that first two are individualizing foundations, and the latter are binding foundations
 
 The moral foundation most frequently mentioned is \textit{care}: About 40\% of the respondents mentioned at least one word included in respective dictionary. The second most frequently mentioned moral foundation is \textit{authority} with about 38\%. The proportion of respondents emphasizing \textit{loyalty} or \textit{fairness} is slightly lower with about 30\% and 23\%, respectively. \textit{Sanctity}, on the other hand, was almost never mentioned by any of the respondents, which suggests that the terms contained in the sanctity dictionary might be too uncommon in the context of politics and therefore not relevant for attitude expression. Due to the very rare mentioning of the sanctity dimension, the analyses in the main text concentrate on the remaining four moral foundations.\footnote{Unfortunately, this issue cannot not be addressed by relying on weighting scheme proposed in this study. The weights can correct for some distortions due to individual ubiquitous terms in the dictionaries, but it cannot compensate for the fact that the sanctity dictionary as a whole contains mostly words that are never mentioned by respondents.} Subsequent analyses focusing on the sanctity dimension in open-ended survey responses might necessitate a revision of the moral foundations dictionary. Overall, Figure~\ref{fig:prop_ideol} shows that a substantial proportion of individuals evokes moral considerations when describing their political attitudes even when they are not explicitly asked about morality.
 
-The article proposes a weighting method to improve conventional dictionary approaches in order to capture the relative emphasis on each moral dimension (while correcting for ubiquitous terms and overall response length). Figure~\ref{fig:mft_weights} displays the weights used for each dictionary term that is mentioned at least once (terms that never appear are omitted). Terms that are very common, like ``care'', or ``foreign'', receive comparatively low weights. Such common words are more likely to be used in multiple contexts and cannot be uniquely ascribed to the moral domain, while %\footnote{E.g., the statement ``I mostly care about foreign relations.'' should not be viewed as a moral argument.} 
-dictionary terms that only appear in few responses are more likely to signal moral reasoning.
+The article proposes a weighting method to improve conventional dictionary approaches in order to capture the relative emphasis on each moral dimension (while correcting for ubiquitous terms and overall response length). Figure~\ref{fig:mft_weights} displays the weights used for each dictionary term that is mentioned at least once (terms that never appear are omitted). Terms that are very common, like ``care'', or ``foreign'', receive comparatively low weights. Such common words are more likely to be used in multiple contexts and cannot be uniquely ascribed to the moral domain, while dictionary terms that only appear in few responses are more likely to signal moral reasoning.
 
 \begin{figure}[ht]\centering
 \includegraphics{../calc/fig/app_mftweights.pdf}
@@ -236,8 +227,6 @@ The second part of the analyses in the main text examines whether the expression
 
 Positive values indicate more favorable evaluations for the Democratic candidate or party and negative values indicate more favorable evaluations of the Republican candidate or party. The patterns are consistent with previous results. Individuals who emphasize considerations related to care and fairness evaluate the Democratic party/candidate on average about 3 points higher than the Republican party/candidate (on a 100 point scale). On the other hand, if individuals emphasized the loyalty dimension, they reported stronger preferences for the Republican party/candidate. Interestingly, mentioning terms that belong to the authority dimension appears to increase favorability towards the democratic party and candidate, which contradicts MFT. However, the effect disappears when party identification is included as a control variable.
 
-% ADD 2012 turnout?
-
 
 \clearpage
 \subsection{Other Correlates of General Moralization in Attitude Expression}
@@ -246,8 +235,7 @@ The last analysis in the article focuses on the effect of moralization in indivi
 
 \begin{figure}[h]\centering
 \includegraphics{../calc/fig/tobit_learn.pdf}
-\caption{Change in predicted overall reliance on moral foundations depending on moral media content, political knowledge, media exposure, and frequency of political discussions. The plot shows differences in predicted probabilities of mentioning any moral foundation (left panel) as well as in the summed MFT scores given that any foundation was mentioned (right panel), if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals). Additional control variables include age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. 
-%Full model results are displayed in the appendix, Table~\ref{tab:tobit_learn}.
+\caption{Change in predicted overall reliance on moral foundations depending on moral media content, political knowledge, media exposure, and frequency of political discussions. The plot shows differences in predicted probabilities of mentioning any moral foundation (left panel) as well as in the summed MFT scores given that any foundation was mentioned (right panel), if each of the independent variables is increased from its minimum to its maximum value holding all other variables constant at their respective means (along with 95\% confidence intervals). Additional control variables include age, sex, race, church attendance, survey mode, education, response length, and the Wordsum vocabulary score. Full model results are displayed in the appendix, Table~\ref{tab:tobit_learn}.
 }\label{fig:tobit_learn}
 \end{figure}
 
@@ -350,7 +338,7 @@ Sample of open-ended responses in the 2012 ANES. Each row represents one individ
 \input{../calc/tab/ols_feel}
 
 \clearpage
-\bibliographystyle{/data/Dropbox/Uni/Lit/apsr2006short}
-\bibliography{/data/Dropbox/Uni/Lit/Literature}
+\bibliographystyle{apsr2006short}
+\bibliography{mft_lit}
 
 \end{document}

@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     prep_feinberg.R
 ## Overview: prepare Feinberg data for analyses
 ## Author:   Patrick Kraft

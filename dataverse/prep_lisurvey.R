@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     prep_lisurvey.R
 ## Overview: prepares open-ended survey responses in the LI survey data for subsequent
 ##           analyses in analyses_lisurvey.R
@@ -26,8 +26,8 @@ raw <- read.dta(paste0(datsrc,"lisurvey/combined123.dta"))
 
 
 
-###########################
-### recode time-series data
+######################
+### recode survey data
 
 ## respondent id
 raw$id <- rownames(raw)

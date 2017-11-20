@@ -1,5 +1,5 @@
 ###########################################################################################
-## Project:  Moral Foundations of Political Reasoning
+## Project:  Measuring Morality in Political Attitude Expression
 ## File:     prep_feinberg.R
 ## Overview: prepare Feinberg data for analyses
 ## Author:   Patrick Kraft
@@ -11,19 +11,12 @@ pkg <- c("tidyverse","foreign","car","quanteda",
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
-## working directory
-setwd("~/Dropbox/Uni/Projects/2014/mft/calc")
-
 ## load additional functions
 source("func.R")
 
 ## load newspaper articles from feinberg
-fbrg_text <- read.csv("in/feinberg/environment_articles.csv")
-
-## load feinberg coding
-fbrg_mft <- read.spss("in/feinberg/Environment Article Coding.sav"
-                      , to.data.frame = T) %>%
-  select(NEWSPAPER,ARTICLENUMBER,HarmCare:Purity)
+fbrg_text <- read.csv("feinberg_articles.csv")
+fbrg_mft <- read.csv("feinberg_coding.csv")
 
 ## change id
 fbrg_mft$id <- paste(gsub("(^\\s+|\\s+$)","", fbrg_mft$NEWSPAPER)
