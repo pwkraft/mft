@@ -211,10 +211,6 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
         evs <- pnorm(betas %*% X)
       } else stop("Model type not supported")
     } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
-      ## IDEA: decompose effect of tobit in dP(Y>0) and dY|Y>0
-      ## based on predicted values (rather than EVs)
-      ## note that betas[,2] is log(Sigma) estimate
-      ## CHECK CALCULATIONS!
       if(unique(models[[i]]@misc$Upper)!=Inf) stop("Upper limit not supported")
       if(unique(models[[i]]@misc$Lower)!=0) warning("Limit != 0 not testes yet!")
       loLim <- unique(models[[i]]@misc$Lower)[1,1]
@@ -250,7 +246,6 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
       }
     } else {
       ## compute predicted values for each step
-      warning("Check number of scenarios - STILL TESTING")
       if(class(models[[i]])[1] != "vglm"){
         res <- data.frame(mean = apply(evs, 2, mean)
                           , cilo = apply(evs, 2, quantile, ci[1])
