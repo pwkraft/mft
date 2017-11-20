@@ -6,7 +6,8 @@ memo
 /text/auto/
 /pres/auksco/
 /reviews/
-/in/feinberg/
+/calc/in/feinberg/
+/dataverse/in/feinberg
 *.RData
 *.rda
 *.dta
