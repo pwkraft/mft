@@ -1,22 +1,18 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     func.R
-## Overview: Functions used in analyses_anes.R, analyses_lisurvey.R,
-##           appendix_anes.R, appendix_lisurvey.R
+## Overview: Custom auxiliary functions used in anes_prep.R, anes_analyses.R,
+##           anes_appendix.R, app_lisurvey.R, app_feinberg.R
 ## Author:   Patrick Kraft
 ###########################################################################################
 
-### Load packages
-pkg <- c("reshape2","ggplot2","dplyr","quanteda")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(pkg)
+## packages
+library(tidyverse)
+library(quanteda)
+library(xtable)
 
-
-### global labels for plots
-
-mftVars <- c("authority","fairness","harm","ingroup","purity")
+## MFT labels for plots
 mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")
-polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 
 
 ### function to pre-process open-ended responses and compute MFT Score
@@ -57,12 +53,6 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
     return(x)
   })
   
-  ## num-lock issue
-  # maybe look into this later
-  
-  ## fix words without whitespace
-  # maybe look into this later
-  
   ## spell-checking
   write.table(spell, file = "opend_combined.csv"
               , sep = ",", col.names = F, row.names = F)
@@ -87,7 +77,6 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   spell <- char_tolower(apply(spell, 1, paste, collapse = " "))
   spell <- gsub("NA\\s*","",spell)
   names(spell) <- id
-  #spell <- spell[spell != ""]
   
   ## replace regular expressions with word stems
   for(i in 1:nrow(regex)){

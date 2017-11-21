@@ -9,9 +9,9 @@
 ###########################################################################################
 
 ## packages
-pkg <- c("tidyverse","gridExtra","xtable","VGAM")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(list=ls())
+library(tidyverse)
+library(gridExtra)
+library(VGAM)
 
 ## load additional functions
 source("func.R")
@@ -155,7 +155,7 @@ latexTable(tobit_ideol_li, caption="Tobit models predicting MFT score for each f
            \\ref{fig:tobit_ideol_lisurvey} in the main text."
            , label="tab:tobit_ideol_lisurvey", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
-           , file="tab/appD4_tobit_ideol_lisurvey.tex"
+           , file="tab/tabD4_tobit_ideol_lisurvey.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 

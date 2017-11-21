@@ -1,19 +1,21 @@
-###############################################################################################
+###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     prep_anes.R
 ## Overview: Prepares 2012 ANES data for analyses_anes.R
 ## Requires: - ANES 2012 Time Series data (anes_timeseries_2012.dta)
 ##           - ANES 2012 Redacted Open-Ended Responses (anes2012TS_openends.csv)
 ##             (available at http://www.electionstudies.org/)
+##           - MFT scores of media sources (original content available on request)
 ##           - MFT dictionary (mft_dictionary.rda)
 ##           - Custom auxiliary functions (func.R)
 ## Author:   Patrick Kraft
-###############################################################################################
+############################################################################################
 
 ## packages
-pkg <- c("readstata13","car","dplyr","quanteda")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(list=ls())
+library(readstata13)
+library(car)
+library(dplyr)
+library(quanteda)
 
 ## load auxiliary functions
 source("func.R")
@@ -22,7 +24,6 @@ source("func.R")
 
 ###########################
 ### recode time-series data
-
 
 ## load raw data
 raw2012 <- read.dta13("anes_timeseries_2012.dta", convert.factors = F)
@@ -152,8 +153,7 @@ anes2012$wordsum <- with(raw2012, (wordsum_setb == 5) + (wordsum_setd == 3)
 ###############################
 ### open-ended survey responses
 
-
-## read original open-ended responses (downloaded from anes website)
+## load original open-ended responses
 anes2012opend <- read.csv("anes2012TS_openends.csv", as.is = T) %>%
   select(caseid, candlik_likewhatdpc, candlik_dislwhatdpc, candlik_likewhatrpc, candlik_dislwhatrpc
          , ptylik_lwhatdp, ptylik_dwhatdp, ptylik_lwhatrp, ptylik_dwhatrp)
@@ -176,7 +176,6 @@ sd(anes2012sim$harm_s)
 sd(anes2012sim$harm_s[anes2012$spanish != 1 & anes2012sim$wc > 5])
 sd(anes2012sim$harm_s[anes2012sim$id %in% intersect(anes2012$id[anes2012$spanish != 1]
                                                     , anes2012sim$id[anes2012sim$wc > 5])])
-
 
 ## get weights for dictionary terms
 anes2012weights <- mftScore(opend = anes2012opend[,-1], id = anes2012opend$caseid
@@ -242,52 +241,8 @@ anes2012 <- merge(anes2012, anes2012sim) %>% merge(anes2012newsim) %>%
 ##########################
 ### media content analysis
 
-## read textfiles
-docs2012 <- textfile(list.files(path = paste0(datsrc, "anes2012/media")
-                                , pattern = "\\.txt$", full.names = TRUE, recursive = FALSE))
-
-txtproc <- function(x) {
-  gsub("\\n\\nLOAD-DATE:\\s+\\w*\\s+\\d{1,2},\\s+\\d{4}\\n\\n.*$","", x) %>%
-    tail(-1) %>% paste(collapse=" ")
-}
-
-docs2012@texts <- docs2012@texts %>%
-  strsplit("\\n\\nLENGTH:\\s+\\d+\\s+words\\n\\n") %>%
-  sapply(txtproc)
-
-## replace regular expressions with word stems
-pb <- txtProgressBar(min = 0, max = nrow(dict_df), style = 3)
-for(i in 1:nrow(dict_df)){
-  docs2012@texts <- gsub(dict_df[i,1], dict_df[i,2], docs2012@texts)
-  setTxtProgressBar(pb, i)
-}
-close(pb)
-
-## combine dictionary and responses in common dfm/tfidf
-media2012_tfidf <- corpus(c(dict, docs2012@texts)
-                          , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
-media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(scheme_tf = "prop",k=0)
-media2012_tfidf <- media2012_tfidf[,dict_df[,2]]
-
-## count relative tfidf weights for each media source
-media2012_sim <- data.frame(
-  authority = apply(media2012_tfidf[,dict_list$authority],1,sum,na.rm=T)
-  , fairness = apply(media2012_tfidf[,dict_list$fairness],1,sum,na.rm=T)
-  , harm = apply(media2012_tfidf[,dict_list$harm],1,sum,na.rm=T)
-  , ingroup = apply(media2012_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
-  , purity = apply(media2012_tfidf[,dict_list$purity],1,sum,na.rm=T)
-)
-media2012_sim$general <- apply(media2012_sim[,1:4],1,sum)
-media2012_sim$id <- gsub("\\.txt","",rownames(media2012_sim))
-
-## create scaled variable for moral foundations
-media2012_sim_s <- apply(select(media2012_sim, -id), 2, function(x) scale(x, center=median(x[x!=0])))
-media2012_sim_d <- apply(select(media2012_sim, -id), 2, function(x) ifelse(x>=median(x),1,-1))
-colnames(media2012_sim_s) <- paste0(colnames(media2012_sim_s),"_s")
-colnames(media2012_sim_d) <- paste0(colnames(media2012_sim_d),"_d")
-
-## combine similarity results
-media2012 <- cbind(media2012_sim, media2012_sim_s, media2012_sim_d)
+## load content analysis data
+load("data_media2012.rda")
 
 ## recode overall anes media usage data
 anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
@@ -326,191 +281,25 @@ anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
                             , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
                             ) %>% apply(2,as.numeric)
 
-
-## internet news
-
-# dichotomous indicator for each news outlet
-anes2012inews <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
-                            , INET_MSNBC_com = raw2012$medsrc_websites_10==1
-                            , INET_TheNewYorkTimes = (raw2012$medsrc_websites_11==1
-                                                      | raw2012$medsrc_inetnews_01==1)
-                            , INET_USAToday = (raw2012$medsrc_websites_13==1 
-                                               | raw2012$medsrc_inetnews_02==1)
-                            , INET_Washingtonpost_com = (raw2012$medsrc_websites_14==1 
-                                                         | raw2012$medsrc_inetnews_04==1)
-                            , PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_inetnews_03==1
-                            ) %>% apply(2,as.numeric)
-
-# proportion of each news outlet
-anes2012inews <- anes2012inews / ifelse(apply(anes2012inews,1,sum)>0, apply(anes2012inews,1,sum), 1)
-
-
-## tv news
-
-# dichotomous indicator for each news outlet
-anes2012tvnws <- data.frame(TV_ABC_60minutes = raw2012$medsrc_tvprog_02==1
-                            , TV_ABC_GoodMorningAmerica = raw2012$medsrc_tvprog_24==1
-                            , TV_ABC_ThisWeek = raw2012$medsrc_tvprog_45==1
-                            , TV_ABC_WorldNews = raw2012$medsrc_tvprog_04==1
-                            , TV_CBS_EveningNews = raw2012$medsrc_tvprog_11==1
-                            , TV_CBS_FaceTheNation = raw2012$medsrc_tvprog_20==1
-                            , TV_CBS_SundayMorning = raw2012$medsrc_tvprog_43==1
-                            , TV_CBS_ThisMorning = raw2012$medsrc_tvprog_12==1
-                            , TV_CNN_AndersonCooper = raw2012$medsrc_tvprog_09==1
-                            , TV_Fox_Hannity = raw2012$medsrc_tvprog_25==1
-                            , TV_Fox_OReillyFactor = raw2012$medsrc_tvprog_36==1
-                            , TV_Fox_SpecialReport = raw2012$medsrc_tvprog_41==1
-                            , TV_Fox_TheFive = raw2012$medsrc_tvprog_21==1
-                            , TV_NBC_Dateline = raw2012$medsrc_tvprog_17==1
-                            , TV_NBC_MeetThePress = raw2012$medsrc_tvprog_32==1
-                            , TV_NBC_NightlyNews = raw2012$medsrc_tvprog_34==1
-                            , TV_NBC_RockCenter = raw2012$medsrc_tvprog_39==1
-                            , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
-                            ) %>% apply(2,as.numeric)
-
-# proportion of each news outlet
-anes2012tvnws <- anes2012tvnws / ifelse(apply(anes2012tvnws,1,sum)>0, apply(anes2012tvnws,1,sum), 1)
-
-
-## print news
-
-# dichotomous indicator for each news outlet
-anes2012paprnws <- data.frame(INET_TheNewYorkTimes = raw2012$medsrc_printnews_01==1
-                              , INET_USAToday = raw2012$medsrc_printnews_02==1 
-                              , PRINT_TheWashingtonPost = raw2012$medsrc_printnews_04==1 
-                              , PRINT_WallStreetJournal_Abstracts = raw2012$medsrc_printnews_03==1
-                              ) %>% apply(2,as.numeric)
-
-# proportion of each news outlet
-anes2012paprnws <- anes2012paprnws / ifelse(apply(anes2012paprnws,1,sum)>0, apply(anes2012paprnws,1,sum), 1)
-
-
-## radio news
-
-# dichotomous indicator for each news outlet
-anes2012rdnws <- data.frame(NPR_AllThingsConsidered = raw2012$medsrc_radio_01==1
-                            , NPR_FreshAir = raw2012$medsrc_radio_04==1
-                            , NPR_MorningEdition = raw2012$medsrc_radio_08==1
-                            ) %>% apply(2,as.numeric)
-
-# proportion of each news outlet
-anes2012rdnws <- anes2012rdnws / ifelse(apply(anes2012rdnws,1,sum)>0, apply(anes2012rdnws,1,sum), 1)
-
-
-## combine media usage with mft similarity scores and add to anes (old version with aggregate usage)
-tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))
-colnames(tmp1) <- paste0("media_",colnames(tmp1))
-tmp2 <- apply(tmp1[,grep("_d",colnames(tmp1))], 2, function(x) as.numeric(x>0))
-colnames(tmp2) <- paste0(colnames(tmp2),"01")
-
 ## combine media usage with mft similarity scores as mean dimensions (new version)
-tmp1 <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))  / apply(anes2012media,1,sum)
-tmp1[apply(anes2012media,1,sum)==0, ] <- 0
-colnames(tmp1) <- paste0("media_",colnames(tmp1))
-
-## combine media usage with mft similarity scores for each type with relative frequency (new version)
-rownames(media2012) <- gsub(".txt","",rownames(media2012))
-tmp2 <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),] +
-  as.matrix(anes2012tvnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012tvnws),] +
-  as.matrix(anes2012paprnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012paprnws),] +
-  as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012rdnws),]
-colnames(tmp2) <- paste0("mediatype_",colnames(tmp2))
+tmp <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))  / apply(anes2012media,1,sum)
+tmp[apply(anes2012media,1,sum)==0, ] <- 0
+colnames(tmp) <- paste0("media_",colnames(tmp))
 
 ## add new variables to anes
 anes2012$media <- apply(anes2012media,1,sum)>0
 
-## combine media usage with mft similarity scores for each type separately (new version)
-rownames(media2012) <- gsub(".txt","",rownames(media2012))
-tmp1a <- as.matrix(anes2012inews) %*% as.matrix(select(media2012,-id))[colnames(anes2012inews),]
-colnames(tmp1a) <- paste0("inews_",colnames(tmp1a))
-tmp1b <- as.matrix(anes2012tvnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012tvnws),]
-colnames(tmp1b) <- paste0("tvnws_",colnames(tmp1b))
-tmp1c <- as.matrix(anes2012paprnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012paprnws),]
-colnames(tmp1c) <- paste0("paprnws_",colnames(tmp1c))
-tmp1d <- as.matrix(anes2012rdnws) %*% as.matrix(select(media2012,-id))[colnames(anes2012rdnws),]
-colnames(tmp1d) <- paste0("rdnws_",colnames(tmp1d))
-
 ## add new variables to anes
-anes2012 <- cbind(anes2012,tmp1,tmp2,tmp1a,tmp1b,tmp1c,tmp1d)
+anes2012 <- cbind(anes2012,tmp)
 
 ## rescale media variable, remove missings
 anes2012$media_general[anes2012$media_general==0] <- NA
 anes2012$media_general_s[is.na(anes2012$media_general)] <- NA
 
 
-### compute bootstrapped standard errors for media content (word-based bootstrap)
 
-## combine dictionary and responses in common dfm
-media2012_dfm <- corpus(c(dict, docs2012@texts)
-                        , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
-media2012_dfm <- media2012_dfm[names(docs2012@texts),] %>% as.matrix()
+###################################
+### save output for anes_analyses.R
 
-## merge all non-mft words (to make computation easier)
-media2012_dfm <- cbind(media2012_dfm[,dict_df[,2]]
-                       , apply(media2012_dfm[,!colnames(media2012_dfm)%in%dict_df[,2]],1,sum))
-colnames(media2012_dfm)[ncol(media2012_dfm)] <- "nomft"
+save(anes2012, anes2012opend, media2012, anes2012weights, file="out/anes_prep.rda")
 
-## initialize object to store individual dfm bootstraps
-nboot <- 1000
-media2012_boot <- array(dim=c(dim(media2012_dfm),nboot)
-                        , dimnames = list(docs = rownames(media2012_dfm)
-                                          , features = colnames(media2012_dfm)
-                                          , iter = 1:nboot))
-
-## parametric bootstrap, create dfms
-for(d in 1:nrow(media2012_dfm)){
-  media2012_boot[d,,] <- rmultinom(nboot, size = sum(media2012_dfm[d,])
-                                   , prob = media2012_dfm[d,]/sum(media2012_dfm[d,])
-  )
-}
-
-## initialize object to store similarity results
-tmp <- tmp_s <- array(dim=c(nrow(media2012_dfm),6,nboot)
-                      , dimnames = list(docs = rownames(media2012_dfm)
-                                        , mft = c(names(dict),"general")
-                                        , iter = 1:nboot))
-
-## compute similarity for bootstrapped dfms
-pb <- txtProgressBar(min = 0, max = nboot, style = 3)
-for(i in 1:nboot){
-  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(scheme_tf = "prop",k=0)
-  tmp_tfidf <- tmp_tfidf[,dict_df[,2]]
-  
-  ## count relative tfidf weights for each media source
-  tmp[,,i] <- data.frame(
-    authority = apply(tmp_tfidf[,dict_list$authority],1,sum,na.rm=T)
-    , fairness = apply(tmp_tfidf[,dict_list$fairness],1,sum,na.rm=T)
-    , harm = apply(tmp_tfidf[,dict_list$harm],1,sum,na.rm=T)
-    , ingroup = apply(tmp_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
-    , purity = apply(tmp_tfidf[,dict_list$purity],1,sum,na.rm=T)
-    , general = 0
-  ) %>% as.matrix()
-  
-  ## compute general moralization
-  tmp[,"general",i] <- apply(tmp[,1:4,i],1,sum)
-  
-  ## create scaled variable for moral foundations
-  tmp_s[,,i] <- apply(tmp[,,i], 2, function(x) scale(x, center=median(x)))
-  
-  ## progress bar
-  setTxtProgressBar(pb, i)
-}
-close(pb)
-
-for(m in 1:dim(tmp)[2]){
-  tmp_res <- t(apply(tmp_s[,m,],1,quantile,c(.025,.975)))
-  colnames(tmp_res) <- paste(names(tmp_s[1,,1])[m],c("lo","hi"),sep="_")
-  media2012 <- cbind(media2012, tmp_res); rm(tmp_res)
-}
-
-m=4
-quantile(tmp_s["TV_NBC_Dateline.txt",m,],.025)
-hist(tmp_s["TV_NBC_Dateline.txt",m,])
-i=496
-
-##############################
-### save output for analyses.R
-
-
-save(anes2012, anes2012opend, media2012, anes2012weights
-     , mftLabs, polLabs, file="out/anes_prep.rda")

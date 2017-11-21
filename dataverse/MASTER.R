@@ -1,59 +1,43 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     MASTER.R
-## Overview: installs all required packages, prepares data, and runs analyses
+## Overview: Installs required packages and executes all scripts to prepare data,
+##           estimate models, and present results
 ## Author:   Patrick Kraft
 ###########################################################################################
 
+## clear workspace
 rm(list=ls())
-setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
-
-### Install required packages
-
-pkg <- c("tidyverse","readstata13","car","quanteda","stargazer"
-         ,"xtable","VGAM","gridExtra","MASS", "sandwich")
+## install required packages
+pkg <- c("tidyverse","quanteda","xtable","gridExtra"
+         ,"readstata13","car","VGAM","MASS", "sandwich")
 inst <- pkg %in% installed.packages()
 if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
 rm(pkg,inst)
 
-
-### create output folders
-
-
-### ANES analyses
-
-## prepare dataset
-source("prep_anes.R", echo=T, max.deparse.length=10000)
-
-## run main analyses
-source("analyses_anes.R", echo=T, max.deparse.length=10000)
-
-## run analyses for appendix
-source("appendix_anes.R", echo=T, max.deparse.length=10000)
+## create folders to save output data, figures, and tables
+dir.create("out", showWarnings = FALSE)
+dir.create("fig", showWarnings = FALSE)
+dir.create("tab", showWarnings = FALSE)
 
 
-### LI survey analyses
+### Main analyses (2012 ANES)
 
 ## prepare dataset
-source("prep_lisurvey.R", echo=T, max.deparse.length=10000)
+source("anes_prep.R", echo=T, max.deparse.length=10000)
 
 ## run main analyses
-source("analyses_lisurvey.R", echo=T, max.deparse.length=10000)
-
-## run analyses for appendix
-source("appendix_lisurvey.R", echo=T, max.deparse.length=10000)
+source("anes_analyses.R", echo=T, max.deparse.length=10000)
 
 
-### Feinberg replication
+### Supplementary analyses for appendix
 
-## prepare dataset
-source("prep_feinberg.R", echo=T, max.deparse.length=10000)
+## 2012 ANES appendix
+source("anes_appendix.R", echo=T, max.deparse.length=10000)
 
-## run main analyses
-source("analyses_feinberg.R", echo=T, max.deparse.length=10000)
+## LI survey analyses
+source("app_lisurvey.R", echo=T, max.deparse.length=10000)
 
-## run analyses for appendix
-source("appendix_feinberg.R", echo=T, max.deparse.length=10000)
-
-
+## Feinberg replication
+source("app_feinberg.R", echo=T, max.deparse.length=10000)

@@ -9,9 +9,9 @@
 ###########################################################################################
 
 ## packages
-pkg <- c("tidyverse","quanteda","gridExtra")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(list=ls())
+library(tidyverse)
+library(quanteda)
+library(gridExtra)
 
 ## load additional functions
 source("func.R")
@@ -75,7 +75,7 @@ sim <- data.frame(
   , ingroup_tfidf = apply(fbrg_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
   , purity_tfidf = apply(fbrg_tfidf[,dict_list$purity],1,sum,na.rm=T)
   , general_tfidf = apply(fbrg_tfidf[,c(dict_list$authority,dict_list$fairness
-                                      ,dict_list$harm,dict_list$ingroup)],1,sum,na.rm=T)
+                                        ,dict_list$harm,dict_list$ingroup)],1,sum,na.rm=T)
 )
 
 ## rescale all vars to unit variance
