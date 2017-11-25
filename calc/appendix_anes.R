@@ -7,7 +7,7 @@
 ###############################################################################################
 
 ## packages
-pkg <- c("tidyverse","gridExtra","stargazer","xtable","VGAM")
+pkg <- c("tidyverse","gridExtra","xtable","VGAM")
 invisible(lapply(pkg, library, character.only = TRUE))
 rm(list=ls())
 
