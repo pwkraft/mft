@@ -23,6 +23,12 @@ dir.create("out", showWarnings = FALSE)
 dir.create("fig", showWarnings = FALSE)
 dir.create("tab", showWarnings = FALSE)
 
+## create folders to save output data, figures, and tables
+dir.create("out", showWarnings = FALSE)
+dir.create("fig", showWarnings = FALSE)
+dir.create("tab", showWarnings = FALSE)
+
+
 
 ### Main analyses (2012 ANES)
 
