@@ -1,22 +1,18 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     func.R
-## Overview: Functions used in analyses_anes.R, analyses_lisurvey.R,
-##           appendix_anes.R, appendix_lisurvey.R
+## Overview: Custom auxiliary functions used in anes_prep.R, anes_analyses.R,
+##           anes_appendix.R, app_lisurvey.R, app_feinberg.R
 ## Author:   Patrick Kraft
 ###########################################################################################
 
-### Load packages
-pkg <- c("reshape2","ggplot2","dplyr","quanteda")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(pkg)
+## packages
+library(tidyverse)
+library(quanteda)
+library(xtable)
 
-
-### global labels for plots
-
-mftVars <- c("authority","fairness","harm","ingroup","purity")
+## MFT labels for plots
 mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")
-polLabs <- c("Political\nKnowledge","Political Media\nExposure","Political\nDiscussions")
 
 
 ### function to pre-process open-ended responses and compute MFT Score
@@ -57,12 +53,6 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
     return(x)
   })
   
-  ## num-lock issue
-  # maybe look into this later
-  
-  ## fix words without whitespace
-  # maybe look into this later
-  
   ## spell-checking
   write.table(spell, file = "opend_combined.csv"
               , sep = ",", col.names = F, row.names = F)
@@ -87,7 +77,6 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   spell <- char_tolower(apply(spell, 1, paste, collapse = " "))
   spell <- gsub("NA\\s*","",spell)
   names(spell) <- id
-  #spell <- spell[spell != ""]
   
   ## replace regular expressions with word stems
   for(i in 1:nrow(regex)){
@@ -141,7 +130,8 @@ mftScore <- function(opend, id, dict, regex, dict_list, report_weights=F){
   return(out)
 }
 
-mftRescale <- function(x, select,vars = c("authority","fairness","harm","ingroup","purity","general")){
+mftRescale <- function(x, select, vars = c("authority","fairness","harm"
+                                           ,"ingroup","purity","general")){
   for(i in vars){
     x[,paste0(i,"_s")] <- x[,i]/sd(x[select,i], na.rm = T)
   }
@@ -211,10 +201,6 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
         evs <- pnorm(betas %*% X)
       } else stop("Model type not supported")
     } else if(class(models[[i]])[1] == "vglm" & models[[i]]@family@vfamily == "tobit"){
-      ## IDEA: decompose effect of tobit in dP(Y>0) and dY|Y>0
-      ## based on predicted values (rather than EVs)
-      ## note that betas[,2] is log(Sigma) estimate
-      ## CHECK CALCULATIONS!
       if(unique(models[[i]]@misc$Upper)!=Inf) stop("Upper limit not supported")
       if(unique(models[[i]]@misc$Lower)!=0) warning("Limit != 0 not testes yet!")
       loLim <- unique(models[[i]]@misc$Lower)[1,1]
@@ -250,7 +236,6 @@ sim <- function(models, iv, robust=F, ci=c(0.025,0.975), nsim = 1000){
       }
     } else {
       ## compute predicted values for each step
-      warning("Check number of scenarios - STILL TESTING")
       if(class(models[[i]])[1] != "vglm"){
         res <- data.frame(mean = apply(evs, 2, mean)
                           , cilo = apply(evs, 2, quantile, ci[1])

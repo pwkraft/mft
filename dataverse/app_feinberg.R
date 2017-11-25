@@ -9,9 +9,9 @@
 ###########################################################################################
 
 ## packages
-pkg <- c("tidyverse","quanteda","gridExtra")
-invisible(lapply(pkg, library, character.only = TRUE))
-rm(list=ls())
+library(tidyverse)
+library(quanteda)
+library(gridExtra)
 
 ## load additional functions
 source("func.R")
@@ -75,7 +75,7 @@ sim <- data.frame(
   , ingroup_tfidf = apply(fbrg_tfidf[,dict_list$ingroup],1,sum,na.rm=T)
   , purity_tfidf = apply(fbrg_tfidf[,dict_list$purity],1,sum,na.rm=T)
   , general_tfidf = apply(fbrg_tfidf[,c(dict_list$authority,dict_list$fairness
-                                      ,dict_list$harm,dict_list$ingroup)],1,sum,na.rm=T)
+                                        ,dict_list$harm,dict_list$ingroup)],1,sum,na.rm=T)
 )
 
 ## rescale all vars to unit variance
@@ -92,7 +92,7 @@ fbrg_mft <- merge(fbrg_mft, sim)
 #######################
 ### figures in appendix
 
-## General MFT references
+### Fig C.5: Comparing general MFT scores with manual coding
 
 tmp <- as.character(paste0("italic(r) == ",round(cor(fbrg_mft$general,fbrg_mft$general_tfidf),2)))
 ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) + 
@@ -100,43 +100,30 @@ ggplot(fbrg_mft, aes(x=general,y=general_tfidf)) +
   theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
   xlab("Manual Coding") + ylab("General MFT Score") + 
   annotate("text",x=0,y=6,label=tmp,hjust=0,size=2,parse=T)
-ggsave("fig/feinberg_general.pdf", height=2, width=2)
+ggsave("fig/appC5_feinberg_general.pdf", height=2, width=2)
 
 
+### Fig C.6: Comparing separate MFT scores with manual coding
 
-################################################
-
-## plot bivariate relationships
 plot_df <- fbrg_mft %>% select(-paper,-article) %>% 
   gather("variable","Score",authority_tfidf:purity_tfidf)
 plot_df$Foundation <- factor(gsub("_.*","",plot_df$variable)
-                             , levels = c("purity", "authority", "ingroup"
-                                          , "fairness", "harm", "general")
-                             , labels = c("Sanctity","Authority","Loyalty"
-                                          ,"Fairness","Care","General"))
-plot_df$Method
-grep("harm", plot_df$variable)
-
+                             , levels = c("purity", "authority", "ingroup", "fairness", "harm")
+                             , labels = c("Sanctity","Authority","Loyalty","Fairness","Care"))
 
 p <- NULL
-m <- NULL
 vname <- c("harm","fairness","ingroup","authority")
 vlab <- c("Care","Fairness","Loyalty","Authority")
 for(i in 1:length(vname)){
-
-  m[[paste0(vname[i],"_tfidf")]] <- lm(fbrg_mft[,vname[i]]~fbrg_mft[,paste0(vname[i],"_tfidf")])
   tmp <- as.character(paste0("italic(r) == ",round(cor(fbrg_mft[,vname[i]]
                                                        ,fbrg_mft[,paste0(vname[i],"_tfidf")]),2)))
-  
   p[[paste0(vname[i],"_tfidf")]] <- ggplot(fbrg_mft, aes_string(x=vname[i],y=paste0(vname[i],"_tfidf"))) + 
     geom_smooth(method="lm", col = "black", size=.5) + geom_point(alpha=.2, size=.5) + 
     theme_classic(base_size = 8) + theme(panel.border = element_rect(fill=NA)) +
     ggtitle(vlab[i]) + ylab("MFT Score") + xlab("Manual Coding") + ylim(0,7) + xlim(0,6) +
     annotate("text",x=0,y=6.5,label=tmp,hjust=0,size=3,parse=T)
-  
 }
 
-pdf("fig/feinberg_sep.pdf",height=4,width=4)
+pdf("fig/appC6_feinberg_sep.pdf",height=4,width=4)
 grid.arrange(grobs=p, ncol=2)
 dev.off()
-
