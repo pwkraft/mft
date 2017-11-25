@@ -31,7 +31,7 @@ fbrg_mft$id <- paste(gsub("(^\\s+|\\s+$)","", fbrg_mft$NEWSPAPER), fbrg_mft$ARTI
 colnames(fbrg_mft) <- c("paper","article","harm","fairness","authority","ingroup","purity","id")
 
 ## add general mft
-fbrg_mft$general <- with(fbrg_mft, harm + fairness + authority +ingroup + purity)
+fbrg_mft$general <- with(fbrg_mft, harm + fairness + authority + ingroup + purity)
 
 ## note that there might be an ID error in the original dataset (USA Today 22 & 23 switched)
 fbrg_mft$id[fbrg_mft$id != fbrg_text$id]
@@ -46,7 +46,7 @@ load("mft_dictionary.rda")
 
 ## minor pre-processing
 fbrg_text$processed <- paste(fbrg_text$title, fbrg_text$text) %>%
-  char_tolower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
+  toLower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
   gsub("[[:punct:]]"," ", .) %>% gsub("\\n"," ", .) %>% gsub("\\s+"," ", .) %>%
   gsub("(^\\s+|\\s+$)","", .)
 
@@ -64,7 +64,7 @@ fbrg_dfm <- corpus(c(dict, fbrg_text$processed)
 fbrg_dfm <- fbrg_dfm[as.character(fbrg_text$id),]
 
 ## convert dfm to tfidf
-fbrg_tfidf <- fbrg_dfm %>% tfidf(scheme_tf = "prop", k=0)
+fbrg_tfidf <- fbrg_dfm %>% tfidf(normalize=T,k=0)
 fbrg_tfidf <- fbrg_tfidf[,dict_df[,2]]
 
 ## count relative term frequencies & tfidf weights for each media source

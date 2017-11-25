@@ -8,17 +8,14 @@
 rm(list=ls())
 setwd("/data/Dropbox/Uni/Projects/2014/mft/calc")
 
+## install checkpoint
+if(!"checkpoint" %in% installed.packages()){
+  install.packages("checkpoint")
+}
 
-### Install required packages
-
-pkg <- c("tidyverse","readstata13","car","quanteda","stargazer"
-         ,"xtable","VGAM","gridExtra","MASS", "sandwich")
-inst <- pkg %in% installed.packages()
-if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
-rm(pkg,inst)
-
-
-### create output folders
+## reproducible package loading
+library(checkpoint)
+checkpoint("2017-01-01")
 
 
 ### ANES analyses

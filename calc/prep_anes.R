@@ -387,7 +387,7 @@ close(pb)
 ## combine dictionary and responses in common dfm/tfidf
 media2012_tfidf <- corpus(c(dict, docs2012@texts)
                           , docnames = c(names(dict), names(docs2012@texts))) %>% dfm()
-media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(scheme_tf = "prop",k=0)
+media2012_tfidf <- media2012_tfidf[names(docs2012@texts),] %>% tfidf(normalize=T,k=0)
 media2012_tfidf <- media2012_tfidf[,dict_df[,2]]
 
 ## count relative tfidf weights for each media source
@@ -610,7 +610,7 @@ tmp <- tmp_s <- array(dim=c(nrow(media2012_dfm),6,nboot)
 ## compute similarity for bootstrapped dfms
 pb <- txtProgressBar(min = 0, max = nboot, style = 3)
 for(i in 1:nboot){
-  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(scheme_tf = "prop",k=0)
+  tmp_tfidf <- media2012_boot[,,i] %>% as.dfm() %>% tfidf(normalize=T,k=0)
   tmp_tfidf <- tmp_tfidf[,dict_df[,2]]
   
   ## count relative tfidf weights for each media source

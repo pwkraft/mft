@@ -9,12 +9,14 @@
 ## clear workspace
 rm(list=ls())
 
-## install required packages
-pkg <- c("tidyverse","quanteda","xtable","gridExtra"
-         ,"readstata13","car","VGAM","MASS", "sandwich")
-inst <- pkg %in% installed.packages()
-if(length(pkg[!inst]) > 0) install.packages(pkg[!inst])
-rm(pkg,inst)
+## install checkpoint
+if(!"checkpoint" %in% installed.packages()){
+  install.packages("checkpoint")
+}
+
+## reproducible package loading
+library(checkpoint)
+checkpoint("2017-01-01")
 
 ## create folders to save output data, figures, and tables
 dir.create("out", showWarnings = FALSE)

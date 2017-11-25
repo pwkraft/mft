@@ -54,7 +54,7 @@ dict_df <- sapply(c("authority","fairness","harm","ingroup","purity"), function(
 
 ## minor pre-processing
 fbrg_text$processed <- paste(fbrg_text$title, fbrg_text$text) %>%
-  char_tolower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
+  toLower() %>% gsub("(^\\s+|\\s+$)","", .) %>% gsub("//"," ", ., fixed = T) %>%
   gsub("[[:punct:]]"," ", .) %>% gsub("\\n"," ", .) %>% gsub("\\s+"," ", .) %>%
   gsub("(^\\s+|\\s+$)","", .)
 
