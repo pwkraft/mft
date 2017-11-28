@@ -1,9 +1,9 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
-## File:     appendix_anes.R
+## File:     anes_appendix.R
 ## Overview: Analyses for appendix (2012 ANES), produces all additional plots and tables
-## Requires: - Recoded ANES 2012 data (anes_prep.rda)
-##           - Model estimates of main analyses (anes_analyses.rda)
+## Requires: - Recoded ANES 2012 data (anes_prep.rda, compiled with anes_prep.R)
+##           - Model estimates of main analyses (anes_analyses.rda, compiled with anes_analyses.R)
 ##           - Custom auxiliary functions (func.R)
 ## Author:   Patrick Kraft
 ###########################################################################################
@@ -22,7 +22,7 @@ load("out/anes_prep.rda")
 
 
 ######################################
-### Additional Descriptive information
+### Additional descriptive information
 
 
 ### Tab B.1: Missing open-ended responses

@@ -1,8 +1,8 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
-## File:     analyses_anes.R
+## File:     anes_analyses.R
 ## Overview: Main analyses (2012 ANES), produces all figures in the manuscript
-## Requires: - Recoded ANES 2012 data (anes_prep.rda)
+## Requires: - Recoded ANES 2012 data (anes_prep.rda, compiled with anes_prep.R)
 ##           - Custom auxiliary functions (func.R)
 ## Author:   Patrick Kraft
 ############################################################################################
@@ -24,7 +24,7 @@ anes2012 <- anes2012[anes2012$spanish != 1 & anes2012$wc > 5, ]
 
 
 ##############################################
-### Ideological Differences in Moral Reasoning
+### Ideological differences in moral reasoning
 
 
 ### Fig 1: Ideological differences in moral foundations (tobit)
@@ -58,7 +58,7 @@ ggsave(filename = "fig/fig1_tobit_ideol.pdf", width = 4, height = 2)
 
 
 ##############################################
-### The Political Relevance of Moral Reasoning
+### The political relevance of moral reasoning
 
 
 ### Fig 2: Moral foundations and vote choice (logit)
@@ -95,7 +95,7 @@ ggsave(filename = "fig/fig2_logit_vote.pdf", width = 4, height = 2)
 
 
 ####################################
-### Media Effects on Moral Reasoning
+### Media effects on moral reasoning
 
 
 ### Fig 3: Media content effects on general moral reasoning (tobit)
@@ -123,7 +123,7 @@ ggsave(filename = "fig/fig3_tobit_media.pdf", width = 4, height = 2)
 
 
 ######################################
-### save results (for anes_appendix.R)
+### Save results (for anes_appendix.R)
 
 save.image(file="out/anes_analyses.rda")
 

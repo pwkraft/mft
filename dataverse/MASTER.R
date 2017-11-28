@@ -2,7 +2,7 @@
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     MASTER.R
 ## Overview: Installs required packages and executes all scripts to prepare data,
-##           estimate models, and present results
+##           estimate models, and save figures/tables
 ## Author:   Patrick Kraft
 ###########################################################################################
 
@@ -49,3 +49,5 @@ source("app_lisurvey.R", echo=T, max.deparse.length=10000)
 
 ## Feinberg replication
 source("app_feinberg.R", echo=T, max.deparse.length=10000)
+
+

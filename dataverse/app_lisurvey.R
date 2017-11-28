@@ -2,7 +2,7 @@
 ## Project:  Measuring Morality in Political Attitude Expression
 ## File:     app_lisurvey.R
 ## Overview: Replication of main analysis using LI survey data (results in appendix)
-## Requires: - 2001-2003 Long Island RDD survey data collected by Leonie Huddy
+## Requires: - 2001-2003 Long Island RDD survey data provided by Leonie Huddy
 ##              (data_lisurvey.rda, original data available on request)
 ##           - Custom auxiliary functions (func.R)
 ## Author:   Patrick Kraft

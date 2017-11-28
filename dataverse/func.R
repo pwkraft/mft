@@ -11,6 +11,7 @@ library(tidyverse)
 library(quanteda)
 library(xtable)
 library(sandwich)
+library(MASS)
 
 ## MFT labels for plots
 mftLabs <- c("Authority", "Loyalty", "Fairness", "Care")

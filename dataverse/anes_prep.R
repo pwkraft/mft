@@ -1,11 +1,11 @@
 ###########################################################################################
 ## Project:  Measuring Morality in Political Attitude Expression
-## File:     prep_anes.R
-## Overview: Prepares 2012 ANES data for analyses_anes.R
+## File:     anes_prep.R
+## Overview: Prepares 2012 ANES data for anes_analyses.R
 ## Requires: - ANES 2012 Time Series data (anes_timeseries_2012.dta)
 ##           - ANES 2012 Redacted Open-Ended Responses (anes2012TS_openends.csv)
-##             (available at http://www.electionstudies.org/)
-##           - MFT scores of media sources (original content available on request)
+##             (both available at http://www.electionstudies.org/)
+##           - MFT scores of media sources (data_media2012.rda, original content available on request)
 ##           - MFT dictionary (mft_dictionary.rda)
 ##           - Custom auxiliary functions (func.R)
 ## Author:   Patrick Kraft
@@ -282,18 +282,18 @@ anes2012media <- data.frame(INET_CNN_com = raw2012$medsrc_websites_02==1
                             , TV_NBC_TodayShow = raw2012$medsrc_tvprog_46==1
                             ) %>% apply(2,as.numeric)
 
-## combine media usage with mft similarity scores as mean dimensions (new version)
+## combine media usage with mft similarity scores (average moralization in media content)
 tmp <- as.matrix(anes2012media) %*% as.matrix(select(media2012,-id))  / apply(anes2012media,1,sum)
 tmp[apply(anes2012media,1,sum)==0, ] <- 0
 colnames(tmp) <- paste0("media_",colnames(tmp))
 
-## add new variables to anes
-anes2012$media <- apply(anes2012media,1,sum)>0
-
-## add new variables to anes
+## add variables to anes
 anes2012 <- cbind(anes2012,tmp)
 
-## rescale media variable, remove missings
+## overall media usage
+anes2012$media <- apply(anes2012media,1,sum)>0
+
+## declare missings
 anes2012$media_general[anes2012$media_general==0] <- NA
 anes2012$media_general_s[is.na(anes2012$media_general)] <- NA
 
