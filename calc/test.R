@@ -88,3 +88,28 @@ m2 <- vglm(indi ~ bind_media + indi_media + relig + educ + age + female + black
                         + lwc + wordsum + mode, tobit(Lower = 0), data=anes2012)
 summary(m1)
 summary(m2)
+
+
+####################################################
+### test backwards compatibility issues w/ quanteda
+
+
+rbind(anes2012[5,colnames(anes2012)[colnames(anes2012)%in%colnames(anes2012old)]],anes2012old[5,colnames(anes2012old)[colnames(anes2012old)%in%colnames(anes2012)]])
+
+plot(anes2012$harm_s, anes2012old$harm_s)
+cor(anes2012$harm_s, anes2012old$harm_s)
+
+cor(anes2012$fairness, anes2012old$fairness)
+plot(anes2012$fairness, anes2012old$fairness)
+
+plot(density(residuals(lm(anes2012$fairness ~ anes2012old$fairness))))
+plot(density(residuals(lm(anes2012$fairness ~ anes2012old$fairness))^2))
+
+tmp1 <- anes2012[residuals(lm(anes2012$fairness ~ anes2012old$fairness))^2>0.00001,]
+tmp2 <- anes2012old[residuals(lm(anes2012$fairness ~ anes2012old$fairness))^2>0.00001,]
+
+View(tmp1)
+View(tmp2)
+
+# the issue might be due to numbers in OE responses. Maybe dfm/corpus/quanteda changed how it handeled numbers?
+# -> use stable version of quanteda to make results reproducible
