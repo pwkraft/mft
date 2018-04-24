@@ -80,10 +80,11 @@ varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideol
 mlabs <- c("Care", "Fairness", "Loyalty", "Authority")
 
 ## create table
-latexTable(tobit_ideol_li, caption="Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_ideol_li, caption=c("Tobit models predicting MFT score for each foundation based 
            on ideology (telephone survey replication). Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for Figure 
-           \\ref{fig:tobit_ideol_lisurvey} in the main text."
+           \\ref{fig:tobit_ideol_lisurvey} in the appendix.", "Tobit models predicting MFT score for each foundation based 
+           on ideology (telephone survey replication)")
            , label="tab:tobit_ideol_lisurvey", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_ideol_lisurvey.tex"

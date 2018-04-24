@@ -727,10 +727,11 @@ varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideol
 mlabs <- c("Care", "Fairness", "Loyalty", "Authority")
 
 ## create table
-latexTable(tobit_ideol, caption="Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_ideol, caption=c("Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for Figure 
-           1 in the main text."
+           \\ref{fig:tobit_ideol} in the main text.","Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_ideol", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_ideol.tex"
@@ -754,10 +755,12 @@ varlabs = list(harm_s="Harm", fairness_s="Fairness", ingroup_s="Ingroup", author
 mlabs <- NULL
 
 ## create table
-latexTable(logit_vote, caption="Logit models predicting democratic vote choice based on
+latexTable(logit_vote, caption=c("Logit models predicting democratic vote choice based on
            MFT score for each foundation. Positive coefficients indicate higher likelihood
            to vote for the Democratic candidate than the Republican candidate. Standard errors 
-           in parentheses. Estimates are used for Figure 2 in the main text."
+           in parentheses. Estimates are used for Figure \\ref{fig:logit_vote} in the main text.", 
+           "Logit models predicting democratic vote choice based on
+           MFT score for each foundation")
            , label="tab:logit_vote", align="lcc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/logit_vote.tex"
@@ -780,11 +783,14 @@ varlabs = list(media_general_s="Moral Media Content",polknow="Political Knowledg
 mlabs <- NULL
 
 ## create table
-latexTable(tobit_media, caption="Tobit model predicting overall reliance on moral foundations
+latexTable(tobit_media, caption=c("Tobit model predicting overall reliance on moral foundations
            (sum of MFT scores) based on media moralization, political knowledge, media exposure, and frequency of 
            political discussions. Positive coefficients indicate stronger emphasis on any foundation.
-           Standard errors in parentheses. Estimates are used for Figure 3 in 
-           the main text as well as Figure \\ref{fig:tobit_learn} in the appendix."
+           Standard errors in parentheses. Estimates are used for Figure \\ref{fig:tobit_media} in 
+           the main text as well as Figure \\ref{fig:tobit_learn} in the appendix.", "Tobit model 
+           predicting overall reliance on moral foundations
+           (sum of MFT scores) based on media moralization, political knowledge, media exposure, and frequency of 
+           political discussions")
            , label="tab:tobit_learn", align="lc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_media.tex"
@@ -805,80 +811,88 @@ varlabs = list(ideolConservative="Ideology (Conservative)", ideolModerate="Ideol
 mlabs <- c("Care", "Fairness", "Loyalty", "Authority")
 
 ## create table
-latexTable(tobit_vivi[c(1,3,5,7)], caption="Virtues only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_vivi[c(1,3,5,7)], caption=c("Virtues only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Virtues only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_virtue", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_virtue.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_vivi[c(2,4,6,8)], caption="Vices only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_vivi[c(2,4,6,8)], caption=c("Vices only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Vices only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_vice", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_vice.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_lidi[c(1,3,5,7)], caption="Likes only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_lidi[c(1,3,5,7)], caption=c("Likes only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Likes only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_like", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_like.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_lidi[c(2,4,6,8)], caption="Dislikes only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_lidi[c(2,4,6,8)], caption=c("Dislikes only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Dislikes only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_dislike", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_dislike.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_demrep[c(1,3,5,7)], caption="Democratic party/candidate only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_demrep[c(1,3,5,7)], caption=c("Democratic party/candidate only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Democratic party/candidate only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_dem", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_dem.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_demrep[c(2,4,6,8)], caption="Republican Party/Candidate only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_demrep[c(2,4,6,8)], caption=c("Republican Party/Candidate only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for  
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.","Republican Party/Candidate only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_rep", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_rep.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_inout[c(1,3,5,7)], caption="In-party only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_inout[c(1,3,5,7)], caption=c("In-party only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for 
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "In-party only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_in", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_in.tex"
            , table.placement="ht", caption.placement="top"
            , size="footnotesize")
 
-latexTable(tobit_inout[c(2,4,6,8)], caption="Out-party only: Tobit models predicting MFT score for each foundation based 
+latexTable(tobit_inout[c(2,4,6,8)], caption=c("Out-party only: Tobit models predicting MFT score for each foundation based 
            on ideology. Positive coefficients indicate stronger emphasis on the respective 
            foundation. Standard errors in parentheses. Estimates are used for  
-           Figure \\ref{fig:tobit_ideol_app} in the appendix."
+           Figure \\ref{fig:tobit_ideol_app} in the appendix.", "Out-party only: Tobit models predicting MFT score for each foundation based 
+           on ideology")
            , label="tab:tobit_out", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/tobit_out.tex"
@@ -901,11 +915,12 @@ varlabs = list(harm_s="Harm", fairness_s="Fairness", ingroup_s="Ingroup", author
 mlabs <- c("Party (1)", "Party (2)", "Cand. (1)", "Cand. (2)")
 
 ## create table
-latexTable(ols_feel, caption="OLS models predicting feeling thermometer differentials based on
+latexTable(ols_feel, caption=c("OLS models predicting feeling thermometer differentials based on
            MFT score for each foundation. Positive coefficients indicate more favorable evaluation 
            of Democratic candidate/party than the Republican candidate/party, and vice versa. 
            Standard errors in parentheses. Estimates are used for Figure \\ref{fig:ols_feel} 
-           in the appendix."
+           in the appendix.", "OLS models predicting feeling thermometer differentials based on
+           MFT score for each foundation")
            , label="tab:ols_feel", align="lcccc"
            , varlabs=varlabs, mlabs=mlabs
            , file="tab/ols_feel.tex"
