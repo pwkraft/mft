@@ -97,6 +97,19 @@ ggplot(logit_vote_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shap
   scale_color_grey(start=0,end=.5)
 ggsave(filename = "fig/logit_vote.pdf", width = 4, height = 2)
 
+ggplot(logit_vote_res, aes(x = mean, y = var+.1-.2*(cond=="Yes"), col=cond, shape=cond)) +
+  geom_vline(xintercept=0, col="lightgrey") + geom_point() +
+  geom_errorbarh(aes(xmax=cihi,xmin=cilo),height=0) +
+  labs(y = "Moral Foundation", x= "Change in P(democratic vote)") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill="white")) + 
+  scale_y_continuous(breaks=1:4, labels=mftLabs) +
+  #ggtitle("Change in Predicted Probabilities to\nVote for Democratic Candidate") +
+  guides(col=guide_legend(title="Control for\nParty Identification")
+         , shape=guide_legend(title="Control for\nParty Identification")) +
+  #theme(legend.position="bottom", legend.box="horizontal") +
+  scale_color_grey(start=0,end=.5)
+ggsave(filename = "fig/logit_vote_empty.pdf", width = 4, height = 2)
+
 
 
 ####################################
@@ -126,6 +139,13 @@ ggplot(tobit_media_res, aes(x=ivval, y=mean, ymin=cilo,ymax=cihi)) +
   labs(y = "Moral Reasoning", x= "Moral Media Content (median-centered)")
 ggsave(filename = "fig/tobit_media.pdf", width = 4, height = 2)
 
+
+ggplot(tobit_media_res, aes(x=ivval, y=mean, ymin=cilo,ymax=cihi)) +
+  geom_ribbon(alpha=0.2) + geom_line() + facet_wrap(~value, scale="free_y") +
+  theme_classic(base_size = 8) + theme(panel.border = element_rect(fill="white")) +
+  # ggtitle("Media Content Effects") +
+  labs(y = "Moral Reasoning", x= "Moral Media Content (median-centered)")
+ggsave(filename = "fig/tobit_media_empty.pdf", width = 4, height = 2)
 
 
 ######################################
